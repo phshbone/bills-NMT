@@ -1,4 +1,4 @@
-const CACHE='nmt-reasoning-v0.1.6';
+const CACHE='nmt-reasoning-v0.1.7';
 const ASSETS=['./','./index.html','./styles.css','./manifest.webmanifest','./icon.svg','./data-init.js','./data-sources-1.js','./data-muscles-1.js','./data-muscles-2.js','./data-provenance-1.js','./data-movements-1.js','./data-questions-1.js','./data-pathways-1.js','./data-rules-1.js','./data-observations-1.js','./reasoning.js','./app.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
