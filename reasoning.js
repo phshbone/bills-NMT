@@ -29,7 +29,7 @@ function scoreHypotheses(pathwayId,answers,data,reassessment={}){
     }[reassessment.change];
     if(response){
       scores[id]=(scores[id]||0)+response.delta;
-      (response.bucket[id]||(response.bucket[id]=[])).push(response.why);
+      (response.bucket[id]||(response.bucket[id]=[])).unshift(response.why);
     }
   }
   return Object.entries(scores).map(([id,score])=>{
