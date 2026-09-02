@@ -38,15 +38,30 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Wait for deployed app
+      - name: Wait for exact deployed build
+        shell: bash
         run: |
-          for i in {1..18}; do
-            if curl -fsSL "$LIVE_SMOKE_URL" | grep -q 'Clinical Reasoning Map'; then
+          set -euo pipefail
+          files=(index.html reasoning.js app-part-1.js app-part-2.js service-worker.js)
+          for i in {1..24}; do
+            all_match=1
+            for file in "${files[@]}"; do
+              if ! curl -fsSL -H 'Cache-Control: no-cache' "$LIVE_SMOKE_URL$file?build=$GITHUB_SHA" -o "/tmp/deployed-${file//\//-}"; then
+                all_match=0
+                break
+              fi
+              if ! cmp -s "$file" "/tmp/deployed-${file//\//-}"; then
+                all_match=0
+                break
+              fi
+            done
+            if [ "$all_match" -eq 1 ]; then
+              echo "Exact deployed build matches $GITHUB_SHA"
               exit 0
             fi
             sleep 10
           done
-          echo 'Deployed app did not become available in the verification window.'
+          echo "GitHub Pages did not publish the exact tested build."
           exit 1
 
       - name: Run live smoke test
