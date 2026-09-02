@@ -90,7 +90,7 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
 
   await serratusCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Serratus anterior' })).toBeVisible();
-  await expect(page.getByText(/Long thoracic nerve/i)).toBeVisible();
+  await expect(page.getByText(/Long thoracic nerve/i).first()).toBeVisible();
   await page.getByRole('button', { name: 'Wall slide' }).click();
   await expect(page.getByRole('heading', { name: 'Wall slide' })).toBeVisible();
 
