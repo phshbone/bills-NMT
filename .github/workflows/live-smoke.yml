@@ -13,7 +13,7 @@ on:
       - 'icon.svg'
       - 'data-*.js'
       - 'reasoning.js'
-      - 'app-*.js'
+      - 'app*.js'
       - 'tests/**'
       - 'playwright.config.js'
       - 'package.json'
@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          files=(index.html reasoning.js app-part-1.js app-part-2.js service-worker.js)
+          files=(index.html reasoning.js app.js service-worker.js)
           for i in {1..24}; do
             all_match=1
             for file in "${files[@]}"; do
