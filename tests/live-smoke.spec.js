@@ -99,6 +99,12 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
   await page.getByRole('button', { name: /Open functional record/i }).click();
   await expect(page.getByRole('heading', { name: 'Levator scapulae' })).toBeVisible();
   await expect(page.getByText(/StatPearls \/ NCBI Bookshelf/).first()).toBeVisible();
+
+  await page.getByRole('button', { name: /Anatomy/i }).click();
+  await page.locator('#anatomySearch').fill('scalenes');
+  await page.getByRole('button', { name: /Open functional record/i }).click();
+  await expect(page.getByRole('heading', { name: 'Scalenes' })).toBeVisible();
+  await expect(page.getByText(/Anatomy, Head and Neck, Scalenus Muscle/i)).toBeVisible();
 });
 
 test('red-flag response exits ordinary muscle reasoning', async ({ page }) => {
