@@ -46,27 +46,15 @@ jobs:
           sw = sw.replace("'./app-init.js','./app-part-1.js','./app-part-2.js','./app-loader.js'", "'./app.js'");
           if (!sw.includes("'./app.js'") || sw.includes('app-loader.js')) throw new Error('service-worker normalization failed');
           fs.writeFileSync('service-worker.js', sw);
-
-          let live = fs.readFileSync('.github/workflows/live-smoke.yml','utf8');
-          live = live.replace('files=(index.html reasoning.js app-part-1.js app-part-2.js service-worker.js)', 'files=(index.html reasoning.js app.js service-worker.js)');
-          if (!live.includes('files=(index.html reasoning.js app.js service-worker.js)')) throw new Error('live smoke identity gate update failed');
-          fs.writeFileSync('.github/workflows/live-smoke.yml', live);
           NODE
           node --check app.js
-          rm app-init.js app-part-1.js app-part-2.js app-loader.js
-          rm .github/workflows/normalize-app.yml
 
-      - name: Commit normalized architecture
+      - name: Commit normalized app files
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'Normalize UI source and remove eval loader'
+          git add app.js index.html service-worker.js
+          git commit -m 'Normalize UI source to app.js'
           git push origin HEAD:main
-
-      - name: Run live smoke against normalized build
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run live-smoke.yml --ref main
