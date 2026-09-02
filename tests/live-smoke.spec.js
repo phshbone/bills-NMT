@@ -21,7 +21,7 @@ test.afterEach(async ({ page }) => {
   expect(page.__pageErrors || []).toEqual([]);
 });
 
-test('low-back reasoning path updates and preserves navigation state', async ({ page }) => {
+test('low-back reasoning path updates, reassesses, and preserves navigation state', async ({ page }) => {
   await page.getByRole('button', { name: 'Use low-back prototype' }).click();
 
   await expect(page.getByText('Why are you asking?')).toBeVisible();
@@ -46,6 +46,19 @@ test('low-back reasoning path updates and preserves navigation state', async ({ 
   await answer(page, 'no');
   await expect(iliopsoasCard).toContainText(/weakens/i);
 
+  await answer(page, 'no');
+  await answer(page, 'no');
+  await answer(page, 'yes');
+  await answer(page, 'stays local');
+  await expect(page.getByRole('heading', { name: 'Reassess' })).toBeVisible();
+
+  await page.locator('#reassessTarget').selectOption('iliopsoas');
+  await page.locator('#reassessChange').selectOption({ label: 'improved' });
+  await page.locator('#reassessRange').selectOption({ label: 'smoother / more range' });
+  await page.locator('#reassessNotes').fill('Small hip-extension change improved the familiar restriction.');
+  await page.getByRole('button', { name: 'Update reassessment' }).click();
+  await expect(iliopsoasCard).toContainText(/improved after a conservative change/i);
+
   await iliopsoasCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Iliopsoas' })).toBeVisible();
   await page.getByRole('button', { name: 'Basic hip extension' }).click();
@@ -55,6 +68,7 @@ test('low-back reasoning path updates and preserves navigation state', async ({ 
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.getByText(/active reasoning map/i)).toBeVisible();
+  await expect(page.locator('#reassessTarget')).toHaveValue('iliopsoas');
 
   await page.getByRole('button', { name: /Observe/i }).click();
   await expect(page.getByRole('heading', { name: /Notice the pattern first/i })).toBeVisible();
