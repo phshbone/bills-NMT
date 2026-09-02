@@ -1,0 +1,72 @@
+name: Normalize App Source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/normalize-app.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct ordinary app source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          global.window = global;
+          require('./app-init.js');
+          require('./app-part-1.js');
+          require('./app-part-2.js');
+          const source = global.__NMT_APP_PARTS.join('');
+          if (!source.startsWith('(function(){') || !source.includes('reassessTarget') || !source.includes("navigator.serviceWorker.register('./service-worker.js')")) {
+            throw new Error('Reconstructed app.js failed sanity checks');
+          }
+          fs.writeFileSync('app.js', source);
+
+          let index = fs.readFileSync('index.html','utf8');
+          index = index.replace('  <script src="app-init.js"></script>\n  <script src="app-part-1.js"></script>\n  <script src="app-part-2.js"></script>\n  <script src="app-loader.js"></script>', '  <script src="app.js"></script>');
+          if (!index.includes('<script src="app.js"></script>') || index.includes('app-loader.js')) throw new Error('index.html normalization failed');
+          fs.writeFileSync('index.html', index);
+
+          let sw = fs.readFileSync('service-worker.js','utf8');
+          sw = sw.replace("const CACHE='nmt-reasoning-v0.1.5';", "const CACHE='nmt-reasoning-v0.1.6';");
+          sw = sw.replace("'./app-init.js','./app-part-1.js','./app-part-2.js','./app-loader.js'", "'./app.js'");
+          if (!sw.includes("'./app.js'") || sw.includes('app-loader.js')) throw new Error('service-worker normalization failed');
+          fs.writeFileSync('service-worker.js', sw);
+
+          let live = fs.readFileSync('.github/workflows/live-smoke.yml','utf8');
+          live = live.replace('files=(index.html reasoning.js app-part-1.js app-part-2.js service-worker.js)', 'files=(index.html reasoning.js app.js service-worker.js)');
+          if (!live.includes('files=(index.html reasoning.js app.js service-worker.js)')) throw new Error('live smoke identity gate update failed');
+          fs.writeFileSync('.github/workflows/live-smoke.yml', live);
+          NODE
+          node --check app.js
+          rm app-init.js app-part-1.js app-part-2.js app-loader.js
+          rm .github/workflows/normalize-app.yml
+
+      - name: Commit normalized architecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Normalize UI source and remove eval loader'
+          git push origin HEAD:main
+
+      - name: Run live smoke against normalized build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run live-smoke.yml --ref main
