@@ -100,6 +100,7 @@ function extractComplaintFacts(text,pathwayId){
   regions.forEach(([label,re])=>{if(re.test(t))addConcept('region-'+label,label)});
   if(/\bpain\b|\bhurts?\b|\bache\b|\baching\b/.test(t))addConcept('symptom-pain','pain');
   if(/\btight\b|\btightness\b|\bstiff\b|\bstiffness\b/.test(t))addConcept('symptom-tight','tightness/stiffness');
+  if(/\bheavy\b|\bheaviness\b/.test(t))addConcept('symptom-heavy','heaviness');
 
   const paresthesiaTerms=/\b(?:numb|numbness|tingle|tingling|pins and needles)\b/i;
   const paresthesiaNegative=/\b(?:no|without|denies?|not experiencing|do not have|don't have|does not have|doesn't have)\b[^.!?;]{0,45}\b(?:numb|numbness|tingle|tingling|pins and needles)\b/i;
@@ -153,6 +154,17 @@ function scoreHypotheses(pathwayId,answers,data,reassessment={}){
 }
 function nextUnanswered(pathwayId,answers,data){
   const path=data.PATHWAYS[pathwayId]; if(!path)return null;
+  if(pathwayId==='forearm'){
+    const core=['safety_neuro','safety_trauma','fa_paresthesia','fa_lateral','fa_grip'];
+    const deep=['fa_wrist_extension','fa_finger_extension','fa_supination','fa_neck_change'];
+    const coreId=core.find(q=>answers[q]==null);
+    if(coreId)return data.QUESTIONS[coreId]||null;
+    const deepId=deep.find(q=>answers[q]==null);
+    if(!deepId)return null;
+    if(answers.__refine_forearm==='refine')return data.QUESTIONS[deepId]||null;
+    if(answers.__refine_forearm==='not now')return null;
+    return {id:'__refine_forearm',text:'You have enough for a useful first-pass comparison. Refine the reasoning with four more movement and position checks?',why:'The first-pass questions establish safety, sensory behavior, location, and gripping response. The optional refinement compares wrist/finger loading, forearm rotation, and neck-position effects without making every user complete the full test sequence.',options:['refine','not now'],stage:'refine'};
+  }
   const id=path.questions.find(q=>answers[q]==null); return id?data.QUESTIONS[id]:null;
 }
 function buildSummary(pathwayId,answers,data,reassessment={}){
