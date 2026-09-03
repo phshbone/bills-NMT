@@ -16,34 +16,33 @@ test('planes diagram visibly intersects the figure in all three planes',async({p
   await expect(dialog.locator('[data-plane-intersection="transverse"]')).toBeVisible();
 });
 
-test('prototype muscles expose layered rich anatomy and source-safe referral placeholder',async({page})=>{
+test('prototype muscles expose atlas anatomy and source-safe referral placeholder',async({page})=>{
   await page.getByRole('button',{name:/Anatomy/i}).click();
   const search=page.locator('#anatomySearch');
   await search.fill('iliopsoas');
   await page.getByRole('button',{name:/Open functional record/i}).click();
 
-  const rich=page.locator('[data-rich-anatomy="iliopsoas"]');
-  await expect(rich).toBeVisible();
-  const image=rich.locator('img.rich-anatomy-image');
-  await expect(image).toHaveAttribute('src','assets/anatomy/iliopsoas.webp');
-  await expect(rich.getByRole('tab',{name:'Skeletal'})).toHaveAttribute('aria-selected','true');
+  const atlas=page.locator('[data-anatomy-atlas="iliopsoas"]');
+  await expect(atlas).toBeVisible();
+  await expect(atlas.locator('img')).toHaveAttribute('src','assets/anatomy/iliopsoas.webp');
+  await expect(atlas.getByRole('tab',{name:'Attachments'})).toHaveAttribute('aria-selected','true');
 
-  await rich.getByRole('tab',{name:'Muscle'}).click();
-  await expect(image).toHaveClass(/is-muscle-focus/);
-  await expect(rich).toContainText(/target muscle is highlighted/i);
+  await atlas.getByRole('tab',{name:'Muscle'}).click();
+  await expect(atlas.locator('img')).toHaveCount(0);
+  await expect(atlas).toContainText(/will not fake this layer/i);
 
-  await rich.getByRole('tab',{name:'Referral'}).click();
-  await expect(rich).toContainText(/curation in progress/i);
-  await expect(rich).toContainText(/not being used as clinical evidence/i);
-  await expect(rich).toContainText(/not yet used in the reasoning score/i);
+  await atlas.getByRole('tab',{name:'Referral'}).click();
+  await expect(atlas.locator('img')).toHaveCount(0);
+  await expect(atlas).toContainText(/referral layer/i);
+  await expect(atlas).toContainText(/not diagnostic/i);
 });
 
-test('rich anatomy covers upper prototype while non-rich muscles retain compact sketch fallback',async({page})=>{
+test('atlas covers rich upper prototype while non-atlas muscles retain compact sketch fallback',async({page})=>{
   await page.getByRole('button',{name:/Anatomy/i}).click();
   const search=page.locator('#anatomySearch');
   await search.fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  const serratus=page.locator('[data-rich-anatomy="serratus-anterior"]');
+  const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
   await expect(serratus.locator('img')).toHaveAttribute('src','assets/anatomy/serratus-anterior.webp');
 
   await page.getByRole('button',{name:/Anatomy/i}).click();
