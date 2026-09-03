@@ -25,14 +25,16 @@ test('hip extension and squat show lightweight movement sequences', async ({ pag
   const hipCard=page.locator('.record-card').filter({hasText:'Basic hip extension'});
   await hipCard.getByRole('button',{name:/Open movement analysis/i}).click();
   await expect(page.getByRole('heading',{name:'Basic hip extension'})).toBeVisible();
-  await page.getByText(/See movement — Hip flexion → extension/i).click();
-  await expect(page.getByText(/Sitting \/ flexed/i)).toBeVisible();
-  await expect(page.getByText(/iliopsoas lengthens as extension increases/i)).toBeVisible();
+  const hipVisual=page.locator('.movement-visual-card');
+  await hipVisual.getByText(/See movement — Hip flexion → extension/i).click();
+  await expect(hipVisual.getByText(/Sitting \/ flexed/i)).toBeVisible();
+  await expect(hipVisual.getByText(/iliopsoas lengthens as extension increases/i)).toBeVisible();
   await page.getByRole('button',{name:'← Back'}).click();
 
   const squatCard=page.locator('.record-card').filter({hasText:'Squat'});
   await squatCard.getByRole('button',{name:/Open movement analysis/i}).click();
-  await page.getByText(/See movement — Squat sequence/i).click();
-  await expect(page.getByText('Bottom')).toBeVisible();
-  await expect(page.getByText(/frontal\/transverse control/i)).toBeVisible();
+  const squatVisual=page.locator('.movement-visual-card');
+  await squatVisual.getByText(/See movement — Squat sequence/i).click();
+  await expect(squatVisual.getByText('Bottom')).toBeVisible();
+  await expect(squatVisual.getByText(/frontal\/transverse control/i).first()).toBeVisible();
 });
