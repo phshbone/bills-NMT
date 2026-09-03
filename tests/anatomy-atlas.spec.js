@@ -8,7 +8,7 @@ async function openMuscle(page,name){
   await card.getByRole('button',{name:/Open functional record/i}).click();
 }
 
-test('rich anatomy atlas uses one reusable layered viewer for prototype muscles',async({page})=>{
+test('rich anatomy atlas uses one reusable viewer and does not fake missing layers with crops',async({page})=>{
   await openMuscle(page,'Iliopsoas');
   const atlas=page.locator('[data-anatomy-atlas="iliopsoas"]');
   await expect(atlas).toBeVisible();
@@ -16,19 +16,21 @@ test('rich anatomy atlas uses one reusable layered viewer for prototype muscles'
   await expect(atlas.locator('img')).toHaveAttribute('src',/iliopsoas\.webp$/);
   await atlas.getByRole('tab',{name:'Muscle'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','muscle');
+  await expect(atlas.locator('img')).toHaveCount(0);
+  await expect(atlas.getByText(/will not fake this layer/i)).toBeVisible();
   await atlas.getByRole('tab',{name:'Referral'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','referral');
-  await expect(atlas.getByText(/not diagnostic/i)).toBeVisible();
-  await expect(page.locator('.rich-anatomy')).toHaveCount(0);
-  await expect(page.locator('.attachment-block')).toHaveCount(0);
+  await expect(atlas.locator('img')).toHaveCount(0);
+  await expect(atlas.getByText(/source-curated/i)).toBeVisible();
 });
 
-test('upper-quarter atlas reuses regional architecture while fallback stays exclusive to non-atlas muscles',async({page})=>{
+test('attachment plate is shown complete rather than crop-zoomed on phone and desktop',async({page})=>{
   await openMuscle(page,'Scalenes');
   const atlas=page.locator('[data-anatomy-atlas="scalenes"]');
-  await expect(atlas).toBeVisible();
-  await expect(atlas.getByText(/Neck \/ shoulder \/ upper thorax/i)).toBeVisible();
-  await expect(atlas.locator('img')).toHaveAttribute('src',/scalenes\.webp$/);
+  const img=atlas.locator('img');
+  await expect(img).toBeVisible();
+  const fit=await img.evaluate(el=>getComputedStyle(el).objectFit);
+  expect(fit).toBe('contain');
   await expect(page.locator('.anatomy-atlas')).toHaveCount(1);
   await expect(page.locator('.rich-anatomy')).toHaveCount(0);
   await expect(page.locator('.attachment-block')).toHaveCount(0);
@@ -38,12 +40,11 @@ test('upper-quarter atlas reuses regional architecture while fallback stays excl
   await expect(page.locator('.attachment-block')).toHaveCount(1);
 });
 
-test('all currently rich prototype assets load through the atlas registry',async({page})=>{
+test('all currently published atlas attachment assets load',async({page})=>{
   for(const name of ['Iliopsoas','Quadratus lumborum','Scalenes','Serratus anterior']){
     await openMuscle(page,name);
     const atlas=page.locator('.anatomy-atlas');
     await expect(atlas).toBeVisible();
-    await expect(page.locator('.rich-anatomy')).toHaveCount(0);
     const ok=await atlas.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0);
     expect(ok).toBeTruthy();
   }
