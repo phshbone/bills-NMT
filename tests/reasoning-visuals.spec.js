@@ -43,8 +43,8 @@ test('upper-quarter hypothesis exposes wall-slide visual in place', async ({page
   const card=page.locator('.hypothesis-card').filter({hasText:'Serratus anterior'});
   await expect(card).toBeVisible();
   const visual=card.locator('.reasoning-inline-visual');
-  await expect(visual.getByText(/See movement — Wall slide \/ scapular upward rotation/i)).toBeVisible();
-  await visual.getByText(/See movement — Wall slide \/ scapular upward rotation/i).click();
-  await expect(visual.getByText(/Arm rising/i)).toBeVisible();
+  await expect(visual.getByText(/See movement — Wall slide \/ upward rotation/i)).toBeVisible();
+  await visual.getByText(/See movement — Wall slide \/ upward rotation/i).click();
+  await expect(visual.getByText(/As the arms rise/i)).toBeVisible();
   await expect(visual.getByText(/does not prove that this structure/i)).toBeVisible();
 });
