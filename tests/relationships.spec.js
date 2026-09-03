@@ -53,3 +53,28 @@ test('serratus relationship traversal exposes long thoracic and scapulothoracic 
   await expect(dialog.getByRole('heading',{name:'Long thoracic nerve'})).toBeVisible();
   await expect(dialog.getByText(/Motor nerve to serratus anterior/i)).toBeVisible();
 });
+
+test('skeletal landmarks are traversable from upper and lower muscle records', async ({ page }) => {
+  await page.goto(TARGET,{waitUntil:'domcontentloaded'});
+  await page.getByRole('button',{name:/Anatomy/i}).click();
+
+  await page.locator('#anatomySearch').fill('pectoralis minor');
+  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.getByRole('button',{name:/Explore connections/}).click();
+  let dialog=page.locator('#relationshipExplorer');
+  await expect(dialog.getByRole('button',{name:'Coracoid process'})).toBeVisible();
+  await dialog.getByRole('button',{name:'Coracoid process'}).click();
+  await expect(dialog.getByRole('heading',{name:'Coracoid process'})).toBeVisible();
+  await expect(dialog.getByText(/attachment point for pectoralis minor/i)).toBeVisible();
+  await dialog.getByRole('button',{name:'Close'}).click();
+
+  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('#anatomySearch').fill('quadratus');
+  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.getByRole('button',{name:/Explore connections/}).click();
+  dialog=page.locator('#relationshipExplorer');
+  await expect(dialog.getByRole('button',{name:'12th rib'})).toBeVisible();
+  await dialog.getByRole('button',{name:'12th rib'}).click();
+  await expect(dialog.getByRole('heading',{name:'12th rib'})).toBeVisible();
+  await expect(dialog.getByText(/upper attachment landmark for quadratus lumborum/i)).toBeVisible();
+});
