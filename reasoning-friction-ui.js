@@ -2,15 +2,17 @@
   const STORAGE='nmt-clinical-reasoning-v0.1';
   function state(){try{return JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{return {}}}
   function active(){return state().active||null}
+  function setText(el,value){if(el&&el.textContent!==value)el.textContent=value}
+  function setHtml(el,value){if(el&&el.innerHTML!==value)el.innerHTML=value}
 
   function updatePrototypeCopy(){
     document.querySelectorAll('#app p').forEach(p=>{
       const t=p.textContent||'';
       if(t.includes('V0.1 currently knows two deliberately small reasoning neighborhoods')){
-        p.textContent='V0.1 currently knows three deliberately small reasoning neighborhoods: neck/scapula/serratus/pull-up, low-back/hip-extension, and forearm/lateral-elbow/gripping.';
+        setText(p,'V0.1 currently knows three deliberately small reasoning neighborhoods: neck/scapula/serratus/pull-up, low-back/hip-extension, and forearm/lateral-elbow/gripping.');
       }
       if(t.includes('Choose one of the two prototype pathways')){
-        p.textContent=t.replace('Choose one of the two prototype pathways','Choose one of the validated prototype pathways');
+        setText(p,t.replace('Choose one of the two prototype pathways','Choose one of the validated prototype pathways'));
       }
     });
   }
@@ -24,12 +26,14 @@
     const id=first.dataset.answerId;
     const core=['safety_neuro','safety_trauma','fa_paresthesia','fa_lateral','fa_grip'];
     const deep=['fa_wrist_extension','fa_finger_extension','fa_supination','fa_neck_change'];
-    if(id==='__refine_forearm')pill.textContent='first pass complete';
-    else if(core.includes(id))pill.textContent=`key question ${core.indexOf(id)+1} of ${core.length}`;
-    else if(deep.includes(id))pill.textContent=`refinement ${deep.indexOf(id)+1} of ${deep.length}`;
+    let label='';
+    if(id==='__refine_forearm')label='first pass complete';
+    else if(core.includes(id))label=`key question ${core.indexOf(id)+1} of ${core.length}`;
+    else if(deep.includes(id))label=`refinement ${deep.indexOf(id)+1} of ${deep.length}`;
+    if(label)setText(pill,label);
     card.querySelectorAll('[data-answer-id="__refine_forearm"]').forEach(b=>{
-      if(b.dataset.answerValue==='refine')b.textContent='Refine reasoning';
-      if(b.dataset.answerValue==='not now')b.textContent='Use first pass';
+      if(b.dataset.answerValue==='refine')setText(b,'Refine reasoning');
+      if(b.dataset.answerValue==='not now')setText(b,'Use first pass');
     });
   }
 
@@ -53,17 +57,23 @@
   function clarifyCompletion(){
     const s=active();
     if(s?.pathwayId!=='forearm')return;
-    const notice=[...document.querySelectorAll('#app .notice')].find(x=>/Question set complete/i.test(x.textContent||''));
+    const notice=[...document.querySelectorAll('#app .notice')].find(x=>/Question set complete|First-pass questions complete|Refinement complete/i.test(x.textContent||''));
     if(!notice)return;
-    if(s.answers?.__refine_forearm==='not now')notice.innerHTML='<strong>First-pass questions complete.</strong> You can use the current comparison now. The optional movement/position refinement was skipped and can be revisited by changing that answer below.';
-    if(s.answers?.__refine_forearm==='refine')notice.innerHTML='<strong>Refinement complete.</strong> Review the updated comparison, try only tolerable observations, then record reassessment.';
+    if(s.answers?.__refine_forearm==='not now')setHtml(notice,'<strong>First-pass questions complete.</strong> You can use the current comparison now. The optional movement/position refinement was skipped and can be revisited by changing that answer below.');
+    if(s.answers?.__refine_forearm==='refine')setHtml(notice,'<strong>Refinement complete.</strong> Review the updated comparison, try only tolerable observations, then record reassessment.');
   }
 
+  let scheduled=false;
   function enhance(){
-    updatePrototypeCopy();
-    updateQuestionProgress();
-    compactHypotheses();
-    clarifyCompletion();
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{
+      scheduled=false;
+      updatePrototypeCopy();
+      updateQuestionProgress();
+      compactHypotheses();
+      clarifyCompletion();
+    });
   }
   const app=document.getElementById('app');
   if(app)new MutationObserver(enhance).observe(app,{childList:true,subtree:true});
