@@ -3,38 +3,47 @@
   if(!D?.ANATOMY_ATLAS)return;
 
   function muscleByName(name){return D.MUSCLES.find(m=>m.name===name)}
-  function noteFor(mode){
+  function noteFor(mode,status){
     if(mode==='attachments')return '<strong>Attachments:</strong> use the labeled anatomy and written record together for origin/insertion detail.';
-    if(mode==='muscle')return '<strong>Muscle context:</strong> this zoom emphasizes the target muscle within its regional skeletal frame.';
-    return '<strong>Referral:</strong> educational pattern preview only. Referred-pain maps are being curated against source material and are not diagnostic.';
+    if(mode==='muscle')return status==='ready'?'<strong>Muscle context:</strong> target-muscle overlay within the regional skeletal frame.':'<strong>Muscle context layer:</strong> dedicated surrounding-muscle artwork has not been published for this record yet. The app will not fake this layer by zooming the attachment image.';
+    return status==='ready'?'<strong>Referral:</strong> source-linked educational referred-pain pattern.':'<strong>Referral layer:</strong> reserved for source-curated trigger-point and referred-pain maps. It is intentionally not simulated from the attachment artwork.';
+  }
+  function stageContent(muscle,mode,view){
+    if(view?.asset){
+      return `<div class="atlas-image-window"><img class="atlas-image" src="${view.asset}" alt="${muscle.name} ${view.label.toLowerCase()} anatomy illustration" loading="lazy" decoding="async"></div><div class="atlas-note">${noteFor(mode,view.status)}</div>`;
+    }
+    const title=mode==='muscle'?'Dedicated muscle-context layer':'Source-curated referral layer';
+    const detail=mode==='muscle'?'This will show the target muscle with nearby musculature on the same reusable regional base.':'This will show trigger-point locations and typical referred-pain neighborhoods once the pattern has been curated from source material.';
+    return `<div class="atlas-pending"><span>layer in development</span><h4>${title}</h4><p>${detail}</p></div><div class="atlas-note">${noteFor(mode,view?.status)}</div>`;
   }
   function render(record,muscle){
     const region=D.ANATOMY_REGIONS[record.regionId];
     const related=(record.related||[]).map(id=>D.MUSCLES.find(m=>m.id===id)).filter(Boolean);
+    const entries=Object.entries(record.views);
+    const initial=entries.find(([,v])=>v.status==='ready')||entries[0];
+    const [initialMode,initialView]=initial;
     return `<section class="anatomy-atlas" data-anatomy-atlas="${muscle.id}">
       <div class="atlas-head"><p class="eyebrow">layered anatomy viewer</p><strong>${region?.name||muscle.region}</strong></div>
       <div class="atlas-tabs" role="tablist" aria-label="Anatomy layers">
-        ${Object.entries(record.views).map(([id,v],i)=>`<button type="button" class="atlas-tab ${i===0?'active':''}" data-atlas-mode="${id}" role="tab" aria-selected="${i===0?'true':'false'}">${v.label}</button>`).join('')}
+        ${entries.map(([id,v])=>`<button type="button" class="atlas-tab ${id===initialMode?'active':''}" data-atlas-mode="${id}" role="tab" aria-selected="${id===initialMode?'true':'false'}">${v.label}</button>`).join('')}
       </div>
-      <div class="atlas-stage" data-mode="attachments">
-        <div class="atlas-image-window"><img class="atlas-image" src="${record.asset}" alt="${muscle.name} regional anatomy illustration" style="object-position:${record.views.attachments.position}"></div>
-        <div class="atlas-note">${noteFor('attachments')}</div>
-      </div>
+      <div class="atlas-stage" data-mode="${initialMode}">${stageContent(muscle,initialMode,initialView)}</div>
       <div class="atlas-related"><strong>Compare nearby structures</strong><div class="atlas-chip-row">${related.map(m=>`<button type="button" class="atlas-chip" data-open-muscle="${m.id}">${m.name}</button>`).join('')||'<span class="small muted">More comparison records will be added as the regional atlas grows.</span>'}</div></div>
-      <div class="atlas-region-note">Regional bases are reusable. Future muscle, nerve, vessel, landmark, and referral overlays can plug into this same viewer without creating a new page layout.</div>
+      <div class="atlas-region-note">Regional bases are reusable. New muscle, nerve, vessel, landmark, and referral layers plug into this viewer as independent assets rather than crops of one image.</div>
     </section>`;
   }
-  function bind(section,record){
-    const image=section.querySelector('.atlas-image'),stage=section.querySelector('.atlas-stage'),note=section.querySelector('.atlas-note');
+  function bind(section,record,muscle){
+    const stage=section.querySelector('.atlas-stage');
     section.querySelectorAll('[data-atlas-mode]').forEach(btn=>btn.onclick=()=>{
       const mode=btn.dataset.atlasMode,v=record.views[mode];
       section.querySelectorAll('[data-atlas-mode]').forEach(b=>{b.classList.toggle('active',b===btn);b.setAttribute('aria-selected',b===btn?'true':'false')});
-      stage.dataset.mode=mode; image.style.objectPosition=v.position; note.innerHTML=noteFor(mode);
+      stage.dataset.mode=mode;
+      stage.innerHTML=stageContent(muscle,mode,v);
     });
     section.querySelectorAll('[data-open-muscle]').forEach(btn=>btn.onclick=()=>{
       const target=document.querySelector(`[data-open-muscle="${btn.dataset.openMuscle}"]`);
       if(target&&target!==btn){target.click();return}
-      document.querySelector(`button[data-route="anatomy"]`)?.click();
+      document.querySelector('button[data-route="anatomy"]')?.click();
       setTimeout(()=>document.querySelector(`[data-open-muscle="${btn.dataset.openMuscle}"]`)?.click(),0);
     });
   }
@@ -45,12 +54,11 @@
     const muscle=muscleByName(name); if(!muscle)return;
     const record=D.getAnatomyAtlasRecord?.(muscle.id); if(!record)return;
     if(card.querySelector('.anatomy-atlas'))return;
-    const old=card.querySelector('.attachment-block'); if(old)old.classList.add('atlas-replaced');
     const wrap=document.createElement('div'); wrap.innerHTML=render(record,muscle);
     const section=wrap.firstElementChild;
     const facts=card.querySelector('.facts');
     if(facts)facts.insertAdjacentElement('beforebegin',section);else card.appendChild(section);
-    bind(section,record);
+    bind(section,record,muscle);
   }
   const app=document.getElementById('app');
   if(app)new MutationObserver(enhance).observe(app,{childList:true,subtree:true});
