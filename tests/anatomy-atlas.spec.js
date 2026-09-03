@@ -3,7 +3,7 @@ const base=process.env.LIVE_SMOKE_URL||'http://127.0.0.1:4173/';
 
 async function openMuscle(page,name){
   await page.goto(base,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:'Anatomy'}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   const card=page.locator('.record-card').filter({has:page.getByRole('heading',{name})}).first();
   await card.getByRole('button',{name:/Open functional record/i}).click();
 }
