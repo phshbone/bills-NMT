@@ -10,8 +10,7 @@
     'Scalenes':'cervical-rotation',
     'Sternocleidomastoid':'cervical-rotation',
     'Iliopsoas':'hip-extension',
-    'Quadratus lumborum':'side-bending',
-    'Lumbar erectors':'hip-extension'
+    'Quadratus lumborum':'side-bending'
   };
 
   const style=document.createElement('style');
