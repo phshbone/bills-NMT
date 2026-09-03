@@ -69,6 +69,9 @@ jobs:
           echo "GitHub Pages did not publish the exact tested build."
           exit 1
 
+      - name: Startup interaction sentinel
+        run: npx playwright test tests/startup-interaction.spec.js
+
       - name: Run live smoke test
         run: npm run test:live-smoke
 
