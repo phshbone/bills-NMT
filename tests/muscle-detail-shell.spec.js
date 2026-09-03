@@ -20,13 +20,13 @@ test('forearm reasoning muscle opens a regional visual placeholder and returns t
 
 test('published atlas and compact attachment records are not replaced by generic placeholder',async({page})=>{
   await page.goto(base,{waitUntil:'networkidle'});
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await expect(page.locator('[data-anatomy-atlas="scalenes"]')).toBeVisible();
   await expect(page.locator('.regional-visual-slot')).toHaveCount(0);
 
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('levator');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await expect(page.locator('.attachment-block')).toBeVisible();
