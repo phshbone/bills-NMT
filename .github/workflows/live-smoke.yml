@@ -11,6 +11,7 @@ on:
       - 'manifest.webmanifest'
       - 'service-worker.js'
       - 'icon.svg'
+      - 'assets/**'
       - 'data-*.js'
       - 'reasoning.js'
       - 'reasoning-neutral.js'
@@ -45,7 +46,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          files=(index.html reasoning.js reasoning-neutral.js app.js relationship-ui.js intervention-ui.js visual-ui.js reasoning-visual-ui.js attachment-ui.js ux-repair-ui.js visual-overrides.js data-movements-1.js data-movements-2.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js data-visuals-1.js data-attachments-1.js data-pathways-1.js service-worker.js)
+          files=(index.html reasoning.js reasoning-neutral.js app.js relationship-ui.js intervention-ui.js visual-ui.js reasoning-visual-ui.js attachment-ui.js ux-repair-ui.js visual-overrides.js data-movements-1.js data-movements-2.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js data-visuals-1.js data-attachments-1.js data-pathways-1.js service-worker.js assets/anatomy/iliopsoas.webp assets/anatomy/quadratus-lumborum.webp assets/anatomy/scalenes.webp assets/anatomy/serratus-anterior.webp)
           for i in {1..24}; do
             all_match=1
             for file in "${files[@]}"; do
