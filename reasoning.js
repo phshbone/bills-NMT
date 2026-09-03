@@ -5,6 +5,39 @@ function detectPathway(text,data){
   Object.values(data.PATHWAYS).forEach(p=>{const score=p.match.reduce((n,k)=>n+(t.includes(k)?1:0),0);if(score>bestScore){best=p;bestScore=score}});
   return best||null;
 }
+function extractComplaintFacts(text,pathwayId){
+  const raw=String(text||'');
+  const t=normalize(raw);
+  const answers={},concepts=[];
+  const addConcept=(key,label)=>{if(!concepts.some(x=>x.key===key))concepts.push({key,label})};
+  if(/\bright\b/.test(t))addConcept('side-right','right side');
+  if(/\bleft\b/.test(t))addConcept('side-left','left side');
+  const regions=[
+    ['forearm',/\bforearm\b/],['elbow',/\belbow\b/],['wrist',/\bwrist\b/],['hand',/\bhand\b/],
+    ['neck',/\bneck\b|\bcervical\b/],['shoulder',/\bshoulder\b|\bscapul/],['low back',/\blow back\b|\blower back\b|\blumbar\b/]
+  ];
+  regions.forEach(([label,re])=>{if(re.test(t))addConcept('region-'+label,label)});
+  if(/\bpain\b|\bhurts?\b|\bache\b|\baching\b/.test(t))addConcept('symptom-pain','pain');
+  if(/\btight\b|\btightness\b|\bstiff\b|\bstiffness\b/.test(t))addConcept('symptom-tight','tightness/stiffness');
+
+  const paresthesiaTerms=/\b(?:numb|numbness|tingle|tingling|pins and needles)\b/i;
+  const paresthesiaNegative=/\b(?:no|without|denies?|not experiencing|do not have|don't have|does not have|doesn't have)\b[^.!?;]{0,45}\b(?:numb|numbness|tingle|tingling|pins and needles)\b/i;
+  const hasParesthesia=paresthesiaTerms.test(raw);
+  const negParesthesia=paresthesiaNegative.test(raw);
+  if(negParesthesia){addConcept('paresthesia-no','no numbness/tingling');if(pathwayId==='forearm')answers.fa_paresthesia='no'}
+  else if(hasParesthesia){addConcept('paresthesia-yes','numbness/tingling reported');if(pathwayId==='forearm')answers.fa_paresthesia='yes'}
+
+  const gripAggravation=/(?:pain|hurt|ache|tight|stiff|worse|irritat|bother|symptom)[^.!?;]{0,35}\b(?:grip|gripping|grab|grabbing|squeeze|squeezing|carry|carrying)\b|\b(?:grip|gripping|grab|grabbing|squeeze|squeezing|carry|carrying)\b[^.!?;]{0,35}(?:pain|hurt|ache|tight|stiff|worse|irritat|bother|symptom)/i;
+  if(pathwayId==='forearm'&&gripAggravation.test(raw)){answers.fa_grip='yes';addConcept('behavior-grip','gripping aggravates')}
+
+  const lateralElbow=/\b(?:outside|outer|lateral)\b[^.!?;]{0,20}\b(?:elbow|forearm)\b|\b(?:elbow|forearm)\b[^.!?;]{0,20}\b(?:outside|outer|lateral)\b/i;
+  if(pathwayId==='forearm'&&lateralElbow.test(raw)){answers.fa_lateral='yes';addConcept('location-lateral-elbow','outside/lateral elbow region')}
+
+  const fullNeuroNegative=/\b(?:no|without|denies?)\b[^.!?;]{0,70}\bweak(?:ness)?\b[^.!?;]{0,70}\b(?:major\s+)?numb(?:ness)?\b[^.!?;]{0,70}\b(?:loss of (?:arm|hand|limb )?function|loss of function)\b/i;
+  if(fullNeuroNegative.test(raw)){answers.safety_neuro='no';addConcept('safety-neuro-no','no weakness, major numbness, or loss of function')}
+
+  return {answers,concepts};
+}
 function safetyEscalation(answers){
   const red=['safety_neuro','safety_bladder','safety_trauma','safety_abdominal'].filter(id=>answers[id]==='yes');
   return red.length?{escalate:true,flags:red,message:'This finding falls outside the normal educational/self-care pathway and is worth professional medical evaluation.'}:{escalate:false,flags:[]};
@@ -45,6 +78,6 @@ function buildSummary(pathwayId,answers,data,reassessment={}){
   const safety=safetyEscalation(answers); const hypotheses=scoreHypotheses(pathwayId,answers,data,reassessment);
   return {safety,hypotheses,nextQuestion:nextUnanswered(pathwayId,answers,data)};
 }
-const api={normalize,detectPathway,safetyEscalation,scoreHypotheses,nextUnanswered,buildSummary};
+const api={normalize,detectPathway,extractComplaintFacts,safetyEscalation,scoreHypotheses,nextUnanswered,buildSummary};
 global.NMT_REASONING=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
