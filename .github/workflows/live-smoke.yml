@@ -16,6 +16,7 @@ on:
       - 'app*.js'
       - 'relationship-ui.js'
       - 'intervention-ui.js'
+      - 'visual-ui.js'
       - 'tests/**'
       - 'playwright.config.js'
       - 'package.json'
@@ -44,7 +45,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          files=(index.html reasoning.js app.js relationship-ui.js intervention-ui.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js service-worker.js)
+          files=(index.html reasoning.js app.js relationship-ui.js intervention-ui.js visual-ui.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js data-visuals-1.js service-worker.js)
           for i in {1..24}; do
             all_match=1
             for file in "${files[@]}"; do
