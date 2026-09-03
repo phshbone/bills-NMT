@@ -6,14 +6,14 @@
   function noteFor(mode,status){
     if(mode==='attachments')return '<strong>Attachments:</strong> use the labeled anatomy and written record together for origin/insertion detail.';
     if(mode==='muscle')return status==='ready'?'<strong>Muscle context:</strong> target-muscle overlay within the regional skeletal frame.':'<strong>Muscle context layer:</strong> dedicated surrounding-muscle artwork has not been published for this record yet. The app will not fake this layer by zooming the attachment image.';
-    return status==='ready'?'<strong>Referral:</strong> source-linked educational referred-pain pattern.':'<strong>Referral layer:</strong> reserved for source-curated trigger-point and referred-pain maps. It is intentionally not simulated from the attachment artwork.';
+    return status==='ready'?'<strong>Referral:</strong> source-linked educational referred-pain pattern.':'<strong>Referral layer:</strong> reserved for source-curated trigger-point and referred-pain maps. It is intentionally not simulated from the attachment artwork and is not diagnostic.';
   }
   function stageContent(muscle,mode,view){
     if(view?.asset){
       return `<div class="atlas-image-window"><img class="atlas-image" src="${view.asset}" alt="${muscle.name} ${view.label.toLowerCase()} anatomy illustration" loading="lazy" decoding="async"></div><div class="atlas-note">${noteFor(mode,view.status)}</div>`;
     }
     const title=mode==='muscle'?'Dedicated muscle-context layer':'Source-curated referral layer';
-    const detail=mode==='muscle'?'This will show the target muscle with nearby musculature on the same reusable regional base.':'This will show trigger-point locations and typical referred-pain neighborhoods once the pattern has been curated from source material.';
+    const detail=mode==='muscle'?'This will show the target muscle with nearby musculature on the same reusable regional base.':'This will show trigger-point locations and typical referred-pain neighborhoods once the pattern has been curated from source material. This educational layer is not diagnostic.';
     return `<div class="atlas-pending"><span>layer in development</span><h4>${title}</h4><p>${detail}</p></div><div class="atlas-note">${noteFor(mode,view?.status)}</div>`;
   }
   function render(record,muscle){
