@@ -13,14 +13,15 @@ test('movement library exposes planes reference without losing context', async (
   await page.getByRole('button',{name:'View planes diagram'}).click();
   const dialog=page.locator('#planesVisualDialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByText('SAGITTAL')).toBeVisible();
-  await expect(dialog.getByText('FRONTAL')).toBeVisible();
-  await expect(dialog.getByText('TRANSVERSE')).toBeVisible();
+  await expect(dialog.getByText(/SAGITTAL PLANE/i)).toBeVisible();
+  await expect(dialog.getByText(/FRONTAL PLANE/i)).toBeVisible();
+  await expect(dialog.getByText(/TRANSVERSE PLANE/i)).toBeVisible();
+  await expect(dialog.locator('svg .joint').first()).toBeVisible();
   await dialog.getByRole('button',{name:/Close planes visual/i}).click();
   await expect(page.getByRole('heading',{name:/Movement → muscles → observations/i})).toBeVisible();
 });
 
-test('hip extension and squat show lightweight movement sequences', async ({ page }) => {
+test('hip extension and squat show articulated movement sequences', async ({ page }) => {
   await page.getByRole('button',{name:/Move/i}).click();
   const hipCard=page.locator('.record-card').filter({hasText:'Basic hip extension'});
   await hipCard.getByRole('button',{name:/Open movement analysis/i}).click();
@@ -29,6 +30,7 @@ test('hip extension and squat show lightweight movement sequences', async ({ pag
   await hipVisual.locator('summary').click();
   await expect(hipVisual.getByText(/Sitting \/ flexed/i)).toBeVisible();
   await expect(hipVisual.getByText(/iliopsoas lengthens as extension increases/i)).toBeVisible();
+  await expect(hipVisual.locator('svg .joint').first()).toBeVisible();
   await page.getByRole('button',{name:'← Back'}).click();
 
   const squatCard=page.locator('.record-card').filter({hasText:'Squat'});
@@ -54,6 +56,24 @@ test('upper and trunk movements expose compact visual examples', async ({ page }
     const visual=page.locator('details.visual-block').filter({hasText:title});
     await visual.locator('summary').click();
     await expect(visual.getByText(frame,{exact:true})).toBeVisible();
+    await expect(visual.locator('svg .joint').first()).toBeVisible();
     await page.getByRole('button',{name:'← Back'}).click();
+  }
+});
+
+test('desktop navigation uses a separated right rail while mobile remains bottom navigation', async ({ page }) => {
+  const width=page.viewportSize()?.width||0;
+  const nav=page.locator('.bottom-nav');
+  const box=await nav.boundingBox();
+  expect(box).not.toBeNull();
+  if(width>=1100){
+    expect(box.x).toBeGreaterThan(width-150);
+    expect(box.height).toBeGreaterThan(box.width);
+    const first=page.locator('.nav-btn').first();
+    const display=await first.evaluate(el=>getComputedStyle(el).gridTemplateColumns);
+    expect(display.split(' ').length).toBeGreaterThanOrEqual(2);
+  }else{
+    expect(box.y+box.height).toBeGreaterThan(width?0:0);
+    expect(box.width).toBeGreaterThan(box.height);
   }
 });
