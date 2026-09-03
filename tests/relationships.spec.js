@@ -9,7 +9,7 @@ test('manual upper-quarter relationship traversal preserves context', async ({ p
   await page.evaluate(()=>localStorage.clear());
   await page.reload({waitUntil:'domcontentloaded'});
 
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();
@@ -42,7 +42,7 @@ test('manual upper-quarter relationship traversal preserves context', async ({ p
 
 test('serratus relationship traversal exposes long thoracic and scapulothoracic links', async ({ page }) => {
   await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await page.getByRole('button',{name:/Explore connections/}).click();
@@ -56,7 +56,7 @@ test('serratus relationship traversal exposes long thoracic and scapulothoracic 
 
 test('skeletal landmarks are traversable from upper and lower muscle records', async ({ page }) => {
   await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
 
   await page.locator('#anatomySearch').fill('pectoralis minor');
   await page.getByRole('button',{name:/Open functional record/i}).click();
@@ -68,7 +68,7 @@ test('skeletal landmarks are traversable from upper and lower muscle records', a
   await expect(dialog.getByText(/attachment point for pectoralis minor/i)).toBeVisible();
   await dialog.getByRole('button',{name:'Close'}).click();
 
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('quadratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await page.getByRole('button',{name:/Explore connections/}).click();
