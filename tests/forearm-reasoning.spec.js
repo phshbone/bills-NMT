@@ -5,7 +5,7 @@ test('plain-language lateral forearm complaint routes locally instead of default
   await page.goto(base,{waitUntil:'networkidle'});
   const input=page.locator('textarea').first();
   await input.fill('Pain in right forearm. Outside part of elbow. Gripping irritates it.');
-  await page.getByRole('button',{name:/start reasoning/i}).click();
+  await page.getByRole('button',{name:/build reasoning map/i}).click();
   await expect(page.getByText(/Forearm \/ lateral elbow \/ gripping/i)).toBeVisible();
   const body=page.locator('body');
   await expect(body).toContainText('Extensor carpi radialis brevis');
