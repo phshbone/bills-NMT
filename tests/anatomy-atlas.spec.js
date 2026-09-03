@@ -19,15 +19,23 @@ test('rich anatomy atlas uses one reusable layered viewer for prototype muscles'
   await atlas.getByRole('tab',{name:'Referral'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','referral');
   await expect(atlas.getByText(/not diagnostic/i)).toBeVisible();
+  await expect(page.locator('.rich-anatomy')).toHaveCount(0);
+  await expect(page.locator('.attachment-block')).toHaveCount(0);
 });
 
-test('upper-quarter atlas reuses regional architecture and preserves old fallback elsewhere',async({page})=>{
+test('upper-quarter atlas reuses regional architecture while fallback stays exclusive to non-atlas muscles',async({page})=>{
   await openMuscle(page,'Scalenes');
   const atlas=page.locator('[data-anatomy-atlas="scalenes"]');
   await expect(atlas).toBeVisible();
   await expect(atlas.getByText(/Neck \/ shoulder \/ upper thorax/i)).toBeVisible();
   await expect(atlas.locator('img')).toHaveAttribute('src',/scalenes\.webp$/);
-  await expect(page.locator('.attachment-block.atlas-replaced')).toHaveCount(1);
+  await expect(page.locator('.anatomy-atlas')).toHaveCount(1);
+  await expect(page.locator('.rich-anatomy')).toHaveCount(0);
+  await expect(page.locator('.attachment-block')).toHaveCount(0);
+
+  await openMuscle(page,'Pectoralis minor');
+  await expect(page.locator('.anatomy-atlas')).toHaveCount(0);
+  await expect(page.locator('.attachment-block')).toHaveCount(1);
 });
 
 test('all currently rich prototype assets load through the atlas registry',async({page})=>{
@@ -35,6 +43,7 @@ test('all currently rich prototype assets load through the atlas registry',async
     await openMuscle(page,name);
     const atlas=page.locator('.anatomy-atlas');
     await expect(atlas).toBeVisible();
+    await expect(page.locator('.rich-anatomy')).toHaveCount(0);
     const ok=await atlas.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0);
     expect(ok).toBeTruthy();
   }
