@@ -1,4 +1,4 @@
-const CACHE='nmt-reasoning-v0.1.17';
+const CACHE='nmt-reasoning-v0.1.18';
 const ASSETS=['./','./index.html','./styles.css','./manifest.webmanifest','./icon.svg','./data-init.js','./data-sources-1.js','./data-muscles-1.js','./data-muscles-2.js','./data-provenance-1.js','./data-relationships-1.js','./data-skeletal-1.js','./data-interventions-1.js','./data-movements-1.js','./data-movements-2.js','./data-visuals-1.js','./visual-overrides.js','./data-attachments-1.js','./data-questions-1.js','./data-pathways-1.js','./data-rules-1.js','./data-observations-1.js','./reasoning.js','./reasoning-neutral.js','./app.js','./relationship-ui.js','./intervention-ui.js','./visual-ui.js','./reasoning-visual-ui.js','./attachment-ui.js','./ux-repair-ui.js'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
