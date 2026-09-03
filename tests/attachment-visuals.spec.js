@@ -17,7 +17,7 @@ test('planes diagram visibly intersects the figure in all three planes',async({p
 });
 
 test('prototype muscles expose atlas anatomy and source-safe referral placeholder',async({page})=>{
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('iliopsoas');
   await page.getByRole('button',{name:/Open functional record/i}).click();
@@ -38,14 +38,14 @@ test('prototype muscles expose atlas anatomy and source-safe referral placeholde
 });
 
 test('atlas covers rich upper prototype while non-atlas muscles retain compact sketch fallback',async({page})=>{
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
   await expect(serratus.locator('img')).toHaveAttribute('src','assets/anatomy/serratus-anterior.webp');
 
-  await page.getByRole('button',{name:/Anatomy/i}).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await search.fill('levator');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const fallback=page.locator('.attachment-block');
