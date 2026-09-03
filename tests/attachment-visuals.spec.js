@@ -16,21 +16,41 @@ test('planes diagram visibly intersects the figure in all three planes',async({p
   await expect(dialog.locator('[data-plane-intersection="transverse"]')).toBeVisible();
 });
 
-test('core muscle records expose compact origin insertion sketches',async({page})=>{
+test('prototype muscles expose layered rich anatomy and source-safe referral placeholder',async({page})=>{
+  await page.getByRole('button',{name:/Anatomy/i}).click();
+  const search=page.locator('#anatomySearch');
+  await search.fill('iliopsoas');
+  await page.getByRole('button',{name:/Open functional record/i}).click();
+
+  const rich=page.locator('[data-rich-anatomy="iliopsoas"]');
+  await expect(rich).toBeVisible();
+  const image=rich.locator('img.rich-anatomy-image');
+  await expect(image).toHaveAttribute('src','assets/anatomy/iliopsoas.webp');
+  await expect(rich.getByRole('tab',{name:'Skeletal'})).toHaveAttribute('aria-selected','true');
+
+  await rich.getByRole('tab',{name:'Muscle'}).click();
+  await expect(image).toHaveClass(/is-muscle-focus/);
+  await expect(rich).toContainText(/target muscle is highlighted/i);
+
+  await rich.getByRole('tab',{name:'Referral'}).click();
+  await expect(rich).toContainText(/curation in progress/i);
+  await expect(rich).toContainText(/not being used as clinical evidence/i);
+  await expect(rich).toContainText(/not yet used in the reasoning score/i);
+});
+
+test('rich anatomy covers upper prototype while non-rich muscles retain compact sketch fallback',async({page})=>{
   await page.getByRole('button',{name:/Anatomy/i}).click();
   const search=page.locator('#anatomySearch');
   await search.fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  const serratus=page.locator('.attachment-block');
-  await expect(serratus.getByText(/Attachment sketch/i)).toBeVisible();
-  await serratus.locator('summary').click();
-  await expect(serratus.locator('[data-attachment-sketch="serratus-anterior"]')).toBeVisible();
-  await expect(serratus).toContainText(/origin region/i);
+  const serratus=page.locator('[data-rich-anatomy="serratus-anterior"]');
+  await expect(serratus.locator('img')).toHaveAttribute('src','assets/anatomy/serratus-anterior.webp');
 
   await page.getByRole('button',{name:/Anatomy/i}).click();
-  await search.fill('iliopsoas');
+  await search.fill('levator');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  const hip=page.locator('.attachment-block');
-  await hip.locator('summary').click();
-  await expect(hip.locator('[data-attachment-sketch="iliopsoas"]')).toBeVisible();
+  const fallback=page.locator('.attachment-block');
+  await expect(fallback.getByText(/Attachment sketch/i)).toBeVisible();
+  await fallback.locator('summary').click();
+  await expect(fallback.locator('[data-attachment-sketch="levator-scapulae"]')).toBeVisible();
 });
