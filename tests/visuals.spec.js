@@ -38,3 +38,22 @@ test('hip extension and squat show lightweight movement sequences', async ({ pag
   await expect(squatVisual.getByText('Bottom')).toBeVisible();
   await expect(squatVisual.getByText(/frontal\/transverse control/i)).toBeVisible();
 });
+
+test('upper and trunk movements expose compact visual examples', async ({ page }) => {
+  await page.getByRole('button',{name:/Move/i}).click();
+  const cases=[
+    ['Basic cervical rotation','Cervical rotation','Turn right'],
+    ['Basic trunk side-bending','Trunk side-bending','Side-bend'],
+    ['Basic thoracic rotation','Thoracic rotation','Rotate'],
+    ['Wall slide','Wall slide / upward rotation','Overhead']
+  ];
+  for(const [movement,title,frame] of cases){
+    const card=page.locator('.record-card').filter({hasText:movement});
+    await card.getByRole('button',{name:/Open movement analysis/i}).click();
+    await expect(page.getByRole('heading',{name:movement})).toBeVisible();
+    const visual=page.locator('details.visual-block').filter({hasText:title});
+    await visual.locator('summary').click();
+    await expect(visual.getByText(frame,{exact:true})).toBeVisible();
+    await page.getByRole('button',{name:'← Back'}).click();
+  }
+});
