@@ -1,6 +1,7 @@
 (function(){
   const R=window.NMT_REASONING,D=window.NMT_DATA;
   if(!R?.extractComplaintFacts||!D)return;
+  const STORAGE='nmt-clinical-reasoning-v0.1';
   const SUPPRESS_KEY='nmt-intake-suppressed-v1';
   let busy=false;
 
@@ -13,6 +14,25 @@
   function suppressed(complaint,id){return !!suppressionMap()[complaint]?.includes(id)}
   function suppress(complaint,id){const map=suppressionMap(),list=new Set(map[complaint]||[]);list.add(id);map[complaint]=[...list];sessionStorage.setItem(SUPPRESS_KEY,JSON.stringify(map))}
   function factsFor(complaint){const pathwayId=pathwayFor(complaint);return pathwayId?R.extractComplaintFacts(complaint,pathwayId):{answers:{},concepts:[]}}
+
+  function seedSessionAnswers(complaint,facts){
+    let stored;
+    try{stored=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{return false}
+    const active=stored?.active;
+    if(!active||active.complaint!==complaint)return false;
+    active.answers=active.answers||{};
+    let changed=false;
+    Object.entries(facts.answers||{}).forEach(([id,value])=>{
+      if(value==null||suppressed(complaint,id)||active.answers[id]!=null)return;
+      active.answers[id]=value;
+      changed=true;
+    });
+    if(!changed)return false;
+    active.updatedAt=new Date().toISOString();
+    localStorage.setItem(STORAGE,JSON.stringify(stored));
+    location.reload();
+    return true;
+  }
 
   function addCapturedSummary(complaint,facts){
     const hero=[...document.querySelectorAll('#app .hero')].find(x=>/active reasoning map/i.test(x.textContent||''));
@@ -46,6 +66,7 @@
     const complaint=activeComplaint();
     if(!complaint)return;
     const facts=factsFor(complaint);
+    if(seedSessionAnswers(complaint,facts))return;
     addCapturedSummary(complaint,facts);
     skipAnsweredFromComplaint(complaint,facts);
   }
