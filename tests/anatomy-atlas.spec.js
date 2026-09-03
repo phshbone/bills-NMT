@@ -21,7 +21,7 @@ test('rich anatomy atlas uses one reusable viewer and does not fake missing laye
   await atlas.getByRole('tab',{name:'Referral'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','referral');
   await expect(atlas.locator('img')).toHaveCount(0);
-  await expect(atlas.getByText(/source-curated/i)).toBeVisible();
+  await expect(atlas.getByRole('heading',{name:/Source-curated referral layer/i})).toBeVisible();
 });
 
 test('attachment plate is shown complete rather than crop-zoomed on phone and desktop',async({page})=>{
