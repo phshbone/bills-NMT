@@ -23,11 +23,9 @@ test.afterEach(async ({ page }) => {
 
 test('low-back reasoning path updates, reassesses, and preserves navigation state', async ({ page }) => {
   await page.getByRole('button', { name: 'Use low-back prototype' }).click();
-
   await expect(page.getByText('Why are you asking?')).toBeVisible();
   await page.getByText('Why are you asking?').first().click();
   await expect(page.getByText(/Progressive neurological loss/i)).toBeVisible();
-
   await answer(page, 'no');
   await answer(page, 'no');
   await answer(page, 'no');
@@ -36,40 +34,33 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
   await answer(page, 'yes');
   await answer(page, 'yes');
   await answer(page, 'yes');
-
   const iliopsoasCard = page.locator('.hypothesis-card').filter({ hasText: 'Iliopsoas' });
   await expect(iliopsoasCard).toBeVisible();
   await expect(iliopsoasCard).toContainText(/hip-flexor|hip extension/i);
-
   await page.locator('[data-reset-answer="lb_hip_extension"]').click();
   await expect(page.getByRole('heading', { name: /extending the hip/i })).toBeVisible();
   await answer(page, 'no');
   await expect(iliopsoasCard).toContainText(/weakens/i);
-
   await answer(page, 'no');
   await answer(page, 'no');
   await answer(page, 'yes');
   await answer(page, 'stays local');
   await expect(page.getByRole('heading', { name: 'Reassess' })).toBeVisible();
-
   await page.locator('#reassessTarget').selectOption('iliopsoas');
   await page.locator('#reassessChange').selectOption({ label: 'improved' });
   await page.locator('#reassessRange').selectOption({ label: 'smoother / more range' });
   await page.locator('#reassessNotes').fill('Small hip-extension change improved the familiar restriction.');
   await page.getByRole('button', { name: 'Update reassessment' }).click();
   await expect(iliopsoasCard).toContainText(/improved after a conservative change/i);
-
   await iliopsoasCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Iliopsoas' })).toBeVisible();
   await page.getByRole('button', { name: 'Basic hip extension' }).click();
   await expect(page.getByRole('heading', { name: 'Basic hip extension' })).toBeVisible();
   await page.getByRole('button', { name: '← Back' }).click();
   await expect(page.getByText(/active reasoning map/i)).toBeVisible();
-
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.getByText(/active reasoning map/i)).toBeVisible();
   await expect(page.locator('#reassessTarget')).toHaveValue('iliopsoas');
-
   await page.getByRole('button', { name: /Observe/i }).click();
   await expect(page.getByRole('heading', { name: /Notice the pattern first/i })).toBeVisible();
   await expect(page.getByText('Difficulty standing fully upright')).toBeVisible();
@@ -83,24 +74,20 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
   await answer(page, 'yes');
   await answer(page, 'yes');
   await answer(page, 'yes');
-
   const serratusCard = page.locator('.hypothesis-card').filter({ hasText: 'Serratus anterior' });
   await expect(serratusCard).toBeVisible();
   await expect(serratusCard).toContainText(/winging|scapular/i);
-
   await serratusCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Serratus anterior' })).toBeVisible();
   await expect(page.getByText(/Long thoracic nerve/i).first()).toBeVisible();
   await page.getByRole('button', { name: 'Wall slide' }).click();
   await expect(page.getByRole('heading', { name: 'Wall slide' })).toBeVisible();
-
-  await page.getByRole('button', { name: /Anatomy/i }).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('levator');
   await page.getByRole('button', { name: /Open functional record/i }).click();
   await expect(page.getByRole('heading', { name: 'Levator scapulae' })).toBeVisible();
   await expect(page.getByText(/StatPearls \/ NCBI Bookshelf/).first()).toBeVisible();
-
-  await page.getByRole('button', { name: /Anatomy/i }).click();
+  await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
   await page.getByRole('button', { name: /Open functional record/i }).click();
   await expect(page.getByRole('heading', { name: 'Scalenes' })).toBeVisible();
@@ -123,7 +110,6 @@ test('JSON backup/import and offline app shell work', async ({ page, context }) 
   await page.getByRole('button', { name: 'Export JSON' }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('clinical-reasoning-backup.json');
-
   const backup = {
     schema: 'nmt-clinical-reasoning-v0.1',
     exportedAt: new Date().toISOString(),
@@ -140,7 +126,6 @@ test('JSON backup/import and offline app shell work', async ({ page, context }) 
   });
   await expect(page.getByText('Imported smoke-test session')).toBeVisible();
   await expect(page.getByText('1 saved')).toBeVisible();
-
   await page.goto(TARGET, { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload({ waitUntil: 'domcontentloaded' });
