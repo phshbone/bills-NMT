@@ -13,25 +13,28 @@
       defaultView:'attachments'
     }
   };
+  const attachmentView=(asset)=>({label:'Attachments',asset,status:'ready'});
+  const pendingMuscle={label:'Muscle',status:'pending'};
+  const pendingReferral={label:'Referral',status:'pending'};
   D.ANATOMY_ATLAS={
     'iliopsoas':{
-      regionId:'lumbar-pelvis',asset:'assets/anatomy/iliopsoas.webp',
-      views:{attachments:{label:'Attachments',position:'center 34%'},muscle:{label:'Muscle',position:'center 42%'},referral:{label:'Referral',position:'center 88%'}},
+      regionId:'lumbar-pelvis',
+      views:{attachments:attachmentView('assets/anatomy/iliopsoas.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['quadratus-lumborum','lumbar-erectors','rectus-femoris','gluteus-maximus']
     },
     'quadratus-lumborum':{
-      regionId:'lumbar-pelvis',asset:'assets/anatomy/quadratus-lumborum.webp',
-      views:{attachments:{label:'Attachments',position:'center 34%'},muscle:{label:'Muscle',position:'center 44%'},referral:{label:'Referral',position:'center 88%'}},
+      regionId:'lumbar-pelvis',
+      views:{attachments:attachmentView('assets/anatomy/quadratus-lumborum.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['iliopsoas','lumbar-erectors','gluteus-medius']
     },
     'scalenes':{
-      regionId:'upper-quarter',asset:'assets/anatomy/scalenes.webp',
-      views:{attachments:{label:'Attachments',position:'center 33%'},muscle:{label:'Muscle',position:'center 43%'},referral:{label:'Referral',position:'center 88%'}},
+      regionId:'upper-quarter',
+      views:{attachments:attachmentView('assets/anatomy/scalenes.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['sternocleidomastoid','levator-scapulae','upper-trapezius']
     },
     'serratus-anterior':{
-      regionId:'upper-quarter',asset:'assets/anatomy/serratus-anterior.webp',
-      views:{attachments:{label:'Attachments',position:'center 34%'},muscle:{label:'Muscle',position:'center 46%'},referral:{label:'Referral',position:'center 89%'}},
+      regionId:'upper-quarter',
+      views:{attachments:attachmentView('assets/anatomy/serratus-anterior.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['pectoralis-minor','upper-trapezius','lower-trapezius','rotator-cuff']
     }
   };
