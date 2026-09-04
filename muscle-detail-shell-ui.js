@@ -22,7 +22,10 @@
   }
 
   function currentDetailId(){
-    const h=document.querySelector('#app .record-card h2');
+    const back=document.querySelector('#app [data-back-detail]');
+    if(!back)return null;
+    const card=back.closest('.record-card')||document.querySelector('#app .record-card');
+    const h=card?.querySelector('h2');
     if(!h)return null;
     return D.MUSCLES.find(x=>x.name===h.textContent.trim())?.id||null;
   }
