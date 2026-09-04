@@ -1,6 +1,7 @@
 (function(){
   const D=window.NMT_DATA;
   if(!D?.ANATOMY_ATLAS)return;
+  const STORAGE='nmt-clinical-reasoning-v0.1';
 
   function muscleByName(name){return D.MUSCLES.find(m=>m.name===name)}
   function noteFor(mode,status){
@@ -32,6 +33,14 @@
       <div class="atlas-region-note">Regional bases are reusable. New muscle, nerve, vessel, landmark, and referral layers plug into this viewer as independent assets rather than crops of one image.</div>
     </section>`;
   }
+  function openMuscleDirect(id){
+    let state={};
+    try{state=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{}
+    state.route=state.route||'anatomy';
+    state.detail={type:'muscle',id};
+    localStorage.setItem(STORAGE,JSON.stringify(state));
+    location.reload();
+  }
   function bind(section,record,muscle){
     const stage=section.querySelector('.atlas-stage');
     section.querySelectorAll('[data-atlas-mode]').forEach(btn=>btn.onclick=()=>{
@@ -44,8 +53,7 @@
       const matches=[...document.querySelectorAll(`[data-open-muscle="${btn.dataset.openMuscle}"]`)];
       const target=matches.find(candidate=>candidate!==btn&&candidate.closest('.record-card'))||matches.find(candidate=>candidate!==btn);
       if(target){target.click();return}
-      document.querySelector('button[data-route="anatomy"]')?.click();
-      setTimeout(()=>document.querySelector(`[data-open-muscle="${btn.dataset.openMuscle}"]`)?.click(),0);
+      openMuscleDirect(btn.dataset.openMuscle);
     });
   }
   function enhance(){
