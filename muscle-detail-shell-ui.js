@@ -1,6 +1,7 @@
 (function(){
   const D=window.NMT_DATA;if(!D)return;
   const CTX='nmt-muscle-return-context';
+  const STORAGE='nmt-clinical-reasoning-v0.1';
 
   const style=document.createElement('style');
   style.textContent=`
@@ -20,30 +21,44 @@
     return `<svg class="regional-visual-svg" viewBox="0 0 420 240" role="img" aria-label="Regional visual placeholder for ${name}">${shared}<circle class="b" cx="210" cy="72" r="28"/><path class="b" d="M210 100 L210 190 M155 125 L265 125 M210 190 L170 225 M210 190 L250 225"/><text class="t" x="28" y="42">Regional anatomy</text><text class="s" x="28" y="66">Visual overlay pending for this structure</text></svg>`;
   }
 
+  function currentDetailId(){
+    const h=document.querySelector('#app .record-card h2');
+    if(!h)return null;
+    return D.MUSCLES.find(x=>x.name===h.textContent.trim())?.id||null;
+  }
   function saveContext(target){
     const nav=document.querySelector('.nav-btn.active');
     const card=target.closest('.hypothesis-card,.record-card,.card');
-    const ctx={route:nav?.dataset.route||'reasoning',scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
+    const ctx={route:nav?.dataset.route||'reasoning',detailId:currentDetailId(),scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
     sessionStorage.setItem(CTX,JSON.stringify(ctx));
   }
-  function restoreContext(){
-    let ctx=null;try{ctx=JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{}
-    if(!ctx)return;
-    const restore=()=>window.scrollTo({top:ctx.scrollY||0,behavior:'auto'});
-    setTimeout(restore,40);setTimeout(restore,160);setTimeout(restore,320);
+  function readContext(){try{return JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{return null}}
+  function restoreScroll(ctx){const restore=()=>window.scrollTo({top:ctx?.scrollY||0,behavior:'auto'});setTimeout(restore,40);setTimeout(restore,160);setTimeout(restore,320)}
+  function restoreDetailContext(ctx){
+    if(!ctx?.detailId)return false;
+    let state={};try{state=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch{}
+    state.route=ctx.route||'anatomy';
+    state.detail={type:'muscle',id:ctx.detailId};
+    localStorage.setItem(STORAGE,JSON.stringify(state));
+    sessionStorage.removeItem(CTX);
+    location.reload();
+    return true;
   }
   function enhance(){
     const card=document.querySelector('#app .record-card');if(!card)return;
     const h=card.querySelector('h2');if(!h)return;
     const m=D.MUSCLES.find(x=>x.name===h.textContent.trim());if(!m)return;
     const back=document.querySelector('#app [data-back-detail]');
-    if(back&&!back.dataset.contextLabel){let ctx=null;try{ctx=JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{};if(ctx?.route){back.textContent='← Back to '+(ctx.route==='reasoning'?'reasoning':ctx.route);back.dataset.contextLabel='1'}}
+    if(back&&!back.dataset.contextLabel){const ctx=readContext();if(ctx?.route){const label=ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:(ctx.route==='reasoning'?'reasoning':ctx.route);back.textContent='← Back to '+(label||ctx.route);back.dataset.contextLabel='1'}}
     if(D.getAnatomyAtlasRecord?.(m.id)||D.ATTACHMENTS?.[m.id]||card.querySelector('.regional-visual-slot'))return;
     const kind=regionKind(m),section=document.createElement('section');section.className='regional-visual-slot';section.dataset.regionalVisual=m.id;
     section.innerHTML=`<div class="regional-visual-head"><p class="eyebrow">regional anatomy placeholder</p><strong>${regionName(kind,m)}</strong></div><div class="regional-visual-stage">${svg(kind,m.name)}<div class="regional-visual-note"><strong>${m.name}</strong> is linked to this regional visual framework. Its dedicated muscle, attachment, and referral overlays have not been published yet. The written anatomy below remains the exact reference until those assets are curated.</div></div>`;
     const facts=card.querySelector('.facts');if(facts)facts.insertAdjacentElement('beforebegin',section);else card.appendChild(section);
   }
 
-  document.addEventListener('click',e=>{const open=e.target.closest('[data-open-muscle]');if(open)saveContext(open);const back=e.target.closest('[data-back-detail]');if(back)restoreContext();},true);
+  document.addEventListener('click',e=>{
+    const open=e.target.closest('[data-open-muscle]');if(open)saveContext(open);
+    const back=e.target.closest('[data-back-detail]');if(back){const ctx=readContext();if(ctx?.detailId){e.preventDefault();e.stopImmediatePropagation();restoreDetailContext(ctx);return}restoreScroll(ctx);sessionStorage.removeItem(CTX)}
+  },true);
   const app=document.getElementById('app');if(app)new MutationObserver(enhance).observe(app,{childList:true,subtree:true});enhance();
 })();
