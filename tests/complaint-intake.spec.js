@@ -48,3 +48,16 @@ test('ambiguous sensory wording remains unknown',async({page})=>{
   const facts=await page.evaluate(()=>window.NMT_REASONING.extractComplaintFacts('My forearm feels weird when I use it.','forearm'));
   expect(facts.answers.fa_paresthesia).toBeUndefined();
 });
+
+test('unsupported complaint guidance remains single even after repeated analyze taps',async({page})=>{
+  await page.goto(base,{waitUntil:'networkidle'});
+  await page.evaluate(()=>{localStorage.clear();sessionStorage.clear()});
+  await page.reload({waitUntil:'networkidle'});
+  await page.locator('#complaintInput').fill('Pain under the inside ankle bone near my heel.');
+  const build=page.getByRole('button',{name:/build reasoning map/i});
+  await build.click();
+  await build.click();
+  const notices=page.locator('label .notice.small').filter({hasText:/does not yet have a validated reasoning neighborhood/i});
+  await expect(notices).toHaveCount(1);
+  await expect(notices).toContainText(/validated prototype pathways/i);
+});
