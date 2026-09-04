@@ -50,8 +50,9 @@
     const ctx=readContext();
     if(!ctx?.route)return;
     const label=ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:(ctx.route==='reasoning'?'reasoning':ctx.route);
-    back.textContent='← Back to '+(label||ctx.route);
-    back.dataset.contextLabel='1';
+    const desired='← Back to '+(label||ctx.route);
+    if(back.textContent!==desired)back.textContent=desired;
+    if(back.dataset.contextLabel!=='1')back.dataset.contextLabel='1';
   }
   function enhance(){
     const card=document.querySelector('#app .record-card');if(!card)return;
