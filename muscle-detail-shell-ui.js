@@ -21,6 +21,7 @@
     return `<svg class="regional-visual-svg" viewBox="0 0 420 240" role="img" aria-label="Regional visual placeholder for ${name}">${shared}<circle class="b" cx="210" cy="72" r="28"/><path class="b" d="M210 100 L210 190 M155 125 L265 125 M210 190 L170 225 M210 190 L250 225"/><text class="t" x="28" y="42">Regional anatomy</text><text class="s" x="28" y="66">Visual overlay pending for this structure</text></svg>`;
   }
 
+  function readContext(){try{return JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{return null}}
   function parentDetailFromTarget(target){
     const record=target.closest('.record-card');
     const h=record?.querySelector('h2');
@@ -30,12 +31,14 @@
   }
   function saveContext(target){
     const nav=document.querySelector('.nav-btn.active');
+    const route=nav?.dataset.route||'reasoning';
     const card=target.closest('.hypothesis-card,.record-card,.card');
     const parent=parentDetailFromTarget(target);
-    const ctx={route:nav?.dataset.route||'reasoning',detailId:parent.id,parentName:parent.name,scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
+    const prior=readContext();
+    if(!parent.id&&prior?.detailId&&prior.route===route)return;
+    const ctx={route,detailId:parent.id,parentName:parent.name,scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
     sessionStorage.setItem(CTX,JSON.stringify(ctx));
   }
-  function readContext(){try{return JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{return null}}
   function restoreScroll(ctx){const restore=()=>window.scrollTo({top:ctx?.scrollY||0,behavior:'auto'});setTimeout(restore,40);setTimeout(restore,160);setTimeout(restore,320)}
   function restoreDetailContext(ctx){
     if(!ctx?.detailId)return false;
