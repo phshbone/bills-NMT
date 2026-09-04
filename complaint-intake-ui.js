@@ -34,10 +34,19 @@
     return true;
   }
 
+  function visibleConcepts(concepts){
+    const important=concepts.filter(x=>x.key.startsWith('symptom-'));
+    const context=concepts.filter(x=>!x.key.startsWith('symptom-'));
+    const picked=[];
+    [...context.slice(0,4),...important].forEach(x=>{if(!picked.some(y=>y.key===x.key)&&picked.length<7)picked.push(x)});
+    if(picked.length<7)context.slice(4).forEach(x=>{if(!picked.some(y=>y.key===x.key)&&picked.length<7)picked.push(x)});
+    return picked;
+  }
+
   function addCapturedSummary(complaint,facts){
     const hero=[...document.querySelectorAll('#app .hero')].find(x=>/active reasoning map/i.test(x.textContent||''));
     if(!hero||hero.nextElementSibling?.classList?.contains('captured-intake'))return;
-    const visible=facts.concepts.filter(x=>!x.key.startsWith('symptom-')||facts.concepts.length<7).slice(0,7);
+    const visible=visibleConcepts(facts.concepts||[]);
     if(!visible.length)return;
     const box=document.createElement('section');
     box.className='notice captured-intake';
