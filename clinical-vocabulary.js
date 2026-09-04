@@ -72,14 +72,33 @@
   };
 
   R.extractComplaintFacts=function(text,pathwayId){
-    const vocab=matches(text);
-    const result=originalFacts(augment(text),pathwayId)||{answers:{},concepts:[]};
+    const raw=String(text||'');
+    const vocab=matches(raw);
+    const result=originalFacts(augment(raw),pathwayId)||{answers:{},concepts:[]};
+    const answers={...(result.answers||{})};
     const concepts=[...(result.concepts||[])];
+    const has=(type,id)=>vocab.some(v=>v.type===type&&v.id===id);
+    const addConcept=(key,label)=>{if(!concepts.some(x=>x.key===key))concepts.push({key,label})};
+
     vocab.forEach(v=>{
       const key=`${v.type}-${v.id}`;
-      if(!concepts.some(x=>x.key===key))concepts.push({key,label:v.label});
+      addConcept(key,v.label);
     });
-    return {...result,concepts};
+
+    if(pathwayId==='lower'){
+      const unilateral=/\b(?:right|left)\b/i.test(raw)&&!/\b(?:both|bilateral)\b/i.test(raw);
+      const bilateral=/\b(?:both|bilateral)\b/i.test(raw);
+      if(unilateral){answers.lb_unilateral='one side';addConcept('location-unilateral','one-sided location')}
+      else if(bilateral){answers.lb_unilateral='central/both';addConcept('location-bilateral','central/both sides')}
+
+      if(has('structure','quadratus-lumborum'))answers.__ctx_ql_named='yes';
+      if(has('landmark','t12-level'))answers.__ctx_t12='yes';
+      if(has('landmark','rib-12'))answers.__ctx_rib12='yes';
+      if(has('landmark','iliac-crest'))answers.__ctx_iliac_crest='yes';
+      if(/\bstand(?:ing)?\b|\bupright\b/i.test(raw)){answers.__ctx_standing='yes';addConcept('behavior-standing','standing/upright')}
+    }
+
+    return {...result,answers,concepts};
   };
 
   R.__clinicalVocabularyPatched=true;
