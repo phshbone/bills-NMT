@@ -41,8 +41,9 @@
       stage.innerHTML=stageContent(muscle,mode,v);
     });
     section.querySelectorAll('[data-open-muscle]').forEach(btn=>btn.onclick=()=>{
-      const target=document.querySelector(`[data-open-muscle="${btn.dataset.openMuscle}"]`);
-      if(target&&target!==btn){target.click();return}
+      const matches=[...document.querySelectorAll(`[data-open-muscle="${btn.dataset.openMuscle}"]`)];
+      const target=matches.find(candidate=>candidate!==btn&&candidate.closest('.record-card'))||matches.find(candidate=>candidate!==btn);
+      if(target){target.click();return}
       document.querySelector('button[data-route="anatomy"]')?.click();
       setTimeout(()=>document.querySelector(`[data-open-muscle="${btn.dataset.openMuscle}"]`)?.click(),0);
     });
