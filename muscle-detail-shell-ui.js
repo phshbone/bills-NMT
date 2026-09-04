@@ -22,12 +22,10 @@
   }
 
   function currentDetailId(){
-    const back=document.querySelector('#app [data-back-detail]');
-    if(!back)return null;
-    const card=back.closest('.record-card')||document.querySelector('#app .record-card');
-    const h=card?.querySelector('h2');
-    if(!h)return null;
-    return D.MUSCLES.find(x=>x.name===h.textContent.trim())?.id||null;
+    try{
+      const stored=JSON.parse(localStorage.getItem(STORAGE)||'{}');
+      return stored?.detail?.type==='muscle'?stored.detail.id:null;
+    }catch{return null}
   }
   function saveContext(target){
     const nav=document.querySelector('.nav-btn.active');
