@@ -18,6 +18,23 @@ test('forearm reasoning muscle opens a regional visual placeholder and returns t
   await expect(page.getByText(/Pain in right outer forearm near elbow/i)).toBeVisible();
 });
 
+test('anatomy drill-down returns to the previous functional record instead of the anatomy index',async({page})=>{
+  await page.goto(base,{waitUntil:'networkidle'});
+  await page.evaluate(()=>{localStorage.clear();sessionStorage.clear()});
+  await page.reload({waitUntil:'networkidle'});
+  await page.locator('button[data-route="anatomy"]').click();
+  await page.locator('#anatomySearch').fill('serratus anterior');
+  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await expect(page.getByRole('heading',{name:'Serratus anterior',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Rotator cuff group',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Rotator cuff group',exact:true})).toBeVisible();
+  const back=page.getByRole('button',{name:/Back to Serratus anterior/i});
+  await expect(back).toBeVisible();
+  await back.click();
+  await expect(page.getByRole('heading',{name:'Serratus anterior',exact:true})).toBeVisible();
+  await expect(page.locator('#anatomySearch')).toHaveCount(0);
+});
+
 test('published atlas and compact attachment records are not replaced by generic placeholder',async({page})=>{
   await page.goto(base,{waitUntil:'networkidle'});
   await page.locator('button[data-route="anatomy"]').click();
