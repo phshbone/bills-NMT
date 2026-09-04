@@ -21,16 +21,18 @@
     return `<svg class="regional-visual-svg" viewBox="0 0 420 240" role="img" aria-label="Regional visual placeholder for ${name}">${shared}<circle class="b" cx="210" cy="72" r="28"/><path class="b" d="M210 100 L210 190 M155 125 L265 125 M210 190 L170 225 M210 190 L250 225"/><text class="t" x="28" y="42">Regional anatomy</text><text class="s" x="28" y="66">Visual overlay pending for this structure</text></svg>`;
   }
 
-  function currentDetailId(){
-    try{
-      const stored=JSON.parse(localStorage.getItem(STORAGE)||'{}');
-      return stored?.detail?.type==='muscle'?stored.detail.id:null;
-    }catch{return null}
+  function parentDetailFromTarget(target){
+    const record=target.closest('.record-card');
+    const h=record?.querySelector('h2');
+    if(!h)return {id:null,name:null};
+    const m=D.MUSCLES.find(x=>x.name===h.textContent.trim());
+    return m?{id:m.id,name:m.name}:{id:null,name:null};
   }
   function saveContext(target){
     const nav=document.querySelector('.nav-btn.active');
     const card=target.closest('.hypothesis-card,.record-card,.card');
-    const ctx={route:nav?.dataset.route||'reasoning',detailId:currentDetailId(),scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
+    const parent=parentDetailFromTarget(target);
+    const ctx={route:nav?.dataset.route||'reasoning',detailId:parent.id,parentName:parent.name,scrollY:window.scrollY,anchorText:card?.querySelector('h2,h3')?.textContent?.trim()||''};
     sessionStorage.setItem(CTX,JSON.stringify(ctx));
   }
   function readContext(){try{return JSON.parse(sessionStorage.getItem(CTX)||'null')}catch{return null}}
@@ -50,7 +52,7 @@
     if(!back)return;
     const ctx=readContext();
     if(!ctx?.route)return;
-    const label=ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:(ctx.route==='reasoning'?'reasoning':ctx.route);
+    const label=ctx.parentName||(ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:null)||(ctx.route==='reasoning'?'reasoning':ctx.route);
     const desired='← Back to '+(label||ctx.route);
     if(back.textContent!==desired)back.textContent=desired;
     if(back.dataset.contextLabel!=='1')back.dataset.contextLabel='1';
