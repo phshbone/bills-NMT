@@ -44,12 +44,20 @@
     location.reload();
     return true;
   }
+  function decorateBack(){
+    const back=document.querySelector('#app [data-back-detail]');
+    if(!back)return;
+    const ctx=readContext();
+    if(!ctx?.route)return;
+    const label=ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:(ctx.route==='reasoning'?'reasoning':ctx.route);
+    back.textContent='← Back to '+(label||ctx.route);
+    back.dataset.contextLabel='1';
+  }
   function enhance(){
     const card=document.querySelector('#app .record-card');if(!card)return;
     const h=card.querySelector('h2');if(!h)return;
     const m=D.MUSCLES.find(x=>x.name===h.textContent.trim());if(!m)return;
-    const back=document.querySelector('#app [data-back-detail]');
-    if(back&&!back.dataset.contextLabel){const ctx=readContext();if(ctx?.route){const label=ctx.detailId?D.MUSCLES.find(x=>x.id===ctx.detailId)?.name:(ctx.route==='reasoning'?'reasoning':ctx.route);back.textContent='← Back to '+(label||ctx.route);back.dataset.contextLabel='1'}}
+    decorateBack();
     if(D.getAnatomyAtlasRecord?.(m.id)||D.ATTACHMENTS?.[m.id]||card.querySelector('.regional-visual-slot'))return;
     const kind=regionKind(m),section=document.createElement('section');section.className='regional-visual-slot';section.dataset.regionalVisual=m.id;
     section.innerHTML=`<div class="regional-visual-head"><p class="eyebrow">regional anatomy placeholder</p><strong>${regionName(kind,m)}</strong></div><div class="regional-visual-stage">${svg(kind,m.name)}<div class="regional-visual-note"><strong>${m.name}</strong> is linked to this regional visual framework. Its dedicated muscle, attachment, and referral overlays have not been published yet. The written anatomy below remains the exact reference until those assets are curated.</div></div>`;
@@ -57,7 +65,13 @@
   }
 
   document.addEventListener('click',e=>{
-    const open=e.target.closest('[data-open-muscle]');if(open)saveContext(open);
+    const open=e.target.closest('[data-open-muscle]');
+    if(open){
+      saveContext(open);
+      requestAnimationFrame(decorateBack);
+      setTimeout(decorateBack,0);
+      setTimeout(decorateBack,40);
+    }
     const back=e.target.closest('[data-back-detail]');if(back){const ctx=readContext();if(ctx?.detailId){e.preventDefault();e.stopImmediatePropagation();restoreDetailContext(ctx);return}restoreScroll(ctx);sessionStorage.removeItem(CTX)}
   },true);
   const app=document.getElementById('app');if(app)new MutationObserver(enhance).observe(app,{childList:true,subtree:true});enhance();
