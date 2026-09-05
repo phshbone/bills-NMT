@@ -8,7 +8,31 @@ The canonical visual source of truth for all muscle records is the paired Serrat
 1. **Serratus anterior — Anatomy card**
 2. **Serratus anterior — Referred Pain card**
 
-These two existing approved images are the reference. Do not regenerate, restyle, reinterpret, or replace them without explicit user approval.
+These two existing approved images are the reference for **visual language, component design, hierarchy, and interaction**. Do not regenerate, restyle, reinterpret, or replace that design without explicit user approval.
+
+## Critical anatomical-accuracy boundary
+
+The approved Serratus concept images are **not** the anatomical-data source of truth.
+
+Generated or illustrative artwork must never be trusted to invent or verify:
+- rib numbering
+- vertebral level numbering
+- origin landmarks
+- insertion landmarks
+- attachment levels
+- nerve labels
+- bony landmarks
+- side/orientation labels
+- trigger-point coordinates
+- referred-pain boundaries
+
+Those facts must come first from verified structured anatomy/referral data and appropriate cited sources. The illustration must then conform to those facts.
+
+**Rule: anatomical facts drive the artwork; artwork does not determine anatomical facts.**
+
+Before a labeled anatomy image is treated as production-ready, verify every visible number, label, origin, insertion, and attachment against the canonical data record. If the underlying image conflicts with the verified anatomy, correct or replace the inaccurate visual detail while preserving the locked visual style.
+
+The current approved Serratus concept therefore remains the **style/component source of truth**, while any inaccurate rib numbering, origin/insertion placement, or other anatomical labeling shown in that concept is explicitly **not locked** and must be corrected before production use.
 
 ## Core interaction
 
@@ -125,4 +149,6 @@ Referral maps must be independently created from permissible, curated source mat
 
 ## Drift rule
 
-Future implementation should be compared against the two approved Serratus anterior cards. If a proposed muscle-card UI materially departs from their hierarchy, visual language, prominence of referral patterns, Anatomy/Referred Pain relationship, or responsive-adaptation rule, treat that as design drift and stop for review before scaling it across the app.
+Future implementation should be compared against the two approved Serratus anterior cards for **style, hierarchy, component appearance, referral prominence, and Anatomy/Referred Pain relationship**. Anatomical facts must instead be compared against the verified canonical data and cited sources.
+
+If a proposed muscle-card UI materially departs from the approved visual language or responsive-adaptation rule, treat that as design drift and stop for review before scaling it across the app. If a proposed illustration conflicts with verified anatomy, the anatomy wins and the inaccurate visual detail must be corrected without treating that correction as design drift.
