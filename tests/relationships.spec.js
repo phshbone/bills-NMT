@@ -3,12 +3,8 @@ const { test, expect } = require('@playwright/test');
 const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-NMT/';
 
 async function openRelationshipMap(page){
-  const button=page.getByRole('button',{name:/Explore connections/});
-  if(!(await button.isVisible().catch(()=>false))){
-    const section=page.locator('.muscle-card-reference details').filter({hasText:'Relationship map'}).first();
-    await expect(section).toBeVisible();
-    await section.locator('summary').click();
-  }
+  const menu=page.locator('#muscle-section-menu');
+  const button=menu.getByRole('button',{name:'Relationship Map'});
   await expect(button).toBeVisible();
   await button.click();
 }
