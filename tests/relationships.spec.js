@@ -2,6 +2,17 @@ const { test, expect } = require('@playwright/test');
 
 const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-NMT/';
 
+async function openRelationshipMap(page){
+  const button=page.getByRole('button',{name:/Explore connections/});
+  if(!(await button.isVisible().catch(()=>false))){
+    const section=page.locator('.muscle-card-reference details').filter({hasText:'Relationship map'}).first();
+    await expect(section).toBeVisible();
+    await section.locator('summary').click();
+  }
+  await expect(button).toBeVisible();
+  await button.click();
+}
+
 test('manual upper-quarter relationship traversal preserves context', async ({ page }) => {
   const pageErrors=[];
   page.on('pageerror',err=>pageErrors.push(err.message));
@@ -13,9 +24,8 @@ test('manual upper-quarter relationship traversal preserves context', async ({ p
   await page.locator('#anatomySearch').fill('scalenes');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-  await expect(page.getByRole('button',{name:/Explore connections/})).toBeVisible();
+  await openRelationshipMap(page);
 
-  await page.getByRole('button',{name:/Explore connections/}).click();
   const dialog=page.locator('#relationshipExplorer');
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();
@@ -45,7 +55,7 @@ test('serratus relationship traversal exposes long thoracic and scapulothoracic 
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  await page.getByRole('button',{name:/Explore connections/}).click();
+  await openRelationshipMap(page);
   const dialog=page.locator('#relationshipExplorer');
   await expect(dialog.getByRole('button',{name:'Long thoracic nerve'})).toBeVisible();
   await expect(dialog.getByRole('button',{name:'Scapulothoracic interface'})).toBeVisible();
@@ -60,7 +70,7 @@ test('skeletal landmarks are traversable from upper and lower muscle records', a
 
   await page.locator('#anatomySearch').fill('pectoralis minor');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  await page.getByRole('button',{name:/Explore connections/}).click();
+  await openRelationshipMap(page);
   let dialog=page.locator('#relationshipExplorer');
   await expect(dialog.getByRole('button',{name:'Coracoid process'})).toBeVisible();
   await dialog.getByRole('button',{name:'Coracoid process'}).click();
@@ -71,7 +81,7 @@ test('skeletal landmarks are traversable from upper and lower muscle records', a
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('quadratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
-  await page.getByRole('button',{name:/Explore connections/}).click();
+  await openRelationshipMap(page);
   dialog=page.locator('#relationshipExplorer');
   await expect(dialog.getByRole('button',{name:'12th rib'})).toBeVisible();
   await dialog.getByRole('button',{name:'12th rib'}).click();
