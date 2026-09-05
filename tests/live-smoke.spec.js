@@ -5,6 +5,12 @@ const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-N
 async function answer(page, value) {
   await page.getByRole('button', { name: value, exact: true }).first().click();
 }
+async function openReferenceSection(page,label){
+  const section=page.locator('.muscle-card-reference details').filter({has:page.locator('summary',{hasText:label})}).first();
+  await expect(section).toBeVisible();
+  if(!(await section.evaluate(el=>el.open)))await section.locator('summary').click();
+  return section;
+}
 
 test.beforeEach(async ({ page }) => {
   const pageErrors = [];
@@ -54,6 +60,7 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
   await expect(iliopsoasCard).toContainText(/improved after a conservative change/i);
   await iliopsoasCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Iliopsoas' })).toBeVisible();
+  await openReferenceSection(page,'Related movements');
   await page.getByRole('button', { name: 'Basic hip extension' }).click();
   await expect(page.getByRole('heading', { name: 'Basic hip extension' })).toBeVisible();
   await page.getByRole('button', { name: '← Back' }).click();
@@ -80,17 +87,20 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
   await serratusCard.getByRole('button', { name: 'Related anatomy' }).click();
   await expect(page.getByRole('heading', { name: 'Serratus anterior' })).toBeVisible();
   await expect(page.getByText(/Long thoracic nerve/i).first()).toBeVisible();
+  await openReferenceSection(page,'Related movements');
   await page.getByRole('button', { name: 'Wall slide' }).click();
   await expect(page.getByRole('heading', { name: 'Wall slide' })).toBeVisible();
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('levator');
   await page.getByRole('button', { name: /Open functional record/i }).click();
   await expect(page.getByRole('heading', { name: 'Levator scapulae' })).toBeVisible();
+  await openReferenceSection(page,'Sources');
   await expect(page.getByText(/StatPearls \/ NCBI Bookshelf/).first()).toBeVisible();
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
   await page.getByRole('button', { name: /Open functional record/i }).click();
   await expect(page.getByRole('heading', { name: 'Scalenes' })).toBeVisible();
+  await openReferenceSection(page,'Sources');
   await expect(page.getByText(/Anatomy, Head and Neck, Scalenus Muscle/i)).toBeVisible();
 });
 
