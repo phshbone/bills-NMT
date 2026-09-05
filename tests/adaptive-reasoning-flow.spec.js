@@ -43,10 +43,10 @@ test('lower pathway stops after safety, location, extension behavior, and distri
 
   const sitting=await storedAnswer(page,'lb_sitting');
   if(sitting==null){
-    await expect(page.locator('[data-answer-id="lb_sitting"]')).toBeVisible();
+    await expect(page.locator('[data-answer-id="lb_sitting"]').first()).toBeVisible();
   }else{
     expect(sitting).toBe('yes');
-    await expect(page.locator('[data-answer-id="lb_hip_extension"]')).toBeVisible();
+    await expect(page.locator('[data-answer-id="lb_hip_extension"]').first()).toBeVisible();
   }
 });
 
@@ -54,9 +54,9 @@ test('a detailed opening description removes matching upper movement questions b
   const box=page.locator('#complaintInput');
   await box.fill('Right neck and shoulder blade ache. Turning my neck is restricted and side-bending hurts. No weakness, major numbness, or loss of arm function.');
   await page.getByRole('button',{name:/Build reasoning map/i}).click();
+  await expect.poll(()=>storedAnswer(page,'safety_neuro')).toBe('no');
   await expect(page.locator('[data-answer-id="safety_neuro"]')).toHaveCount(0);
   const active=await page.evaluate(()=>JSON.parse(localStorage.getItem('nmt-clinical-reasoning-v0.1')||'{}').active);
-  expect(active.answers.safety_neuro).toBe('no');
   expect(active.answers.uq_cervical_rotation).toBe('yes');
   expect(active.answers.uq_sidebend).toBe('yes');
 });
