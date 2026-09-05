@@ -16,7 +16,7 @@ test('planes diagram visibly intersects the figure in all three planes',async({p
   await expect(dialog.locator('[data-plane-intersection="transverse"]')).toBeVisible();
 });
 
-test('prototype muscles expose atlas anatomy and source-safe referral placeholder',async({page})=>{
+test('prototype muscles expose atlas anatomy and source-safe referred-pain placeholder',async({page})=>{
   await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('iliopsoas');
@@ -24,16 +24,13 @@ test('prototype muscles expose atlas anatomy and source-safe referral placeholde
 
   const atlas=page.locator('[data-anatomy-atlas="iliopsoas"]');
   await expect(atlas).toBeVisible();
+  await expect(atlas.getByRole('tab',{name:'Anatomy'})).toHaveAttribute('aria-selected','true');
   await expect(atlas.locator('img')).toHaveAttribute('src','assets/anatomy/iliopsoas.webp');
-  await expect(atlas.getByRole('tab',{name:'Attachments'})).toHaveAttribute('aria-selected','true');
+  await expect(atlas.getByRole('tab')).toHaveCount(2);
 
-  await atlas.getByRole('tab',{name:'Muscle'}).click();
+  await atlas.getByRole('tab',{name:'Referred Pain'}).click();
   await expect(atlas.locator('img')).toHaveCount(0);
-  await expect(atlas).toContainText(/will not fake this layer/i);
-
-  await atlas.getByRole('tab',{name:'Referral'}).click();
-  await expect(atlas.locator('img')).toHaveCount(0);
-  await expect(atlas).toContainText(/referral layer/i);
+  await expect(atlas).toContainText(/source-curated referral layer/i);
   await expect(atlas).toContainText(/not diagnostic/i);
 });
 
@@ -46,7 +43,7 @@ test('atlas covers rich upper prototype while non-atlas muscles retain compact s
   await expect(serratus.locator('img')).toHaveAttribute('src','assets/anatomy/serratus-anterior.webp');
 
   await page.locator('button[data-route="anatomy"]').click();
-  await search.fill('levator');
+  await page.locator('#anatomySearch').fill('levator');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const fallback=page.locator('.attachment-block');
   await expect(fallback.getByText(/Attachment sketch/i)).toBeVisible();
