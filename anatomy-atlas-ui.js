@@ -10,15 +10,27 @@
     const fallback=Object.entries(record.views).find(([id,v])=>id!=='referral'&&v?.asset);
     return fallback?{sourceMode:fallback[0],...fallback[1],label:'Anatomy'}:{sourceMode:'anatomy',label:'Anatomy',status:'pending'};
   }
-  function referralView(record){return {sourceMode:'referral',label:'Referred Pain',...(record.views.referral||{status:'pending'})}}
+  function referralView(record,muscle){
+    const pattern=D.getReferralPattern?.(muscle.id)||null;
+    return {sourceMode:'referral',label:'Referred Pain',...(record.views.referral||{status:'pending'}),pattern};
+  }
   function noteFor(mode,status){
     if(mode==='anatomy')return '<strong>Anatomy:</strong> use the labeled visual with the visible origin, insertion, action, and innervation facts below.';
     return status==='ready'?'<strong>Referred pain:</strong> source-curated educational trigger-point and referred-pain pattern.':'<strong>Referred pain:</strong> this first-class view is reserved for source-curated trigger-point and referred-pain artwork. It is intentionally not simulated from anatomy artwork and is not diagnostic.';
+  }
+  function referralText(pattern){
+    if(!pattern||pattern.validationStatus==='pending-curation')return '';
+    const areas=(pattern.referralAreas||[]).map(x=>`<li>${x.label}</li>`).join('');
+    const sources=(pattern.sourceIds||[]).map(id=>D.SOURCES?.[id]).filter(Boolean).map(s=>`<p class="source">${s.publisher} — ${s.title}</p>`).join('');
+    return `<div class="atlas-curated-referral"><span>text pattern curated · artwork pending</span><h4>Described referred-pain pattern</h4><p>${pattern.summary||''}</p>${areas?`<ul>${areas}</ul>`:''}${pattern.evidenceNote?`<p class="small muted">${pattern.evidenceNote}</p>`:''}${sources?`<div class="atlas-referral-sources"><strong>Sources</strong>${sources}</div>`:''}</div>`;
   }
   function stageContent(muscle,mode,view){
     if(view?.asset){
       const alt=mode==='referral'?`${muscle.name} referred pain pattern illustration`:`${muscle.name} anatomy illustration`;
       return `<div class="atlas-image-window"><img class="atlas-image" src="${view.asset}" alt="${alt}" loading="lazy" decoding="async"></div><div class="atlas-note">${noteFor(mode,view.status)}</div>`;
+    }
+    if(mode==='referral'&&view?.pattern&&view.pattern.validationStatus!=='pending-curation'){
+      return `${referralText(view.pattern)}<div class="atlas-pending"><span>visual in development</span><h4>Approved referral artwork still required</h4><p>The literature-supported text is available now. The visual map will not be shown until the approved source-of-truth artwork is preserved and linked to this record.</p></div><div class="atlas-note">${noteFor(mode,view?.status)}</div>`;
     }
     const title=mode==='referral'?'Source-curated referred pain pattern':'Dedicated anatomy visual';
     const detail=mode==='referral'?'This will show trigger-point locations and typical referred-pain neighborhoods once the pattern has been independently curated from permissible source material.':'This muscle does not yet have a published dedicated anatomy visual. The written anatomy remains the reference until its approved visual is available.';
@@ -27,7 +39,7 @@
   function render(record,muscle){
     const region=D.ANATOMY_REGIONS[record.regionId];
     const related=(record.related||[]).map(id=>D.MUSCLES.find(m=>m.id===id)).filter(Boolean);
-    const anatomy=anatomyView(record),referral=referralView(record);
+    const anatomy=anatomyView(record),referral=referralView(record,muscle);
     return `<section class="anatomy-atlas muscle-card-primary" data-anatomy-atlas="${muscle.id}">
       <div class="atlas-head"><p class="eyebrow">muscle card</p><strong>${region?.name||muscle.region}</strong></div>
       <div class="atlas-tabs muscle-card-toggle" role="tablist" aria-label="Muscle card view">
@@ -49,7 +61,7 @@
   }
   function bind(section,record,muscle){
     const stage=section.querySelector('.atlas-stage');
-    const views={anatomy:anatomyView(record),referral:referralView(record)};
+    const views={anatomy:anatomyView(record),referral:referralView(record,muscle)};
     section.querySelectorAll('[data-card-mode]').forEach(btn=>btn.onclick=()=>{
       const mode=btn.dataset.cardMode,v=views[mode];
       section.querySelectorAll('[data-card-mode]').forEach(b=>{b.classList.toggle('active',b===btn);b.setAttribute('aria-selected',b===btn?'true':'false')});
