@@ -30,7 +30,9 @@ test('prototype muscles expose atlas anatomy and source-safe referred-pain place
 
   await atlas.getByRole('tab',{name:'Referred Pain'}).click();
   await expect(atlas.locator('img')).toHaveCount(0);
-  await expect(atlas).toContainText(/source-curated referred pain pattern/i);
+  await expect(atlas).toContainText(/Described referred-pain pattern/i);
+  await expect(atlas).toContainText(/Travell and Simons described/i);
+  await expect(atlas).toContainText(/Approved referral artwork still required/i);
   await expect(atlas).toContainText(/not diagnostic/i);
 });
 
