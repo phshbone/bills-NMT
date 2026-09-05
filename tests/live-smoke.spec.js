@@ -134,7 +134,8 @@ test('red-flag response exits ordinary muscle reasoning', async ({ page }) => {
   await page.getByRole('button', { name: 'Use low-back prototype' }).click();
   await ensureAnswer(page,'safety_neuro','yes');
   await expect(page.getByRole('heading', { name: /Professional medical evaluation is appropriate/i })).toBeVisible();
-  await expect(page.getByText(/outside the normal educational\/self-care pathway/i)).toBeVisible();
+  await expect(page.getByText(/prompt medical evaluation/i)).toBeVisible();
+  await expect(page.getByText(/familiar mild numbness or heaviness/i)).toBeVisible();
   await page.getByRole('button', { name: 'Review answers' }).click();
   const neuroRow=page.locator('#answerReview .list-row').filter({hasText:/new or progressive weakness/i});
   await expect(neuroRow).toBeVisible();
