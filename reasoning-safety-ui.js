@@ -12,8 +12,8 @@
   }
   if(D.QUESTIONS?.fa_paresthesia){
     D.QUESTIONS.fa_paresthesia.text='Any numbness, tingling, or unusual heaviness in the forearm, wrist, or hand with this complaint?';
-    D.QUESTIONS.fa_paresthesia.why='Numbness or tingling can increase attention to a nerve pathway. Heaviness is captured separately because it is not the same as weakness or sensory loss.';
-    D.QUESTIONS.fa_paresthesia.options=['yes — numbness/tingling','heaviness without numbness/tingling','no','unsure'];
+    D.QUESTIONS.fa_paresthesia.why='A yes answer means numbness or tingling and can increase attention to a nerve pathway. Choose the heaviness option when heaviness is present without numbness or tingling; heaviness is not treated as weakness or sensory loss.';
+    D.QUESTIONS.fa_paresthesia.options=['yes','heaviness without numbness/tingling','no','unsure'];
   }
 
   const originalBuild=R.buildSummary.bind(R);
