@@ -5,6 +5,22 @@ const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-N
 async function answer(page, value) {
   await page.getByRole('button', { name: value, exact: true }).first().click();
 }
+async function ensureAnswer(page,id,value){
+  const current=page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`);
+  if(await current.count()){
+    await current.first().click();
+    return;
+  }
+  const stored=await page.evaluate(answerId=>JSON.parse(localStorage.getItem('nmt-clinical-reasoning-v0.1')||'{}').active?.answers?.[answerId],id);
+  if(stored===value)return;
+  const reset=page.locator(`[data-reset-answer="${id}"]`);
+  if(await reset.count()){
+    await reset.first().click();
+    await page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`).first().click();
+    return;
+  }
+  throw new Error(`Question ${id} was neither available nor already answered as ${value}`);
+}
 async function openReferenceSection(page,label){
   const section=page.locator('.muscle-card-reference details').filter({has:page.locator('summary',{hasText:label})}).first();
   await expect(section).toBeVisible();
@@ -18,7 +34,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto(TARGET, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveTitle(/Clinical Reasoning Map/i);
   await expect(page.getByRole('heading', { name: 'Clinical Reasoning Map' })).toBeVisible();
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => {localStorage.clear();sessionStorage.clear()});
   await page.reload({ waitUntil: 'domcontentloaded' });
   page.__pageErrors = pageErrors;
 });
@@ -32,25 +48,25 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
   await expect(page.getByText('Why are you asking?')).toBeVisible();
   await page.getByText('Why are you asking?').first().click();
   await expect(page.getByText(/Progressive neurological loss/i)).toBeVisible();
-  await answer(page, 'no');
-  await answer(page, 'no');
-  await answer(page, 'no');
-  await answer(page, 'no');
-  await answer(page, 'one side');
-  await answer(page, 'yes');
-  await answer(page, 'yes');
-  await answer(page, 'yes');
+  await ensureAnswer(page,'safety_neuro','no');
+  await ensureAnswer(page,'safety_bladder','no');
+  await ensureAnswer(page,'safety_trauma','no');
+  await ensureAnswer(page,'safety_abdominal','no');
+  await ensureAnswer(page,'lb_unilateral','one side');
+  await ensureAnswer(page,'lb_extension','yes');
+  await ensureAnswer(page,'lb_sitting','yes');
+  await ensureAnswer(page,'lb_hip_extension','yes');
   const iliopsoasCard = page.locator('.hypothesis-card').filter({ hasText: 'Iliopsoas' });
   await expect(iliopsoasCard).toBeVisible();
   await expect(iliopsoasCard).toContainText(/hip-flexor|hip extension/i);
   await page.locator('[data-reset-answer="lb_hip_extension"]').click();
   await expect(page.getByRole('heading', { name: /extending the hip/i })).toBeVisible();
-  await answer(page, 'no');
+  await ensureAnswer(page,'lb_hip_extension','no');
   await expect(iliopsoasCard).toContainText(/weakens/i);
-  await answer(page, 'no');
-  await answer(page, 'no');
-  await answer(page, 'yes');
-  await answer(page, 'stays local');
+  await ensureAnswer(page,'lb_lumbar_extension','no');
+  await ensureAnswer(page,'lb_sidebend','no');
+  await ensureAnswer(page,'lb_walking','yes');
+  await ensureAnswer(page,'lb_referral','stays local');
   await expect(page.getByRole('heading', { name: 'Reassess' })).toBeVisible();
   await page.locator('#reassessTarget').selectOption('iliopsoas');
   await page.locator('#reassessChange').selectOption({ label: 'improved' });
@@ -106,12 +122,13 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
 
 test('red-flag response exits ordinary muscle reasoning', async ({ page }) => {
   await page.getByRole('button', { name: 'Use low-back prototype' }).click();
-  await answer(page, 'yes');
+  await ensureAnswer(page,'safety_neuro','yes');
   await expect(page.getByRole('heading', { name: /Professional medical evaluation is appropriate/i })).toBeVisible();
   await expect(page.getByText(/outside the normal educational\/self-care pathway/i)).toBeVisible();
   await page.getByRole('button', { name: 'Review answers' }).click();
-  await expect(page.getByText(/new or progressive weakness/i)).toBeVisible();
-  await expect(page.getByText('yes', { exact: true })).toBeVisible();
+  const neuroRow=page.locator('#answerReview .list-row').filter({hasText:/new or progressive weakness/i});
+  await expect(neuroRow).toBeVisible();
+  await expect(neuroRow.getByText('yes',{exact:true})).toBeVisible();
 });
 
 test('JSON backup/import and offline app shell work', async ({ page, context }) => {
