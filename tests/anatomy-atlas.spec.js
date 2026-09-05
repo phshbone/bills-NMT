@@ -20,7 +20,9 @@ test('muscle card exposes Anatomy and Referred Pain as the two primary views',as
   await atlas.getByRole('tab',{name:'Referred Pain'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','referral');
   await expect(atlas.locator('img')).toHaveCount(0);
-  await expect(atlas.getByRole('heading',{name:/Source-curated referred pain pattern/i})).toBeVisible();
+  await expect(atlas.getByRole('heading',{name:/Described referred-pain pattern/i})).toBeVisible();
+  await expect(atlas).toContainText(/Travell and Simons described/i);
+  await expect(atlas).toContainText(/Approved referral artwork still required/i);
   await expect(atlas.getByText(/not diagnostic/i)).toBeVisible();
 });
 
