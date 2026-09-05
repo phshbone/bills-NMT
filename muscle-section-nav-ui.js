@@ -17,7 +17,7 @@
     .muscle-section-pill.action:hover,.muscle-section-pill.action:focus-visible{background:#243553}
     .muscle-section-return{display:inline-flex;margin-top:12px;border:0;background:transparent;color:#6f2733;font:800 .82rem/1.2 system-ui,sans-serif;cursor:pointer;padding:4px 0}
     .muscle-action-source{display:none!important}
-    .muscle-reference-sheet{position:fixed;left:0;right:0;bottom:0;z-index:80;max-height:min(46vh,470px);background:#fbf4e7;border:1px solid #a99b88;border-bottom:0;border-radius:7px 7px 0 0;box-shadow:0 -14px 34px rgba(23,35,59,.24),inset 0 1px 0 #fffaf2;transform:translateY(108%);transition:transform .2s ease;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+    .muscle-reference-sheet{position:fixed;left:0;right:0;bottom:0;z-index:80;max-height:min(42vh,430px);background:#fbf4e7;border:1px solid #a99b88;border-bottom:0;border-radius:7px 7px 0 0;box-shadow:0 -14px 34px rgba(23,35,59,.24),inset 0 1px 0 #fffaf2;transform:translateY(108%);transition:transform .2s ease;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
     .muscle-reference-sheet.open{transform:translateY(0)}
     .muscle-reference-sheet-head{position:sticky;top:0;background:#fbf4e7;border-bottom:1px solid #cfc2b0;padding:8px 13px 9px;z-index:2}
     .muscle-reference-sheet-handle{width:46px;height:2px;background:#7f7468;margin:0 auto 8px}
@@ -28,7 +28,20 @@
     .muscle-reference-sheet-body .structural-fact{margin:0 0 12px;padding:11px;border:1px solid #cfc2b0;border-radius:3px;background:#fffaf0;box-shadow:inset 0 0 0 1px #f0e5d5}
     .muscle-reference-sheet-body p:first-child{margin-top:0}
     .muscle-reference-sheet-full{margin-top:13px;border:1px solid #17233b;border-radius:3px;background:#17233b;color:#fff8ed;padding:9px 12px;font:700 .8rem/1.1 Georgia,'Times New Roman',serif;cursor:pointer;box-shadow:inset 0 0 0 1px #9e8e79}
-    @media(max-width:700px){.muscle-section-nav{padding:11px}.muscle-section-pill{padding:9px 10px;font-size:.77rem}.muscle-section-nav-head{display:block}.muscle-section-nav-head span{display:block;margin-top:3px}.muscle-card-reference{scroll-margin-top:12px}}
+    @media(max-width:700px){
+      .muscle-section-nav{padding:11px}.muscle-section-pill{padding:9px 10px;font-size:.77rem}.muscle-section-nav-head{display:block}.muscle-section-nav-head span{display:block;margin-top:3px}.muscle-card-reference{scroll-margin-top:12px}
+      .record-card.reference-mode{padding-bottom:8px;transition:padding .18s ease}
+      .record-card.reference-mode .muscle-card-essentials,.record-card.reference-mode #muscle-section-menu,.record-card.reference-mode .muscle-card-reference{display:none!important}
+      .record-card.reference-mode .anatomy-atlas{margin:7px 0 0;border-radius:10px}
+      .record-card.reference-mode .atlas-head{padding:8px 10px 4px}
+      .record-card.reference-mode .atlas-tabs{padding:0 8px 7px;gap:6px}
+      .record-card.reference-mode .atlas-tab{padding:7px 6px;border-radius:5px;font-size:.78rem}
+      .record-card.reference-mode .atlas-stage{margin:0 8px 7px;border-radius:7px}
+      .record-card.reference-mode .atlas-image{max-height:29vh;width:100%;object-fit:contain}
+      .record-card.reference-mode .atlas-pending{min-height:18vh;padding:12px}
+      .record-card.reference-mode .atlas-pending p,.record-card.reference-mode .atlas-note,.record-card.reference-mode .atlas-related,.record-card.reference-mode .atlas-region-note{display:none!important}
+      .record-card.reference-mode .atlas-curated-referral{max-height:29vh;overflow:auto;padding:12px}
+    }
     @media(min-width:701px){.muscle-reference-sheet{display:none!important}}
   `;
   document.head.appendChild(style);
@@ -49,6 +62,8 @@
 
   let sheet=null;
   let sheetTarget=null;
+  let compactCard=null;
+  let returnScrollY=null;
 
   function currentCard(){
     const card=app.querySelector('.record-card');
@@ -86,7 +101,24 @@
     sheet.querySelector('.muscle-reference-sheet-close').onclick=closeSheet;
     return sheet;
   }
-  function closeSheet(){if(sheet)sheet.classList.remove('open');sheetTarget=null}
+  function enterReferenceMode(card){
+    if(!isPhone()||!card)return;
+    returnScrollY=window.scrollY;
+    compactCard=card;
+    card.classList.add('reference-mode');
+  }
+  function leaveReferenceMode(restorePosition=true){
+    const y=returnScrollY;
+    compactCard?.classList.remove('reference-mode');
+    compactCard=null;
+    returnScrollY=null;
+    if(restorePosition&&Number.isFinite(y))requestAnimationFrame(()=>window.scrollTo({top:y,behavior:'auto'}));
+  }
+  function closeSheet(options={}){
+    if(sheet)sheet.classList.remove('open');
+    sheetTarget=null;
+    leaveReferenceMode(options.restorePosition!==false);
+  }
   function cloneReferenceContent(target){
     if(!target)return null;
     const body=target.querySelector(':scope > .muscle-card-detail-body');
@@ -106,23 +138,22 @@
   function revealAnatomyContext(card){
     const primary=card.querySelector('.muscle-card-primary')||card.querySelector('.muscle-card-essentials')||card.querySelector('h2');
     if(!primary)return;
-    const rect=primary.getBoundingClientRect();
-    const leaveForSheet=Math.round(window.innerHeight*.48);
-    if(rect.bottom<90||rect.top>leaveForSheet){primary.scrollIntoView({behavior:'auto',block:'start'})}
+    primary.scrollIntoView({behavior:'auto',block:'start'});
   }
   function openSheet(card,key,label){
     const target=targetFor(card,key);if(!target)return;
     sheetTarget=target;
-    revealAnatomyContext(card);
+    enterReferenceMode(card);
     const panel=ensureSheet();
     panel.querySelector('.muscle-reference-sheet-title').textContent=label;
     const body=panel.querySelector('.muscle-reference-sheet-body');body.innerHTML='';
     const cloned=cloneReferenceContent(target);if(cloned)body.appendChild(cloned);
     body.querySelectorAll('.muscle-section-return').forEach(x=>x.remove());
     const full=document.createElement('button');full.type='button';full.className='muscle-reference-sheet-full';full.textContent='Open full reference ↓';
-    full.onclick=()=>{closeSheet();openDetails(target);setTimeout(()=>scrollTo(target),30)};
+    full.onclick=()=>{closeSheet({restorePosition:false});openDetails(target);setTimeout(()=>scrollTo(target),30)};
     body.appendChild(full);
     panel.classList.add('open');
+    requestAnimationFrame(()=>revealAnatomyContext(card));
     panel.querySelector('.muscle-reference-sheet-close').focus({preventScroll:true});
   }
   function navClick(card,key,label){
@@ -161,7 +192,7 @@
   }
   function pillHtml(item,type){return `<button type="button" class="muscle-section-pill ${type==='action'?'action':''}" data-muscle-section="${item.key}" data-muscle-label="${item.label}">${item.label}</button>`}
   function enhance(){
-    const card=currentCard();if(!card){closeSheet();return}
+    const card=currentCard();if(!card){closeSheet({restorePosition:false});return}
     hideDuplicateActionRows(card);
     const actions=ACTIONS.filter(item=>targetFor(card,item.key));
     const refs=REFERENCES.filter(item=>targetFor(card,item.key));
@@ -179,7 +210,7 @@
 
   document.addEventListener('click',e=>{
     const back=e.target.closest('[data-muscle-menu-return]');if(!back)return;
-    e.preventDefault();closeSheet();scrollTo(app.querySelector('#muscle-section-menu'));
+    e.preventDefault();closeSheet({restorePosition:false});scrollTo(app.querySelector('#muscle-section-menu'));
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet?.classList.contains('open'))closeSheet()});
   new MutationObserver(enhance).observe(app,{childList:true,subtree:true});enhance();
