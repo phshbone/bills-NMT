@@ -31,7 +31,22 @@
       affectsReasoning:false,
       evidenceNote:'Educational description from published clinical references. This is not a diagnostic map and does not establish that serratus anterior is the source of a person’s pain.'
     },
-    'scalenes':pending('scalenes','upper-quarter'),
+    'scalenes':{
+      muscleId:'scalenes',
+      regionalBaseId:'upper-quarter',
+      triggerZones:[],
+      referralAreas:[
+        {id:'unilateral-neck-shoulder',label:'same-side neck and shoulder region',kind:'commonly-described-associated-area'},
+        {id:'radial-arm-hand',label:'arm and hand in a radial-side distribution',kind:'described-referred-area'},
+        {id:'ulnar-arm-variant',label:'ulnar-side arm in some presentations',kind:'described-variant'}
+      ],
+      summary:'Scalene myofascial pain has been described with unilateral neck and shoulder pain and referred symptoms extending into the arm and hand. Published reports note that the pattern may resemble cervical radicular or peripheral-nerve symptoms, and that the referred area can be broad.',
+      sourceIds:['scalene_case_report','upper_quarter_trp_workers'],
+      validationStatus:'curated-text',
+      artworkStatus:'approved-source-of-truth-asset-required',
+      affectsReasoning:false,
+      evidenceNote:'Educational description from published clinical references. Overlap with neural symptoms is a reason to compare local, plexus, and cervical findings rather than infer a muscle diagnosis from distribution alone.'
+    },
     'quadratus-lumborum':pending('quadratus-lumborum','lumbar-pelvis'),
     'iliopsoas':pending('iliopsoas','lumbar-pelvis')
   };
