@@ -58,7 +58,7 @@ test('Scalenes card exposes verified attachment text and structured deeper anato
   await expect(attachment.getByText('Anterior',{exact:true})).toBeVisible();
   await expect(attachment.getByText('Middle',{exact:true})).toBeVisible();
   await expect(attachment.getByText('Posterior',{exact:true})).toBeVisible();
-  await expect(attachment.getByText(/phrenic nerve courses on the muscle surface/i)).toBeVisible();
+  await expect(attachment.getByText(/phrenic nerve courses on the surface of anterior scalene/i)).toBeVisible();
   await expect(attachment.getByText(/brachial plexus roots\/trunks pass between anterior and middle scalenes/i)).toBeVisible();
 
   const nearby=page.locator('details[data-detail-label="Nearby anatomy"]');
