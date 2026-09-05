@@ -38,13 +38,20 @@ test('relationship map is promoted to a one-tap muscle menu action',async({page}
   await expect(dialog.getByText(/Why this connects/i)).toBeVisible();
 });
 
-test('reference pill opens its section and provides a return to the muscle menu',async({page})=>{
+test('reference control uses bottom sheet on phone and full section on desktop',async({page})=>{
   await openSerratus(page);
   await page.locator('#muscle-section-menu').getByRole('button',{name:'Related Movements'}).click();
   const section=page.locator('.muscle-card-detail-section[data-detail-label="Related movements"]');
-  await expect(section).toHaveJSProperty('open',true);
-  const back=section.getByRole('button',{name:/Back to muscle menu/i});
-  await expect(back).toBeVisible();
-  await back.click();
-  await expect(page.locator('#muscle-section-menu')).toBeVisible();
+  if(page.viewportSize().width<=700){
+    const sheet=page.locator('.muscle-reference-sheet.open');
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByRole('heading',{name:'Related Movements'})).toBeVisible();
+    await expect(section).not.toHaveJSProperty('open',true);
+  }else{
+    await expect(section).toHaveJSProperty('open',true);
+    const back=section.getByRole('button',{name:/Back to muscle menu/i});
+    await expect(back).toBeVisible();
+    await back.click();
+    await expect(page.locator('#muscle-section-menu')).toBeVisible();
+  }
 });
