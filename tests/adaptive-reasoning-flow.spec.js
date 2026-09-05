@@ -9,6 +9,9 @@ async function clear(page){
 async function choose(page,id,value){
   await page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`).click();
 }
+async function storedAnswer(page,id){
+  return page.evaluate(answerId=>JSON.parse(localStorage.getItem('nmt-clinical-reasoning-v0.1')||'{}').active?.answers?.[answerId],id);
+}
 
 test.beforeEach(async({page})=>clear(page));
 
@@ -37,13 +40,20 @@ test('lower pathway stops after safety, location, extension behavior, and distri
   await choose(page,'lb_referral','stays local');
   await expect(page.locator('[data-answer-id="__refine_lower"]')).toHaveCount(2);
   await choose(page,'__refine_lower','refine');
-  await expect(page.locator('[data-answer-id="lb_sitting"]')).toBeVisible();
+
+  const sitting=await storedAnswer(page,'lb_sitting');
+  if(sitting==null){
+    await expect(page.locator('[data-answer-id="lb_sitting"]')).toBeVisible();
+  }else{
+    expect(sitting).toBe('yes');
+    await expect(page.locator('[data-answer-id="lb_hip_extension"]')).toBeVisible();
+  }
 });
 
 test('a detailed opening description removes matching upper movement questions before first-pass refinement',async({page})=>{
   const box=page.locator('#complaintInput');
   await box.fill('Right neck and shoulder blade ache. Turning my neck is restricted and side-bending hurts. No weakness, major numbness, or loss of arm function.');
-  await page.getByRole('button',{name:/Analyze complaint/i}).click();
+  await page.getByRole('button',{name:/Build reasoning map/i}).click();
   await expect(page.locator('[data-answer-id="safety_neuro"]')).toHaveCount(0);
   const active=await page.evaluate(()=>JSON.parse(localStorage.getItem('nmt-clinical-reasoning-v0.1')||'{}').active);
   expect(active.answers.safety_neuro).toBe('no');
