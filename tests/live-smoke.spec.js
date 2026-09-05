@@ -104,6 +104,8 @@ test('upper-quarter path strengthens serratus consideration and supports movemen
   await ensureAnswer(page,'uq_cervical_rotation','yes');
   await ensureAnswer(page,'uq_sidebend','yes');
   await ensureAnswer(page,'uq_wing','yes');
+  await openRefinementIfNeeded(page);
+  await ensureAnswer(page,'uq_shrug','yes');
   await ensureAnswer(page,'uq_wallslide','yes');
   const serratusCard = page.locator('.hypothesis-card').filter({ hasText: 'Serratus anterior' });
   await expect(serratusCard).toBeVisible();
