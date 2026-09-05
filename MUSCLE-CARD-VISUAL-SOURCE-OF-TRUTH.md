@@ -72,6 +72,45 @@ Preserve the approved look across all muscle cards:
 
 The intended feeling is a contemporary digital descendant of a traditional anatomy atlas while remaining readable on an iPhone.
 
+## Responsive adaptation rule
+
+Responsive behavior may change the **card frame and arrangement**, but it must not redesign the approved components.
+
+Locked components include:
+- typography character and hierarchy
+- warm paper treatment
+- anatomical illustration style
+- muscle highlighting treatment
+- trigger-point markers
+- referred-pain overlays
+- leader lines and anatomical labels
+- dividers/rules
+- Anatomy / Referred Pain control styling
+- fact-block styling
+- accordion/detail-section styling once implemented
+- relative visual hierarchy between illustration, labels, facts, and referral pattern
+
+Allowed responsive changes include:
+- card width, height, and aspect ratio
+- portrait vs landscape arrangement
+- single-column vs multi-column composition
+- line wrapping
+- spacing compression or expansion
+- moving a fact block below an illustration when horizontal room is insufficient
+- allowing the card/page to scroll vertically on phones
+- enlarging the referred-pain figure to use more of the phone screen
+- changing margins and safe-area spacing
+
+Responsive adaptation must preserve the **same visual components and same design language**. A phone version may be taller and narrower than the approved reference, while a desktop version may be wider, but both should clearly read as the same card system.
+
+Do not shrink an entire desktop card as one bitmap merely to make it fit a phone. Reflow the locked components responsively so text and anatomical detail remain legible.
+
+Rule of thumb:
+
+**Resize and reflow the frame; preserve the components.**
+
+If a responsive implementation requires changing the actual appearance of a locked component rather than merely repositioning/resizing it, stop for design review.
+
 ## Product hierarchy
 
 The muscle record hierarchy is now locked as:
@@ -86,4 +125,4 @@ Referral maps must be independently created from permissible, curated source mat
 
 ## Drift rule
 
-Future implementation should be compared against the two approved Serratus anterior cards. If a proposed muscle-card UI materially departs from their hierarchy, visual language, prominence of referral patterns, or Anatomy/Referred Pain relationship, treat that as design drift and stop for review before scaling it across the app.
+Future implementation should be compared against the two approved Serratus anterior cards. If a proposed muscle-card UI materially departs from their hierarchy, visual language, prominence of referral patterns, Anatomy/Referred Pain relationship, or responsive-adaptation rule, treat that as design drift and stop for review before scaling it across the app.
