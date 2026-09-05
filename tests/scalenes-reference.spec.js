@@ -46,9 +46,11 @@ test('Scalenes card exposes verified attachment text and structured deeper anato
   await page.locator('#anatomySearch').fill('Scalenes');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   await expect(page.getByRole('heading',{name:'Scalenes',exact:true})).toBeVisible();
-  await expect(page.getByText(/anterior tubercles of C3–C6/i)).toBeVisible();
-  await expect(page.getByText(/scalene tubercle on the superior surface of the 1st rib/i)).toBeVisible();
-  await expect(page.getByText(/C3–C8/i)).toBeVisible();
+
+  const essentials=page.locator('.muscle-card-essentials');
+  await expect(essentials.getByText(/anterior tubercles of C3–C6/i)).toBeVisible();
+  await expect(essentials.getByText(/scalene tubercle on the superior surface of the 1st rib/i)).toBeVisible();
+  await expect(essentials.getByText(/C3–C8/i)).toBeVisible();
 
   const attachment=page.locator('details[data-detail-label="Attachment detail"]');
   await expect(attachment).toBeVisible();
