@@ -40,7 +40,7 @@ test('verified Scalene reference overlay loads canonical attachments, neural rel
   expect(data.referralArtworkStatus).toBe('approved-source-of-truth-asset-required');
 });
 
-test('Scalenes card exposes verified attachment text while unverified artwork remains gated',async({page})=>{
+test('Scalenes card exposes verified attachment text and structured deeper anatomy while unverified artwork remains gated',async({page})=>{
   await page.goto(TARGET,{waitUntil:'domcontentloaded',timeout:15000});
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('Scalenes');
@@ -49,4 +49,19 @@ test('Scalenes card exposes verified attachment text while unverified artwork re
   await expect(page.getByText(/anterior tubercles of C3–C6/i)).toBeVisible();
   await expect(page.getByText(/scalene tubercle on the superior surface of the 1st rib/i)).toBeVisible();
   await expect(page.getByText(/C3–C8/i)).toBeVisible();
+
+  const attachment=page.locator('details[data-detail-label="Attachment detail"]');
+  await expect(attachment).toBeVisible();
+  await attachment.locator('summary').click();
+  await expect(attachment.getByText('Anterior',{exact:true})).toBeVisible();
+  await expect(attachment.getByText('Middle',{exact:true})).toBeVisible();
+  await expect(attachment.getByText('Posterior',{exact:true})).toBeVisible();
+  await expect(attachment.getByText(/phrenic nerve courses on the muscle surface/i)).toBeVisible();
+  await expect(attachment.getByText(/brachial plexus roots\/trunks pass between anterior and middle scalenes/i)).toBeVisible();
+
+  const nearby=page.locator('details[data-detail-label="Nearby anatomy"]');
+  await expect(nearby).toBeVisible();
+  await nearby.locator('summary').click();
+  await expect(nearby.getByText(/Brachial plexus:/i)).toBeVisible();
+  await expect(nearby.getByText(/proximity does not establish a diagnosis/i)).toBeVisible();
 });
