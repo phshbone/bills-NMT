@@ -42,6 +42,17 @@ Every muscle record keeps one stable card/page identity with a prominent two-sta
 
 The user may tap the control; swipe may be added later as a secondary gesture, but the visible control remains primary for discoverability.
 
+### Reciprocal context inset
+
+Each primary state keeps the opposite state visible as a smaller contextual inset so the user can spatially compare muscle location and pain referral without sacrificing the legibility of the main figure.
+
+- **Anatomy state:** large anatomy illustration is primary; a smaller referred-pain inset remains visible.
+- **Referred Pain state:** large referral-pattern illustration is primary; a smaller anatomy/muscle-location inset remains visible.
+
+The inset is contextual, not a second equal panel. The main state must remain visually dominant.
+
+On phone layouts, preserve this reciprocal-inset pattern rather than shrinking two full-size figures side by side. On larger tablet/desktop layouts, an optional side-by-side **Compare** presentation may be added later, but the two-state card remains the primary interaction model.
+
 ## Anatomy state
 
 The top of the card prioritizes:
@@ -52,6 +63,7 @@ The top of the card prioritizes:
 - insertion callout
 - concise action/function
 - concise innervation
+- small referred-pain context inset when validated referral content is available
 
 Below the primary visual/fact block, deeper material uses expandable sections rather than forcing one uninterrupted textbook page.
 
@@ -77,6 +89,7 @@ The referred-pain state uses the approved Serratus anterior Referred Pain card a
 - pattern note / variability language
 - educational, non-diagnostic caution
 - source/provenance access
+- small anatomy/muscle-location context inset
 
 The referral visualization may occupy more screen area than the anatomy illustration because this view exists specifically to make the referral pattern immediately understandable.
 
@@ -110,9 +123,10 @@ Locked components include:
 - leader lines and anatomical labels
 - dividers/rules
 - Anatomy / Referred Pain control styling
+- reciprocal context-inset treatment
 - fact-block styling
 - accordion/detail-section styling once implemented
-- relative visual hierarchy between illustration, labels, facts, and referral pattern
+- relative visual hierarchy between illustration, inset, labels, facts, and referral pattern
 
 Allowed responsive changes include:
 - card width, height, and aspect ratio
@@ -123,6 +137,7 @@ Allowed responsive changes include:
 - moving a fact block below an illustration when horizontal room is insufficient
 - allowing the card/page to scroll vertically on phones
 - enlarging the referred-pain figure to use more of the phone screen
+- repositioning the contextual inset to avoid obscuring labels or anatomy
 - changing margins and safe-area spacing
 
 Responsive adaptation must preserve the **same visual components and same design language**. A phone version may be taller and narrower than the approved reference, while a desktop version may be wider, but both should clearly read as the same card system.
@@ -139,9 +154,9 @@ If a responsive implementation requires changing the actual appearance of a lock
 
 The muscle record hierarchy is now locked as:
 
-**Muscle → Anatomy / Referred Pain → deeper expandable reference → outward reasoning links**
+**Muscle → Anatomy / Referred Pain → reciprocal context inset → deeper expandable reference → outward reasoning links**
 
-This restores the original Neuromuscular Therapy concept: the user should be able to open a muscle, immediately understand its anatomy, and immediately flip/toggle to see its referred-pain pattern.
+This restores the original Neuromuscular Therapy concept: the user should be able to open a muscle, immediately understand its anatomy, immediately see a small spatial hint of its referral pattern, and flip/toggle to make that referral pattern the primary view while retaining muscle-location context.
 
 ## Safety and source rule
 
@@ -149,6 +164,6 @@ Referral maps must be independently created from permissible, curated source mat
 
 ## Drift rule
 
-Future implementation should be compared against the two approved Serratus anterior cards for **style, hierarchy, component appearance, referral prominence, and Anatomy/Referred Pain relationship**. Anatomical facts must instead be compared against the verified canonical data and cited sources.
+Future implementation should be compared against the two approved Serratus anterior cards for **style, hierarchy, component appearance, referral prominence, reciprocal inset behavior, and Anatomy/Referred Pain relationship**. Anatomical facts must instead be compared against the verified canonical data and cited sources.
 
 If a proposed muscle-card UI materially departs from the approved visual language or responsive-adaptation rule, treat that as design drift and stop for review before scaling it across the app. If a proposed illustration conflicts with verified anatomy, the anatomy wins and the inaccurate visual detail must be corrected without treating that correction as design drift.
