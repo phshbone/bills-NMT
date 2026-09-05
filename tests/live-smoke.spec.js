@@ -5,8 +5,16 @@ const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-N
 async function answer(page, value) {
   await page.getByRole('button', { name: value, exact: true }).first().click();
 }
+async function openRefinementIfNeeded(page){
+  const refine=page.locator('[data-answer-id^="__refine_"][data-answer-value="refine"]');
+  if(await refine.count())await refine.first().click();
+}
 async function ensureAnswer(page,id,value){
-  const current=page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`);
+  let current=page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`);
+  if(!(await current.count())){
+    await openRefinementIfNeeded(page);
+    current=page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`);
+  }
   if(await current.count()){
     await current.first().click();
     return;
@@ -54,6 +62,7 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
   await ensureAnswer(page,'safety_abdominal','no');
   await ensureAnswer(page,'lb_unilateral','one side');
   await ensureAnswer(page,'lb_extension','yes');
+  await ensureAnswer(page,'lb_referral','stays local');
   await ensureAnswer(page,'lb_sitting','yes');
   await ensureAnswer(page,'lb_hip_extension','yes');
   const iliopsoasCard = page.locator('.hypothesis-card').filter({ hasText: 'Iliopsoas' });
@@ -66,7 +75,6 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
   await ensureAnswer(page,'lb_lumbar_extension','no');
   await ensureAnswer(page,'lb_sidebend','no');
   await ensureAnswer(page,'lb_walking','yes');
-  await ensureAnswer(page,'lb_referral','stays local');
   await expect(page.getByRole('heading', { name: 'Reassess' })).toBeVisible();
   await page.locator('#reassessTarget').selectOption('iliopsoas');
   await page.locator('#reassessChange').selectOption({ label: 'improved' });
@@ -91,12 +99,12 @@ test('low-back reasoning path updates, reassesses, and preserves navigation stat
 
 test('upper-quarter path strengthens serratus consideration and supports movement/source links', async ({ page }) => {
   await page.getByRole('button', { name: 'Use upper-quarter prototype' }).click();
-  await answer(page, 'no');
-  await answer(page, 'no');
-  await answer(page, 'yes');
-  await answer(page, 'yes');
-  await answer(page, 'yes');
-  await answer(page, 'yes');
+  await ensureAnswer(page,'safety_neuro','no');
+  await ensureAnswer(page,'safety_trauma','no');
+  await ensureAnswer(page,'uq_cervical_rotation','yes');
+  await ensureAnswer(page,'uq_sidebend','yes');
+  await ensureAnswer(page,'uq_wing','yes');
+  await ensureAnswer(page,'uq_wallslide','yes');
   const serratusCard = page.locator('.hypothesis-card').filter({ hasText: 'Serratus anterior' });
   await expect(serratusCard).toBeVisible();
   await expect(serratusCard).toContainText(/winging|scapular/i);
