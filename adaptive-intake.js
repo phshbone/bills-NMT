@@ -12,6 +12,13 @@
   function explicitNo(raw,subject,negative){
     return new RegExp(`(?:${subject})[^.!?;]{0,48}(?:${negative})|(?:${negative})[^.!?;]{0,48}(?:${subject})`,'i').test(raw);
   }
+  function commonSafetyFacts(raw,answers,concepts){
+    const neuroNegative=/\b(?:no|without|denies?)\b[^.!?;]{0,70}\bweak(?:ness)?\b[^.!?;]{0,70}\b(?:major\s+)?numb(?:ness)?\b[^.!?;]{0,70}\b(?:loss of (?:(?:arm|hand|limb) )?function)\b/i;
+    if(neuroNegative.test(raw)){
+      answers.safety_neuro='no';
+      addConcept(concepts,'safety-neuro-no','no weakness, major numbness, or loss of limb function');
+    }
+  }
 
   function upperFacts(raw,answers,concepts){
     const rotation='(?:turn(?:ing)? (?:my |the )?(?:head|neck)|neck rotation|cervical rotation)';
@@ -84,6 +91,7 @@
     const result=baseExtract(text,pathwayId)||{answers:{},concepts:[]};
     result.answers=result.answers||{};result.concepts=result.concepts||[];
     const raw=String(text||'');
+    commonSafetyFacts(raw,result.answers,result.concepts);
     if(pathwayId==='upper')upperFacts(raw,result.answers,result.concepts);
     if(pathwayId==='lower')lowerFacts(raw,result.answers,result.concepts);
     return result;
