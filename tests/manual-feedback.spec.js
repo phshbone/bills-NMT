@@ -36,13 +36,13 @@ test('clinician report opens in an escapable in-app preview',async({page})=>{
   await expect(page.getByText(/active reasoning map/i)).toBeVisible();
 });
 
-test('muscle menu separates pop-up actions from in-page reference jumps and hides duplicate action rows',async({page})=>{
+test('muscle menu separates promoted actions from reference controls and hides duplicate action rows',async({page})=>{
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const menu=page.locator('#muscle-section-menu');
   await expect(menu.getByText('Open',{exact:true})).toBeVisible();
-  await expect(menu.getByText('Jump to reference',{exact:true})).toBeVisible();
+  await expect(menu.getByText('Reference',{exact:true})).toBeVisible();
   await expect(menu.getByRole('button',{name:'Relationship Map'})).toBeVisible();
   await expect(menu.getByRole('button',{name:'Conservative Options'})).toBeVisible();
   await expect(page.locator('.muscle-card-detail-section[data-detail-label="Relationship map"]')).toBeHidden();
