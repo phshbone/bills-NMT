@@ -14,6 +14,7 @@
     }
   };
   const attachmentView=(asset)=>({label:'Attachments',asset,status:'ready'});
+  const pendingAttachment=(reason)=>({label:'Attachments',status:'pending',reason});
   const pendingMuscle={label:'Muscle',status:'pending'};
   const pendingReferral={label:'Referral',status:'pending'};
   D.ANATOMY_ATLAS={
@@ -34,7 +35,7 @@
     },
     'serratus-anterior':{
       regionId:'upper-quarter',
-      views:{attachments:attachmentView('assets/anatomy/serratus-anterior.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
+      views:{attachments:pendingAttachment('Current draft plate failed anatomical rib-count/label verification and is intentionally unpublished until corrected.'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['pectoralis-minor','upper-trapezius','lower-trapezius','rotator-cuff']
     }
   };
