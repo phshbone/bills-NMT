@@ -15,7 +15,9 @@ test('locked muscle-card hierarchy keeps essential anatomy visible and deeper re
   for(const label of ['Origin','Insertion','Action / function','Innervation'])await expect(essentials.getByText(label,{exact:true})).toBeVisible();
   const reference=page.locator('.muscle-card-reference');
   await expect(reference.getByText('Deeper reference')).toBeVisible();
-  await expect(reference.locator('details')).toHaveCount(5);
+  for(const label of ['Functional roles','Related structures','Related movements','Conservative categories','Sources']){
+    await expect(reference.locator('summary',{hasText:label})).toBeVisible();
+  }
   await expect(reference.locator('details[open]')).toHaveCount(0);
 });
 
