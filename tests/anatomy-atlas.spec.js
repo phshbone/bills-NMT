@@ -40,12 +40,17 @@ test('anatomy plate is shown complete rather than crop-zoomed on phone and deskt
   await expect(page.locator('.attachment-block')).toHaveCount(1);
 });
 
-test('all currently published atlas anatomy assets load',async({page})=>{
-  for(const name of ['Iliopsoas','Quadratus lumborum','Scalenes','Serratus anterior']){
+test('only anatomy assets that passed verification are published',async({page})=>{
+  for(const name of ['Iliopsoas','Quadratus lumborum','Scalenes']){
     await openMuscle(page,name);
     const atlas=page.locator('.anatomy-atlas');
     await expect(atlas).toBeVisible();
     const ok=await atlas.locator('img').evaluate(img=>img.complete&&img.naturalWidth>0);
     expect(ok).toBeTruthy();
   }
+  await openMuscle(page,'Serratus anterior');
+  const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
+  await expect(serratus).toBeVisible();
+  await expect(serratus.locator('img')).toHaveCount(0);
+  await expect(serratus).toContainText(/visual in development|does not yet have a published dedicated anatomy visual/i);
 });
