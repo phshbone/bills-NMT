@@ -1,24 +1,26 @@
 const { test, expect } = require('@playwright/test');
 
 const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-NMT/';
-async function answer(page,value){await page.getByRole('button',{name:value,exact:true}).first().click()}
+async function choose(page,id,value){await page.locator(`[data-answer-id="${id}"][data-answer-value="${value}"]`).click()}
 
 test.beforeEach(async({page})=>{
   await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.evaluate(()=>localStorage.clear());
+  await page.evaluate(()=>{localStorage.clear();sessionStorage.clear()});
   await page.reload({waitUntil:'domcontentloaded'});
 });
 
 test('lower-back reasoning offers non-diagnostic conservative options and Move handoff',async({page})=>{
   await page.getByRole('button',{name:'Use low-back prototype'}).click();
-  await answer(page,'no');
-  await answer(page,'no');
-  await answer(page,'no');
-  await answer(page,'no');
-  await answer(page,'one side');
-  await answer(page,'yes');
-  await answer(page,'yes');
-  await answer(page,'yes');
+  await choose(page,'safety_neuro','no');
+  await choose(page,'safety_bladder','no');
+  await choose(page,'safety_trauma','no');
+  await choose(page,'safety_abdominal','no');
+  await choose(page,'lb_unilateral','one side');
+  await choose(page,'lb_extension','yes');
+  await choose(page,'lb_referral','stays local');
+  await choose(page,'__refine_lower','refine');
+  if(await page.locator('[data-answer-id="lb_sitting"]').count())await choose(page,'lb_sitting','yes');
+  await choose(page,'lb_hip_extension','yes');
 
   const card=page.locator('.hypothesis-card').filter({hasText:'Iliopsoas'});
   await expect(card).toBeVisible();
@@ -39,12 +41,14 @@ test('lower-back reasoning offers non-diagnostic conservative options and Move h
 
 test('upper-quarter intervention options preserve conservative wording',async({page})=>{
   await page.getByRole('button',{name:'Use upper-quarter prototype'}).click();
-  await answer(page,'no');
-  await answer(page,'no');
-  await answer(page,'yes');
-  await answer(page,'yes');
-  await answer(page,'yes');
-  await answer(page,'yes');
+  await choose(page,'safety_neuro','no');
+  await choose(page,'safety_trauma','no');
+  await choose(page,'uq_cervical_rotation','yes');
+  await choose(page,'uq_sidebend','yes');
+  await choose(page,'uq_wing','yes');
+  await choose(page,'__refine_upper','refine');
+  await choose(page,'uq_shrug','yes');
+  await choose(page,'uq_wallslide','yes');
 
   const card=page.locator('.hypothesis-card').filter({hasText:'Serratus anterior'});
   await card.getByRole('button',{name:'Conservative options'}).click();
