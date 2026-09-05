@@ -10,9 +10,13 @@ async function referralSnapshot(page,id){
 
 test('serratus and scalenes can have curated text while artwork remains unpublished and reasoning-neutral',async({page})=>{
   await page.goto(base,{waitUntil:'domcontentloaded'});
+  const expectedStatus={
+    'serratus-anterior':'curated-text',
+    'scalenes':'curated-travell-text'
+  };
   for(const id of ['serratus-anterior','scalenes']){
     const result=await referralSnapshot(page,id);
-    expect(result.validationStatus).toBe('curated-text');
+    expect(result.validationStatus).toBe(expectedStatus[id]);
     expect(result.artworkStatus).toBe('approved-source-of-truth-asset-required');
     expect(result.affectsReasoning).toBe(false);
     expect(result.sourceCount).toBeGreaterThanOrEqual(2);
@@ -65,7 +69,8 @@ test('scalenes card shows broad sourced referral text without claiming a precise
   await expect(atlas).toContainText(/same-side neck and shoulder region/i);
   await expect(atlas).toContainText(/radial-side distribution/i);
   await expect(atlas).toContainText(/ulnar-side arm/i);
-  await expect(atlas).toContainText(/compare local, plexus, and cervical findings/i);
+  await expect(atlas).toContainText(/does not diagnose a scalene source/i);
+  await expect(atlas).toContainText(/cervical or peripheral neural patterns/i);
   await expect(atlas).toContainText(/approved referral artwork still required/i);
   await expect(atlas.locator('img')).toHaveCount(0);
 });
