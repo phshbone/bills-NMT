@@ -47,8 +47,40 @@
       affectsReasoning:false,
       evidenceNote:'Educational description from published clinical references. Overlap with neural symptoms is a reason to compare local, plexus, and cervical findings rather than infer a muscle diagnosis from distribution alone.'
     },
-    'quadratus-lumborum':pending('quadratus-lumborum','lumbar-pelvis'),
-    'iliopsoas':pending('iliopsoas','lumbar-pelvis')
+    'quadratus-lumborum':{
+      muscleId:'quadratus-lumborum',
+      regionalBaseId:'lumbar-pelvis',
+      triggerZones:[],
+      referralAreas:[
+        {id:'ql-low-back',label:'low-back region',kind:'travell-symptom-neighborhood'},
+        {id:'ql-buttock',label:'buttock region',kind:'travell-symptom-neighborhood'},
+        {id:'ql-iliosacral',label:'iliosacral region',kind:'travell-symptom-neighborhood'},
+        {id:'ql-lateral-hip',label:'lateral hip / upper lateral thigh region',kind:'travell-symptom-neighborhood'}
+      ],
+      summary:'Within the Travell/Simons trigger-point framework, quadratus lumborum is a major lower-torso referral muscle and is associated with low-back, buttock, iliosacral, and lateral hip symptom neighborhoods. The exact point-by-point overlay remains gated until our original artwork is built from the curated source pattern.',
+      sourceIds:['travell_context','triggerpoints_ql'],
+      validationStatus:'curated-travell-text',
+      artworkStatus:'approved-source-of-truth-asset-required',
+      affectsReasoning:false,
+      evidenceNote:'Classic Travell/Simons referral framework for educational pattern recognition. These symptom neighborhoods are not a diagnosis, and the app does not infer a QL source from pain location alone.'
+    },
+    'iliopsoas':{
+      muscleId:'iliopsoas',
+      regionalBaseId:'lumbar-pelvis',
+      triggerZones:[],
+      referralAreas:[
+        {id:'iliopsoas-lumbosacral-vertical',label:'vertical region parallel to the lumbosacral spine',kind:'travell-described-referral'},
+        {id:'iliopsoas-groin',label:'groin region',kind:'travell-symptom-neighborhood'},
+        {id:'iliopsoas-anterior-thigh',label:'anterior thigh region',kind:'travell-symptom-neighborhood'},
+        {id:'iliopsoas-iliosacral',label:'iliosacral region',kind:'travell-symptom-neighborhood'}
+      ],
+      summary:'Travell and Simons described iliopsoas trigger-point referral in a vertical pattern parallel to the lumbosacral spine. The Travell-derived symptom reference also places iliopsoas in groin, anterior-thigh, and iliosacral symptom neighborhoods.',
+      sourceIds:['travell_simons_lowback_1983','triggerpoints_iliopsoas'],
+      validationStatus:'curated-travell-text',
+      artworkStatus:'approved-source-of-truth-asset-required',
+      affectsReasoning:false,
+      evidenceNote:'Classic Travell/Simons referral framework for educational pattern recognition. The exact visual overlay will be independently redrawn; source artwork will not be copied.'
+    }
   };
 
   D.getReferralPattern=id=>D.REFERRAL_PATTERNS[id]||null;
