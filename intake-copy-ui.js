@@ -1,7 +1,7 @@
 (function(){
-  const TITLE='Type or dictate your symptoms';
-  const PLACEHOLDER='Describe what you feel in your own words. Include where you feel it and any movements, positions, or activities that make it better or worse.';
-  const NOTE='Use natural language. Be as specific as you can about location, sensation, and what changes the symptoms.';
+  const TITLE='Where are you feeling the problem?';
+  const PLACEHOLDER='Describe as much or as little as you know. Example: Deep ache on the right side of my low back near the lower ribs, worse standing, better bending forward.';
+  const NOTE='Use your own words. If you already know what movements, positions, or activities change it, include them. The app will use what you give it and ask only for useful details that are still missing.';
   const UNSUPPORTED='V0.1 does not yet have a validated reasoning neighborhood for that description. Choose one of the validated prototype pathways rather than forcing a bad match.';
   function normalizeUnsupported(){
     const input=document.getElementById('complaintInput');
