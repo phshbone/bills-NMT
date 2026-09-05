@@ -49,6 +49,36 @@ test('ambiguous sensory wording remains unknown',async({page})=>{
   expect(facts.answers.fa_paresthesia).toBeUndefined();
 });
 
+test('detailed lower-back description removes redundant follow-up questions',async({page})=>{
+  await page.goto(base,{waitUntil:'networkidle'});
+  const result=await page.evaluate(()=>{
+    const minimal='My lower back hurts.';
+    const detailed='Pain in my right lower back. Standing fully upright is harder and painful than bending forward. It is worse after prolonged sitting. Side-bending to the right reproduces it. Easy walking improves the stiffness. It stays local.';
+    const R=window.NMT_REASONING,D=window.NMT_DATA;
+    return {minimal:R.intakeProfile(minimal,'lower',D),detailed:R.intakeProfile(detailed,'lower',D)};
+  });
+  expect(result.minimal.extractedCount).toBeLessThan(result.detailed.extractedCount);
+  expect(result.detailed.extractedCount).toBeGreaterThanOrEqual(5);
+  expect(result.detailed.answered).toEqual(expect.arrayContaining(['lb_unilateral','lb_extension','lb_sitting','lb_sidebend','lb_walking','lb_referral']));
+  expect(result.detailed.facts.answers.lb_unilateral).toBe('one side');
+  expect(result.detailed.facts.answers.lb_referral).toBe('stays local');
+});
+
+test('upper-quarter movement details are reused rather than asked twice',async({page})=>{
+  await page.goto(base,{waitUntil:'networkidle'});
+  const facts=await page.evaluate(()=>window.NMT_REASONING.extractComplaintFacts('Pain on the right side of my neck. Turning my neck left is restricted and painful. Side-bending right reproduces the familiar pain.','upper'));
+  expect(facts.answers.uq_cervical_rotation).toBe('yes');
+  expect(facts.answers.uq_sidebend).toBe('yes');
+  expect(facts.concepts.map(x=>x.label)).toEqual(expect.arrayContaining(['neck rotation restricted or symptom-producing','neck side-bending restricted or symptom-producing']));
+});
+
+test('intake copy supports short or detailed descriptions without separate user modes',async({page})=>{
+  await page.goto(base,{waitUntil:'networkidle'});
+  await expect(page.locator('.field-label')).toContainText(/Where are you feeling the problem/i);
+  await expect(page.locator('[data-intake-guidance="true"]')).toContainText(/ask only for useful details that are still missing/i);
+  await expect(page.locator('#complaintInput')).toHaveAttribute('placeholder',/as much or as little as you know/i);
+});
+
 test('unsupported complaint guidance remains single even after repeated analyze taps',async({page})=>{
   await page.goto(base,{waitUntil:'networkidle'});
   await page.evaluate(()=>{localStorage.clear();sessionStorage.clear()});
