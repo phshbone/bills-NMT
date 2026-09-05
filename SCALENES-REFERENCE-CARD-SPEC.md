@@ -15,9 +15,41 @@ The card must follow `MUSCLE-CARD-VISUAL-SOURCE-OF-TRUTH.md`.
 2. **Travell and Simons Trigger Point Pain Patterns Flip Charts** — quick referral-pattern reference and figure cross-reference. The Scaleni chart points back to Volume 1, Figure 6.2. Protected source artwork is reference-only and is not reproduced.
 3. **Triggerpoints.net / Scalene** — Travell-derived symptom/referral navigation reference. Artwork is not reused.
 4. **StatPearls / NCBI Scalenus Muscle** — independent structural anatomy verification for attachments, innervation, variants, and neural relationships.
-5. **Canonical structured app record** — production source of truth after facts are reconciled and recorded.
+5. **BodyParts3D / Anatomography** — reproducible geometric scaffold only; geometry must be checked against the verified anatomy record before being used to build final artwork.
+6. **Canonical structured app record** — production source of truth after facts are reconciled and recorded.
 
 Rule: anatomical facts drive the artwork; artwork does not determine anatomical facts.
+
+## BodyParts3D scaffold record
+
+BodyParts3D/Anatomography permits copying, modification, and dissemination of contour data and rendered images under **CC BY-SA 2.1 Japan**. Attribution/share-alike obligations must be respected if a BodyParts3D-derived asset is distributed.
+
+Reproducible FMA concept IDs:
+- Scalenus anterior: **FMA13385**
+- Scalenus medius: **FMA13386**
+- Scalenus posterior: **FMA13387**
+- Right anterior: **FMA13392**
+- Left anterior: **FMA13393**
+- Right middle: **FMA13390**
+- Left middle: **FMA13391**
+- Right posterior: **FMA13388**
+- Left posterior: **FMA13389**
+
+Use BodyParts3D for:
+- repeatable camera/viewpoint setup,
+- relative spatial scaffold,
+- structure isolation,
+- opacity studies,
+- bone/muscle relationship planning,
+- consistent multiple-angle rendering.
+
+Do **not** use BodyParts3D alone to establish:
+- exact attachment levels,
+- attachment boundaries,
+- nerve course,
+- anatomical variants,
+- trigger-point locations,
+- referred-pain boundaries.
 
 ## Canonical structural anatomy
 
@@ -117,5 +149,6 @@ Do not mark the Scalenes visual verified until all visible anatomy is checked ag
 Current production status:
 - Structured anatomy text: **verified foundation**.
 - Travell referral framework: **curated text/reference**.
+- BodyParts3D scaffold identifiers: **recorded**.
 - Original detailed anatomy artwork: **pending**.
 - Original referred-pain overlay: **pending**.
