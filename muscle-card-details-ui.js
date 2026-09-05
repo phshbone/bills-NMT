@@ -1,10 +1,15 @@
 (function(){
   const app=document.getElementById('app');
-  if(!app)return;
+  const D=window.NMT_DATA;
+  if(!app||!D)return;
   const ESSENTIAL=new Set(['Origin','Insertion','Action / function','Innervation']);
+  function currentMuscle(card){
+    const name=card?.querySelector('h2')?.textContent?.trim();
+    return name?D.MUSCLES.find(m=>m.name===name)||null:null;
+  }
   function enhance(){
     const card=app.querySelector('.record-card');
-    if(!card||!card.querySelector('h2')||card.dataset.muscleCardEnhanced==='1')return;
+    if(!card||!currentMuscle(card)||card.dataset.muscleCardEnhanced==='1')return;
     const facts=card.querySelector('.facts');
     if(!facts)return;
     card.dataset.muscleCardEnhanced='1';
@@ -23,6 +28,7 @@
       }
       const details=document.createElement('details');
       details.className='muscle-card-detail-section';
+      details.dataset.detailLabel=label;
       const summary=document.createElement('summary');
       summary.textContent=label;
       details.appendChild(summary);
