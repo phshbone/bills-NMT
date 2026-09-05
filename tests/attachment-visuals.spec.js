@@ -36,13 +36,14 @@ test('prototype muscles expose atlas anatomy and source-safe referred-pain place
   await expect(atlas).toContainText(/not diagnostic/i);
 });
 
-test('atlas covers rich upper prototype while non-atlas muscles retain compact sketch fallback',async({page})=>{
+test('unverified serratus draft is gated while verified and compact records remain usable',async({page})=>{
   await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('serratus');
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
-  await expect(serratus.locator('img')).toHaveAttribute('src','assets/anatomy/serratus-anterior.webp');
+  await expect(serratus).toBeVisible();
+  await expect(serratus.locator('img')).toHaveCount(0);
 
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('levator');
