@@ -78,15 +78,19 @@
   }
   function enhance(){
     const card=currentCard();if(!card)return;
-    let nav=card.querySelector('.muscle-section-nav');
     const available=LABELS.filter(item=>targetFor(card,item.key));
     if(!available.length)return;
+    const signature=available.map(item=>item.key).join('|');
+    let nav=card.querySelector('.muscle-section-nav');
     if(!nav){
       nav=document.createElement('nav');nav.className='muscle-section-nav';nav.id='muscle-section-menu';nav.setAttribute('aria-label','Muscle reference sections');
       placeNav(card,nav);
     }
-    nav.innerHTML=`<div class="muscle-section-nav-head"><strong>Explore this muscle</strong><span>Jump directly to what you need.</span></div><div class="muscle-section-pills">${available.map(item=>`<button type="button" class="muscle-section-pill ${item.primary?'primary':''}" data-muscle-section="${item.key}">${item.label}</button>`).join('')}</div>`;
-    nav.querySelectorAll('[data-muscle-section]').forEach(btn=>btn.onclick=()=>navClick(card,btn.dataset.muscleSection));
+    if(nav.dataset.menuSignature!==signature){
+      nav.dataset.menuSignature=signature;
+      nav.innerHTML=`<div class="muscle-section-nav-head"><strong>Explore this muscle</strong><span>Jump directly to what you need.</span></div><div class="muscle-section-pills">${available.map(item=>`<button type="button" class="muscle-section-pill ${item.primary?'primary':''}" data-muscle-section="${item.key}">${item.label}</button>`).join('')}</div>`;
+      nav.querySelectorAll('[data-muscle-section]').forEach(btn=>btn.onclick=()=>navClick(card,btn.dataset.muscleSection));
+    }
     addReturns(card);
   }
 
