@@ -16,6 +16,7 @@ on:
       - 'data-*.js'
       - 'reasoning.js'
       - 'reasoning-neutral.js'
+      - 'adaptive-intake.js'
       - 'clinical-vocabulary.js'
       - 'app*.js'
       - '*-ui.js'
@@ -48,8 +49,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          files=(index.html styles.css anatomy-atlas.css reasoning.js reasoning-neutral.js clinical-vocabulary.js app.js complaint-intake-ui.js intake-copy-ui.js reasoning-friction-ui.js session-share-ui.js relationship-ui.js intervention-ui.js visual-ui.js reasoning-visual-ui.js attachment-ui.js anatomy-atlas-ui.js muscle-card-details-ui.js muscle-detail-shell-ui.js ux-repair-ui.js visual-overrides.js data-sources-1.js data-movements-1.js data-movements-2.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js data-visuals-1.js data-attachments-1.js data-referrals-1.js data-anatomy-atlas.js data-questions-1.js data-pathways-1.js data-rules-1.js data-forearm-1.js service-worker.js assets/anatomy/iliopsoas.webp assets/anatomy/quadratus-lumborum.webp assets/anatomy/scalenes.webp assets/anatomy/serratus-anterior.webp)
-          for i in {1..24}; do
+          files=(index.html styles.css anatomy-atlas.css reasoning.js reasoning-neutral.js adaptive-intake.js clinical-vocabulary.js app.js complaint-intake-ui.js intake-copy-ui.js reasoning-friction-ui.js session-share-ui.js relationship-ui.js intervention-ui.js visual-ui.js reasoning-visual-ui.js attachment-ui.js anatomy-atlas-ui.js muscle-card-details-ui.js muscle-detail-shell-ui.js ux-repair-ui.js visual-overrides.js data-sources-1.js data-movements-1.js data-movements-2.js data-relationships-1.js data-skeletal-1.js data-interventions-1.js data-visuals-1.js data-attachments-1.js data-referrals-1.js data-anatomy-atlas.js data-questions-1.js data-pathways-1.js data-rules-1.js data-forearm-1.js service-worker.js assets/anatomy/iliopsoas.webp assets/anatomy/quadratus-lumborum.webp assets/anatomy/scalenes.webp assets/anatomy/serratus-anterior.webp)
+          for i in {1..36}; do
             all_match=1
             for file in "${files[@]}"; do
               if ! curl -fsSL -H 'Cache-Control: no-cache' "$LIVE_SMOKE_URL$file?build=$GITHUB_SHA" -o "/tmp/deployed-${file//\//-}"; then
