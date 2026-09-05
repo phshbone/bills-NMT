@@ -76,7 +76,7 @@ test('intake copy supports short or detailed descriptions without separate user 
   await page.goto(base,{waitUntil:'networkidle'});
   await expect(page.locator('.field-label')).toContainText(/Where are you feeling the problem/i);
   await expect(page.locator('[data-intake-guidance="true"]')).toContainText(/ask only for useful details that are still missing/i);
-  await expect(page.locator('#complaintInput')).toHaveAttribute('placeholder',/as much or as little as you know/i);
+  await expect(page.locator('#complaintInput')).toHaveAttribute('placeholder',/Describe it in your own words/i);
 });
 
 test('unsupported complaint guidance remains single even after repeated analyze taps',async({page})=>{
