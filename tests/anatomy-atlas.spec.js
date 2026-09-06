@@ -44,7 +44,7 @@ test('Scalenes is assembled as the first Tier-2 card without promoting unverifie
   await expect(atlas.locator('.atlas-stage')).toContainText(/1st rib/i);
   await expect(atlas.locator('.atlas-stage')).toContainText(/2nd rib/i);
   await expect(atlas.locator('.atlas-stage')).toContainText(/brachial plexus/i);
-  await expect(atlas.locator('.atlas-stage')).toContainText(/visual pending/i);
+  await expect(atlas.locator('.atlas-stage')).toContainText(/illustration pending|pending.*illustration/i);
 
   await atlas.getByRole('tab',{name:'Referred Pain'}).click();
   await expect(atlas.locator('.atlas-stage')).toHaveAttribute('data-mode','referral');
