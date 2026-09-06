@@ -23,21 +23,6 @@
   function isPhone(){return window.matchMedia('(max-width:700px)').matches}
   function headerBottom(){return Math.ceil(document.querySelector('.app-header')?.getBoundingClientRect().bottom||0)}
 
-  function alignLibraryMenuById(id){
-    if(!isPhone()||!id)return;
-    const apply=()=>{
-      const menu=document.getElementById(id);
-      if(!menu?.isConnected||!menu.classList.contains('library-workspace-anchored'))return;
-      const target=headerBottom();
-      const rect=menu.getBoundingClientRect();
-      if(Math.abs(rect.top-target)>2){
-        window.scrollTo({top:Math.max(0,Math.round(window.scrollY+rect.top-target)),left:0,behavior:'auto'});
-      }
-    };
-    apply();
-    requestAnimationFrame(()=>{apply();requestAnimationFrame(apply)});
-  }
-
   function normalizeReferralReciprocal(){
     document.querySelectorAll('.anatomy-atlas').forEach(atlas=>{
       const stage=atlas.querySelector('.atlas-stage');
@@ -91,26 +76,13 @@
   }
 
   document.addEventListener('click',event=>{
-    const filter=event.target.closest('.library-entry-button[data-library-filter]');
-    if(filter){
-      const id=filter.closest('.library-entry')?.id;
-      setTimeout(()=>alignLibraryMenuById(id),0);
-    }
-    if(event.target.closest('[data-card-mode]')){
-      setTimeout(normalizeReferralReciprocal,0);
-    }
-    if(event.target.closest('[data-muscle-section]')&&isPhone()){
-      setTimeout(fitReferenceAboveSheet,0);
-    }
-    if(event.target.closest('.muscle-reference-sheet-close')){
-      setTimeout(clearReferenceSizing,0);
-    }
+    if(event.target.closest('[data-card-mode]'))setTimeout(normalizeReferralReciprocal,0);
+    if(event.target.closest('[data-muscle-section]')&&isPhone())setTimeout(fitReferenceAboveSheet,0);
+    if(event.target.closest('.muscle-reference-sheet-close'))setTimeout(clearReferenceSizing,0);
   },true);
 
   new MutationObserver(()=>{
     if(isPhone()){
-      const anchored=document.querySelector('.library-entry.library-workspace-anchored');
-      if(anchored?.id)alignLibraryMenuById(anchored.id);
       if(document.querySelector('.muscle-reference-sheet.open'))fitReferenceAboveSheet();
       else clearReferenceSizing();
     }
