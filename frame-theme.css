@@ -11,38 +11,40 @@
 .nav-btn.active::before{content:"";position:absolute;left:18%;right:18%;top:0;height:4px;border-radius:0 0 4px 4px;background:var(--frame-cream)}
 .nav-btn.active span{color:#fffaf2}
 
-/* Landscape phone/tablet is a working view, not a rotated portrait shell. Keep
-   the chrome shallow and respect whichever side owns the device cutout. */
+/* Landscape phone/tablet is a working view, not a rotated portrait shell. The
+   global header collapses to a thin identity rail; page-specific context lives
+   in the active workspace. Respect whichever side owns the device cutout. */
 @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
-  body{padding-bottom:54px}
+  body{padding-bottom:50px}
   .app-header{
-    min-height:48px;
-    padding-top:6px;
-    padding-bottom:6px;
-    padding-left:max(18px,env(safe-area-inset-left));
-    padding-right:max(18px,env(safe-area-inset-right));
-    gap:10px;align-items:center
-  }
-  .app-header>div{display:flex;align-items:baseline;gap:10px;min-width:0;white-space:nowrap}
-  .app-header .eyebrow{margin:0;font-size:.58rem;letter-spacing:.09em;line-height:1;color:#e6d7bd}
-  .app-header h1{margin:0;font-size:1.08rem;line-height:1.05;white-space:nowrap}
-  #helpBtn{display:none}
-  #app{
-    padding-top:10px;
-    padding-bottom:10px;
+    min-height:28px;
+    padding-top:3px;
+    padding-bottom:3px;
     padding-left:max(14px,env(safe-area-inset-left));
     padding-right:max(14px,env(safe-area-inset-right));
+    display:block;
+    box-shadow:0 2px 8px rgba(16,42,36,.12)
+  }
+  .app-header>div{display:block;min-width:0;white-space:nowrap;text-align:center}
+  .app-header .eyebrow{display:none}
+  .app-header h1{margin:0;font-size:.78rem;line-height:1.05;letter-spacing:.01em;white-space:nowrap}
+  #helpBtn{display:none}
+  #app{
+    padding-top:6px;
+    padding-bottom:8px;
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
   }
   .bottom-nav{
-    padding-top:2px;
-    padding-bottom:calc(2px + env(safe-area-inset-bottom));
-    padding-left:max(10px,env(safe-area-inset-left));
-    padding-right:max(10px,env(safe-area-inset-right));
-    gap:2px;min-height:48px
+    padding-top:1px;
+    padding-bottom:calc(1px + env(safe-area-inset-bottom));
+    padding-left:max(8px,env(safe-area-inset-left));
+    padding-right:max(8px,env(safe-area-inset-right));
+    gap:2px;min-height:44px
   }
-  .nav-btn{padding:3px 3px 4px;font-size:.66rem;gap:1px;line-height:1.05}
-  .nav-btn span{font-size:1rem;line-height:1}
-  .nav-btn.active::before{height:3px;left:22%;right:22%}
+  .nav-btn{padding:2px 3px 3px;font-size:.64rem;gap:1px;line-height:1.02}
+  .nav-btn span{font-size:.94rem;line-height:1}
+  .nav-btn.active::before{height:3px;left:24%;right:24%}
 }
 
 @media(min-width:1100px){.bottom-nav{background:var(--frame-hunter-deep);border-color:#0b211c}.nav-btn{color:#e8dfd1}.nav-btn.active{color:#fffaf2}}
