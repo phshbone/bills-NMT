@@ -59,6 +59,43 @@ test('Scalenes is assembled as the first Tier-2 card without promoting unverifie
   await expect(atlas.locator('.atlas-orientation')).toBeVisible();
 });
 
+test('Scalenes landscape uses a 60/40 workspace with persistent topic navigation',async({page})=>{
+  await page.setViewportSize({width:844,height:390});
+  await openMuscle(page,'Scalenes');
+  const atlas=page.locator('[data-anatomy-atlas="scalenes"]');
+  const workspace=atlas.locator('.atlas-responsive-workspace');
+  const visual=atlas.locator('.atlas-visual-column');
+  const panel=atlas.locator('.scalene-reference-panel');
+  await expect(workspace).toBeVisible();
+  await expect(panel).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Overview'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Attachments'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Actions'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Nerves'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Clinical'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Related'})).toBeVisible();
+  await expect(panel.getByRole('button',{name:'Sources'})).toBeVisible();
+
+  const [workspaceBox,visualBox,panelBox]=await Promise.all([workspace.boundingBox(),visual.boundingBox(),panel.boundingBox()]);
+  expect(workspaceBox&&visualBox&&panelBox).toBeTruthy();
+  const visualRatio=visualBox.width/workspaceBox.width;
+  const panelRatio=panelBox.width/workspaceBox.width;
+  expect(visualRatio).toBeGreaterThan(.54);
+  expect(visualRatio).toBeLessThan(.66);
+  expect(panelRatio).toBeGreaterThan(.34);
+  expect(panelRatio).toBeLessThan(.46);
+  expect(visualBox.x).toBeLessThan(panelBox.x);
+
+  await panel.getByRole('button',{name:'Nerves'}).click();
+  await expect(panel.getByRole('heading',{name:/Nerves & nearby passages/i})).toBeVisible();
+  await expect(panel).toContainText(/Brachial plexus/i);
+  await expect(panel).toContainText(/Proximity does not establish compression/i);
+  await panel.getByRole('button',{name:'Attachments'}).click();
+  await expect(panel).toContainText(/Anterior scalene/i);
+  await expect(panel).toContainText(/Middle scalene/i);
+  await expect(panel).toContainText(/Posterior scalene/i);
+});
+
 test('anatomy plate is shown complete rather than crop-zoomed on phone and desktop',async({page})=>{
   await openMuscle(page,'Scalenes');
   const atlas=page.locator('[data-anatomy-atlas="scalenes"]');
