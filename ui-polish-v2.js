@@ -4,11 +4,12 @@
 
   function polishMuscleCards(){
     document.querySelectorAll('#anatomyGrid .record-card').forEach(card=>{
+      if(card.dataset.muscleCardPolished==='true')return;
       const title=card.querySelector('h3');
       const open=card.querySelector('[data-open-muscle]');
       if(!title||!open)return;
       open.textContent='View muscle →';
-      open.setAttribute('aria-label',`Open functional record: View ${title.textContent.trim()} muscle card`);
+      open.setAttribute('aria-label',`View ${title.textContent.trim()} muscle card`);
       open.classList.add('muscle-card-open');
       if(!title.parentElement?.classList.contains('muscle-card-title-row')){
         const row=document.createElement('div');
@@ -16,6 +17,7 @@
         title.before(row);
         row.append(title,open);
       }
+      card.dataset.muscleCardPolished='true';
     });
   }
 
