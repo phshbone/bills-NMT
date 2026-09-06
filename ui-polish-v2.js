@@ -58,6 +58,8 @@
 
   const style=document.createElement('style');
   style.textContent=`
+    .notice,.captured-intake{background:#e8edf4!important;border-color:#c8d2df!important;color:#17233b}
+    .captured-intake .pill{background:#f5f7fa;border:1px solid #d8dee7;color:#17233b}
     .muscle-card-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 4px}
     .muscle-card-title-row h3{margin:0;min-width:0}
     .muscle-card-open{flex:0 0 auto;text-decoration:none!important;border:1px solid #9a6b73!important;border-radius:10px!important;padding:8px 10px!important;background:#fff8ed!important;color:#5f3940!important;font-size:.76rem!important;line-height:1!important;white-space:nowrap}
