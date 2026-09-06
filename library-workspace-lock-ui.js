@@ -28,11 +28,29 @@
   `;
   document.head.appendChild(style);
 
+  let lockedWindowY=null;
+  let restoringWindow=false;
+
   function headerHeight(){return Math.ceil(document.querySelector('.app-header')?.getBoundingClientRect().height||96)}
   function panelFor(menu){
     if(menu.id==='anatomyRegionMenu')return document.getElementById('anatomyLibraryPanel');
     if(menu.id==='movementPlaneMenu')return document.getElementById('movementLibraryPanel');
     return null;
+  }
+  function keepOuterPageLocked(){
+    if(lockedWindowY===null||restoringWindow)return;
+    if(Math.abs(window.scrollY-lockedWindowY)<2)return;
+    restoringWindow=true;
+    window.scrollTo({top:lockedWindowY,behavior:'auto'});
+    requestAnimationFrame(()=>{restoringWindow=false});
+  }
+  function bindContainedScroll(panel){
+    if(panel.dataset.outerScrollLockBound==='true')return;
+    panel.dataset.outerScrollLockBound='true';
+    panel.addEventListener('scroll',()=>{
+      if(!panel.classList.contains('library-workspace-active'))return;
+      requestAnimationFrame(keepOuterPageLocked);
+    },{passive:true});
   }
   function snapWorkspace(menu){
     const panel=panelFor(menu);if(!panel)return;
@@ -51,11 +69,18 @@
       menu.classList.add('library-workspace-anchored');
       panel.classList.add('library-workspace-active');
       panel.scrollTop=0;
+      bindContainedScroll(panel);
+      requestAnimationFrame(()=>{lockedWindowY=window.scrollY});
     });
   }
   function releaseOther(current){
     document.querySelectorAll('.library-entry.library-workspace-anchored').forEach(el=>{if(el!==current)el.classList.remove('library-workspace-anchored')});
     document.querySelectorAll('.library-scroll-panel.library-workspace-active').forEach(el=>{if(el!==panelFor(current))el.classList.remove('library-workspace-active')});
+  }
+  function releaseWorkspace(){
+    lockedWindowY=null;
+    document.querySelectorAll('.library-entry.library-workspace-anchored').forEach(el=>el.classList.remove('library-workspace-anchored'));
+    document.querySelectorAll('.library-scroll-panel.library-workspace-active').forEach(el=>el.classList.remove('library-workspace-active'));
   }
   app.addEventListener('click',e=>{
     const button=e.target.closest('.library-entry-button[data-library-filter]');
@@ -65,8 +90,5 @@
     requestAnimationFrame(()=>snapWorkspace(menu));
   },true);
 
-  document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.library-entry.library-workspace-anchored').forEach(el=>el.classList.remove('library-workspace-anchored'));
-    document.querySelectorAll('.library-scroll-panel.library-workspace-active').forEach(el=>el.classList.remove('library-workspace-active'));
-  },true));
+  document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',releaseWorkspace,true));
 })();
