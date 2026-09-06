@@ -1,0 +1,12 @@
+:root{--frame-hunter:#17372f;--frame-hunter-deep:#102a24;--frame-cream:#fbf4e8;--frame-burgundy:#8b5660;--frame-navy:#17233b}
+.app-header{background:rgba(23,55,47,.98);border-bottom-color:#0e2a22;color:#fff8ee;box-shadow:0 5px 18px rgba(16,42,36,.16)}
+.app-header .eyebrow{color:#e6d7bd}
+.app-header h1{color:#fffaf2}
+#helpBtn{background:#fff8ee;color:var(--frame-hunter-deep);border-color:#d9cdb9}
+#helpBtn:hover,#helpBtn:focus-visible{background:#f1e4d0;border-color:#fff8ee}
+.bottom-nav{background:var(--frame-hunter);border-top-color:#0e2a22;box-shadow:0 -5px 18px rgba(16,42,36,.14)}
+.nav-btn{color:#e8dfd1}
+.nav-btn span{color:#fff8ee}
+.nav-btn.active{background:var(--frame-burgundy);color:#fffaf2;box-shadow:inset 0 0 0 1px #b8858e}
+.nav-btn.active span{color:#fffaf2}
+@media(min-width:1100px){.bottom-nav{background:rgba(23,55,47,.98);border-color:#0e2a22}.nav-btn{color:#e8dfd1}.nav-btn.active{background:var(--frame-burgundy);color:#fffaf2}}
