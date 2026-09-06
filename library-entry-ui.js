@@ -5,19 +5,20 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    .library-entry{margin:12px 0 0;padding:12px;border:1px solid #8d7468;border-radius:6px;background:#eee2d1;box-shadow:inset 0 0 0 1px #fff7ea;position:sticky;top:var(--library-sticky-top,112px);z-index:6}
-    .library-entry-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:9px}
+    .library-entry{margin:12px 0 0;padding:12px;border:1px solid #c7b8aa;border-radius:10px;background:#f5ecdf;box-shadow:inset 0 0 0 1px #fffaf2;position:sticky;top:var(--library-sticky-top,112px);z-index:6}
+    .library-entry-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
     .library-entry-head strong{font:700 .98rem/1.2 Georgia,'Times New Roman',serif;color:#17233b}.library-entry-head span{font-size:.76rem;color:#6f6258}
-    .library-entry-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-    .library-entry-button{min-height:48px;padding:8px 7px;border:1px solid #55272d;border-radius:3px;background:#6f3038;color:#fff4e7;font:700 .78rem/1.15 Georgia,'Times New Roman',serif;box-shadow:inset 0 0 0 1px rgba(255,240,218,.28),0 1px 0 rgba(23,35,59,.08);cursor:pointer}
-    .library-entry-button:hover,.library-entry-button:focus-visible{background:#7d3942;outline:2px solid rgba(23,35,59,.24);outline-offset:2px}
-    .library-entry-button[aria-pressed="true"]{background:#17233b;color:#fff8ed;border-color:#17233b;box-shadow:inset 0 0 0 1px #9e8e79}
-    .library-entry-note{margin:8px 0 0;color:#6f6258;font-size:.74rem}
-    .library-scroll-panel{margin:0 0 14px;border:1px solid #c4b7a7;border-top:0;border-radius:0 0 8px 8px;background:#f8f1e6;padding:12px;max-height:min(54dvh,560px);overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable;box-shadow:inset 0 10px 22px rgba(70,48,34,.045)}
+    .library-entry-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+    .library-entry-button{min-height:46px;padding:8px 10px;border:1px solid #8b5961;border-radius:12px;background:#fff8ed;color:#5f3940;font:700 .78rem/1.15 Georgia,'Times New Roman',serif;box-shadow:0 1px 0 rgba(23,35,59,.035);cursor:pointer}
+    .library-entry-button:hover,.library-entry-button:focus-visible{background:#f8ece4;border-color:#7d4f58;outline:2px solid rgba(123,70,80,.16);outline-offset:2px}
+    .library-entry-button[aria-pressed="true"]{background:#7b4650;color:#fff8ed;border-color:#6a3943;box-shadow:inset 0 0 0 1px rgba(255,248,237,.2),0 1px 0 rgba(23,35,59,.06)}
+    .library-entry-button[aria-pressed="true"]:hover,.library-entry-button[aria-pressed="true"]:focus-visible{background:#70404a;border-color:#62363f}
+    .library-entry-note{margin:9px 0 0;color:#6f6258;font-size:.74rem}
+    .library-scroll-panel{margin:0 0 14px;border:1px solid #c4b7a7;border-top:0;border-radius:0 0 10px 10px;background:#f8f1e6;padding:12px;max-height:min(54dvh,560px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable;box-shadow:inset 0 10px 22px rgba(70,48,34,.045)}
     .library-scroll-panel>.grid{margin:0!important}
     .library-scroll-panel .record-card{background:#fffdf8}
     .library-panel-caption{position:sticky;top:-12px;z-index:2;margin:-12px -12px 12px;padding:8px 12px;background:rgba(248,241,230,.96);border-bottom:1px solid #d7ccbd;color:#6f6258;font:700 .74rem/1.2 system-ui,sans-serif;backdrop-filter:blur(6px)}
-    @media(max-width:700px){.library-entry{padding:10px}.library-entry-head{display:block}.library-entry-head span{display:block;margin-top:3px}.library-entry-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}.library-entry-button{min-height:50px;font-size:.8rem}.library-scroll-panel{max-height:52dvh;padding:10px}.library-panel-caption{top:-10px;margin:-10px -10px 10px;padding:7px 10px}}
+    @media(max-width:700px){.library-entry{padding:10px}.library-entry-head{display:block}.library-entry-head span{display:block;margin-top:3px}.library-entry-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.library-entry-button{min-height:46px;font-size:.8rem;border-radius:13px}.library-scroll-panel{max-height:52dvh;padding:10px}.library-panel-caption{top:-10px;margin:-10px -10px 10px;padding:7px 10px}}
   `;
   document.head.appendChild(style);
 
