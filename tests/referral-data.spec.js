@@ -53,7 +53,7 @@ test('serratus card shows sourced text but keeps visual map gated',async({page})
   await expect(atlas).toContainText(/5th–7th rib region/i);
   await expect(atlas).toContainText(/posterior chest wall/i);
   await expect(atlas).toContainText(/palmar 4th–5th fingers/i);
-  await expect(atlas).toContainText(/approved referral artwork still required/i);
+  await expect(atlas).toContainText(/Original referral artwork still required/i);
   await expect(atlas).toContainText(/not diagnostic/i);
   await expect(atlas.locator('img')).toHaveCount(0);
 });
@@ -65,13 +65,13 @@ test('scalenes card shows broad sourced referral text without claiming a precise
   await page.getByRole('button',{name:/Open functional record/i}).click();
   const atlas=page.locator('[data-anatomy-atlas="scalenes"]');
   await atlas.getByRole('tab',{name:'Referred Pain'}).click();
-  await expect(atlas).toContainText(/text pattern curated/i);
+  await expect(atlas).toContainText(/Travell-derived pattern/i);
   await expect(atlas).toContainText(/same-side neck and shoulder region/i);
   await expect(atlas).toContainText(/radial-side distribution/i);
   await expect(atlas).toContainText(/ulnar-side arm/i);
   await expect(atlas).toContainText(/does not diagnose a scalene source/i);
   await expect(atlas).toContainText(/cervical or peripheral neural patterns/i);
-  await expect(atlas).toContainText(/approved referral artwork still required/i);
+  await expect(atlas).toContainText(/Original referral artwork still required/i);
   await expect(atlas.locator('img')).toHaveCount(0);
 });
 
