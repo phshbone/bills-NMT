@@ -1,6 +1,6 @@
 # Scalenes Reference Card Specification
 
-Status: BUILD FOUNDATION COMPLETE / VISUAL PENDING VERIFIED ORIGINAL ARTWORK
+Status: TIER-2 CARD STRUCTURE IN BUILD / VISUAL PENDING VERIFIED ORIGINAL ARTWORK
 Date: 2026-09-05
 
 ## Purpose
@@ -12,7 +12,7 @@ The card must follow `MUSCLE-CARD-VISUAL-SOURCE-OF-TRUTH.md`.
 ## Source hierarchy
 
 1. **Travell / Simons** — preferred clinical trigger-point and referred-pain framework.
-2. **Travell and Simons Trigger Point Pain Patterns Flip Charts** — quick referral-pattern reference and figure cross-reference. The Scaleni chart points back to Volume 1, Figure 6.2. Protected source artwork is reference-only and is not reproduced.
+2. **Travell and Simons Trigger Point Pain Patterns Flip Charts** — quick referral-pattern reference and figure cross-reference. The Scaleni chart points back to **Volume 1, Figure 20.1**. Protected source artwork is reference-only and is not reproduced.
 3. **Triggerpoints.net / Scalene** — Travell-derived symptom/referral navigation reference. Artwork is not reused.
 4. **StatPearls / NCBI Scalenus Muscle** — independent structural anatomy verification for attachments, innervation, variants, and neural relationships.
 5. **BodyParts3D / Anatomography** — reproducible geometric scaffold only; geometry must be checked against the verified anatomy record before being used to build final artwork.
@@ -110,7 +110,7 @@ A small second angle or attachment close-up is allowed if the clavicle or first 
 
 Travell/Simons is the preferred framework.
 
-The Scaleni flip-chart entry uses a composite pattern for anterior, middle, and posterior scalene trigger points and references **Volume 1, Figure 6.2**.
+The Scaleni flip-chart entry uses a composite pattern for anterior, middle, and posterior scalene trigger points and references **Volume 1, Figure 20.1**.
 
 The exact essential and spillover boundaries must be independently redrawn and verified before publication. Do not trace or restyle the protected plate.
 
@@ -120,6 +120,16 @@ On Anatomy state:
 On Referred Pain state:
 - make the referral map primary,
 - keep a small anatomy-location inset visible.
+
+## Tier-2 behavior
+
+Scalenes is the first Tier-2 reference card.
+
+Anatomy state provides:
+- **Main** — primary anterior-oblique atlas view.
+- **Attachment detail** — second materially useful view focused on C3–C6/lower-cervical attachment logic, first-vs-second-rib insertions, and nearby neural/vascular relationships. Until its independently verified illustration is ready, this view may present the verified structured attachment record and must be labeled as visual pending rather than inventing artwork.
+
+The phone card shows one principal figure/view at a time. Do not create a tiny multi-image mosaic.
 
 ## Card behavior
 
@@ -150,5 +160,6 @@ Current production status:
 - Structured anatomy text: **verified foundation**.
 - Travell referral framework: **curated text/reference**.
 - BodyParts3D scaffold identifiers: **recorded**.
-- Original detailed anatomy artwork: **pending**.
+- Tier-2 card interaction/structure: **in build**.
+- Original detailed anatomy artwork: **pending verification**.
 - Original referred-pain overlay: **pending**.
