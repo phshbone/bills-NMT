@@ -12,16 +12,34 @@
 .nav-btn.active span{color:#fffaf2}
 
 /* Landscape phone/tablet is a working view, not a rotated portrait shell. Keep
-   the chrome shallow so anatomy/reasoning content owns the vertical space. */
+   the chrome shallow and respect whichever side owns the device cutout. */
 @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
   body{padding-bottom:54px}
-  .app-header{min-height:48px;padding:6px 18px;gap:10px;align-items:center}
+  .app-header{
+    min-height:48px;
+    padding-top:6px;
+    padding-bottom:6px;
+    padding-left:max(18px,env(safe-area-inset-left));
+    padding-right:max(18px,env(safe-area-inset-right));
+    gap:10px;align-items:center
+  }
   .app-header>div{display:flex;align-items:baseline;gap:10px;min-width:0;white-space:nowrap}
   .app-header .eyebrow{margin:0;font-size:.58rem;letter-spacing:.09em;line-height:1;color:#e6d7bd}
   .app-header h1{margin:0;font-size:1.08rem;line-height:1.05;white-space:nowrap}
   #helpBtn{display:none}
-  #app{padding-top:10px;padding-bottom:10px}
-  .bottom-nav{padding:2px max(10px,calc((100vw - 700px)/2 + 8px)) calc(2px + env(safe-area-inset-bottom));gap:2px;min-height:48px}
+  #app{
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:max(14px,env(safe-area-inset-left));
+    padding-right:max(14px,env(safe-area-inset-right));
+  }
+  .bottom-nav{
+    padding-top:2px;
+    padding-bottom:calc(2px + env(safe-area-inset-bottom));
+    padding-left:max(10px,env(safe-area-inset-left));
+    padding-right:max(10px,env(safe-area-inset-right));
+    gap:2px;min-height:48px
+  }
   .nav-btn{padding:3px 3px 4px;font-size:.66rem;gap:1px;line-height:1.05}
   .nav-btn span{font-size:1rem;line-height:1}
   .nav-btn.active::before{height:3px;left:22%;right:22%}
