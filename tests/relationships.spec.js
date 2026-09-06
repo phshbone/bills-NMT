@@ -1,86 +1,21 @@
 const { test, expect } = require('@playwright/test');
-
 const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-NMT/';
-
-async function openRelationshipMap(page){
-  const menu=page.locator('#muscle-section-menu');
-  const button=menu.getByRole('button',{name:'Relationship Map'});
-  await expect(button).toBeVisible();
-  await button.click();
-}
+async function openRelationshipMap(page){const menu=page.locator('#muscle-section-menu');const button=menu.getByRole('button',{name:'Relationship Map'});await expect(button).toBeVisible();await button.click();}
+async function openMuscle(page,search,id){await page.locator('button[data-route="anatomy"]').click();await page.locator('#anatomySearch').fill(search);await page.locator(`[data-open-muscle="${id}"]`).click();}
 
 test('manual upper-quarter relationship traversal preserves context', async ({ page }) => {
-  const pageErrors=[];
-  page.on('pageerror',err=>pageErrors.push(err.message));
-  await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.evaluate(()=>localStorage.clear());
-  await page.reload({waitUntil:'domcontentloaded'});
-
-  await page.locator('button[data-route="anatomy"]').click();
-  await page.locator('#anatomySearch').fill('scalenes');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
-  await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-  await openRelationshipMap(page);
-
-  const dialog=page.locator('#relationshipExplorer');
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-  await expect(dialog.getByRole('button',{name:'Brachial plexus'})).toBeVisible();
-  await expect(dialog.getByRole('button',{name:'First rib'})).toBeVisible();
-  await expect(dialog.getByRole('button',{name:'Sternocleidomastoid'})).toBeVisible();
-  await expect(dialog.getByRole('button',{name:'Levator scapulae'})).toBeVisible();
-
-  await dialog.getByRole('button',{name:'Brachial plexus'}).click();
-  await expect(dialog.getByRole('heading',{name:'Brachial plexus'})).toBeVisible();
-  await expect(dialog.getByText(/between the anterior and middle scalenes/i).first()).toBeVisible();
-  await dialog.getByRole('button',{name:'← Back'}).click();
-  await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-
-  await dialog.getByRole('button',{name:'Sternocleidomastoid'}).click();
-  await expect(dialog.getByRole('heading',{name:'Sternocleidomastoid'})).toBeVisible();
-  await dialog.getByRole('button',{name:'← Back'}).click();
-  await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-
-  await dialog.getByRole('button',{name:'Close'}).click();
-  await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();
-  expect(pageErrors).toEqual([]);
+  const pageErrors=[];page.on('pageerror',err=>pageErrors.push(err.message));await page.goto(TARGET,{waitUntil:'domcontentloaded'});await page.evaluate(()=>localStorage.clear());await page.reload({waitUntil:'domcontentloaded'});
+  await openMuscle(page,'scalenes','scalenes');await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();await openRelationshipMap(page);
+  const dialog=page.locator('#relationshipExplorer');await expect(dialog).toBeVisible();await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();await expect(dialog.getByRole('button',{name:'Brachial plexus'})).toBeVisible();await expect(dialog.getByRole('button',{name:'First rib'})).toBeVisible();await expect(dialog.getByRole('button',{name:'Sternocleidomastoid'})).toBeVisible();await expect(dialog.getByRole('button',{name:'Levator scapulae'})).toBeVisible();
+  await dialog.getByRole('button',{name:'Brachial plexus'}).click();await expect(dialog.getByRole('heading',{name:'Brachial plexus'})).toBeVisible();await expect(dialog.getByText(/between the anterior and middle scalenes/i).first()).toBeVisible();await dialog.getByRole('button',{name:'← Back'}).click();await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();
+  await dialog.getByRole('button',{name:'Sternocleidomastoid'}).click();await expect(dialog.getByRole('heading',{name:'Sternocleidomastoid'})).toBeVisible();await dialog.getByRole('button',{name:'← Back'}).click();await expect(dialog.getByRole('heading',{name:'Scalenes'})).toBeVisible();await dialog.getByRole('button',{name:'Close'}).click();await expect(page.getByRole('heading',{name:'Scalenes'})).toBeVisible();expect(pageErrors).toEqual([]);
 });
 
 test('serratus relationship traversal exposes long thoracic and scapulothoracic links', async ({ page }) => {
-  await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.locator('button[data-route="anatomy"]').click();
-  await page.locator('#anatomySearch').fill('serratus');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
-  await openRelationshipMap(page);
-  const dialog=page.locator('#relationshipExplorer');
-  await expect(dialog.getByRole('button',{name:'Long thoracic nerve'})).toBeVisible();
-  await expect(dialog.getByRole('button',{name:'Scapulothoracic interface'})).toBeVisible();
-  await dialog.getByRole('button',{name:'Long thoracic nerve'}).click();
-  await expect(dialog.getByRole('heading',{name:'Long thoracic nerve'})).toBeVisible();
-  await expect(dialog.getByText(/Motor nerve to serratus anterior/i)).toBeVisible();
+  await page.goto(TARGET,{waitUntil:'domcontentloaded'});await openMuscle(page,'serratus','serratus-anterior');await openRelationshipMap(page);const dialog=page.locator('#relationshipExplorer');await expect(dialog.getByRole('button',{name:'Long thoracic nerve'})).toBeVisible();await expect(dialog.getByRole('button',{name:'Scapulothoracic interface'})).toBeVisible();await dialog.getByRole('button',{name:'Long thoracic nerve'}).click();await expect(dialog.getByRole('heading',{name:'Long thoracic nerve'})).toBeVisible();await expect(dialog.getByText(/Motor nerve to serratus anterior/i)).toBeVisible();
 });
 
 test('skeletal landmarks are traversable from upper and lower muscle records', async ({ page }) => {
-  await page.goto(TARGET,{waitUntil:'domcontentloaded'});
-  await page.locator('button[data-route="anatomy"]').click();
-
-  await page.locator('#anatomySearch').fill('pectoralis minor');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
-  await openRelationshipMap(page);
-  let dialog=page.locator('#relationshipExplorer');
-  await expect(dialog.getByRole('button',{name:'Coracoid process'})).toBeVisible();
-  await dialog.getByRole('button',{name:'Coracoid process'}).click();
-  await expect(dialog.getByRole('heading',{name:'Coracoid process'})).toBeVisible();
-  await expect(dialog.getByText(/attachment point for pectoralis minor/i)).toBeVisible();
-  await dialog.getByRole('button',{name:'Close'}).click();
-
-  await page.locator('button[data-route="anatomy"]').click();
-  await page.locator('#anatomySearch').fill('quadratus');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
-  await openRelationshipMap(page);
-  dialog=page.locator('#relationshipExplorer');
-  await expect(dialog.getByRole('button',{name:'12th rib'})).toBeVisible();
-  await dialog.getByRole('button',{name:'12th rib'}).click();
-  await expect(dialog.getByRole('heading',{name:'12th rib'})).toBeVisible();
-  await expect(dialog.getByText(/upper attachment landmark for quadratus lumborum/i)).toBeVisible();
+  await page.goto(TARGET,{waitUntil:'domcontentloaded'});await openMuscle(page,'pectoralis minor','pectoralis-minor');await openRelationshipMap(page);let dialog=page.locator('#relationshipExplorer');await expect(dialog.getByRole('button',{name:'Coracoid process'})).toBeVisible();await dialog.getByRole('button',{name:'Coracoid process'}).click();await expect(dialog.getByRole('heading',{name:'Coracoid process'})).toBeVisible();await expect(dialog.getByText(/attachment point for pectoralis minor/i)).toBeVisible();await dialog.getByRole('button',{name:'Close'}).click();
+  await openMuscle(page,'quadratus','quadratus-lumborum');await openRelationshipMap(page);dialog=page.locator('#relationshipExplorer');await expect(dialog.getByRole('button',{name:'12th rib'})).toBeVisible();await dialog.getByRole('button',{name:'12th rib'}).click();await expect(dialog.getByRole('heading',{name:'12th rib'})).toBeVisible();await expect(dialog.getByText(/upper attachment landmark for quadratus lumborum/i)).toBeVisible();
 });
