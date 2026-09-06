@@ -14,10 +14,7 @@
       if(Math.abs(delta)>2)window.scrollBy({top:delta,left:0,behavior:'auto'});
     };
     apply();
-    requestAnimationFrame(apply);
-    setTimeout(apply,80);
-    setTimeout(apply,220);
-    setTimeout(apply,420);
+    requestAnimationFrame(()=>{apply();requestAnimationFrame(apply)});
   }
 
   function fitReferenceAboveSheet(){
@@ -39,12 +36,7 @@
         window.scrollBy({top:after.top-(h+2),left:0,behavior:'auto'});
       }
     };
-    requestAnimationFrame(()=>{
-      apply();
-      requestAnimationFrame(apply);
-      setTimeout(apply,100);
-      setTimeout(apply,260);
-    });
+    requestAnimationFrame(()=>{apply();requestAnimationFrame(apply)});
   }
 
   document.addEventListener('click',event=>{
