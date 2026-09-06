@@ -21,16 +21,26 @@
     const active=stored?.active;
     if(!active||active.complaint!==complaint)return false;
     active.answers=active.answers||{};
-    let changed=false;
-    Object.entries(facts.answers||{}).forEach(([id,value])=>{
-      if(value==null||suppressed(complaint,id)||active.answers[id]!=null)return;
-      active.answers[id]=value;
-      changed=true;
-    });
-    if(!changed)return false;
-    active.updatedAt=new Date().toISOString();
-    localStorage.setItem(STORAGE,JSON.stringify(stored));
-    location.reload();
+    const missing=Object.entries(facts.answers||{}).filter(([id,value])=>value!=null&&!suppressed(complaint,id)&&active.answers[id]==null);
+    if(!missing.length)return false;
+
+    // Use the app's already-bound answer handler so its in-memory state and
+    // localStorage stay synchronized without a document reload. The handler
+    // reads its button dataset at call time, so one detached bound control can
+    // safely carry each extracted answer through the normal answer()/render()
+    // path even as the app rerenders between entries.
+    const bridge=document.querySelector('#app [data-answer-id]');
+    if(!bridge||typeof bridge.onclick!=='function')return false;
+    busy=true;
+    try{
+      missing.forEach(([id,value])=>{
+        bridge.dataset.answerId=id;
+        bridge.dataset.answerValue=value;
+        bridge.onclick();
+      });
+    }finally{
+      busy=false;
+    }
     return true;
   }
 
@@ -72,6 +82,7 @@
   }
 
   function enhance(){
+    if(busy)return;
     const complaint=activeComplaint();
     if(!complaint)return;
     const facts=factsFor(complaint);
