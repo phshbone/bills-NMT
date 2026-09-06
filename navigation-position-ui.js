@@ -39,6 +39,14 @@
   }
 
   document.addEventListener('click',event=>{
+    // A library region/plane selection establishes its own anchored workspace.
+    // Invalidate any delayed route-settle callbacks started by the preceding
+    // primary-nav click so they cannot pull the outer page away afterward.
+    if(event.target.closest('.library-entry-button[data-library-filter]')){
+      transitionToken++;
+      return;
+    }
+
     const open=event.target.closest('[data-open-muscle],[data-open-movement]');
     if(open){settle('detail');return;}
 
