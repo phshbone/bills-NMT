@@ -20,14 +20,12 @@ test('prototype muscles expose atlas anatomy and source-safe referred-pain place
   await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('iliopsoas');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
-
+  await page.locator('[data-open-muscle="iliopsoas"]').click();
   const atlas=page.locator('[data-anatomy-atlas="iliopsoas"]');
   await expect(atlas).toBeVisible();
   await expect(atlas.getByRole('tab',{name:'Anatomy'})).toHaveAttribute('aria-selected','true');
   await expect(atlas.locator('img')).toHaveAttribute('src','assets/anatomy/iliopsoas.webp');
   await expect(atlas.getByRole('tab')).toHaveCount(2);
-
   await atlas.getByRole('tab',{name:'Referred Pain'}).click();
   await expect(atlas.locator('img')).toHaveCount(0);
   await expect(atlas).toContainText(/Described referred-pain pattern/i);
@@ -40,14 +38,14 @@ test('unverified serratus draft is gated while verified and compact records rema
   await page.locator('button[data-route="anatomy"]').click();
   const search=page.locator('#anatomySearch');
   await search.fill('serratus');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.locator('[data-open-muscle="serratus-anterior"]').click();
   const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
   await expect(serratus).toBeVisible();
   await expect(serratus.locator('img')).toHaveCount(0);
 
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('levator');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.locator('[data-open-muscle="levator-scapulae"]').click();
   const fallback=page.locator('.attachment-block');
   await expect(fallback.getByText(/Attachment sketch/i)).toBeVisible();
   await fallback.locator('summary').click();
