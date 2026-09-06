@@ -30,6 +30,14 @@
     },
     'scalenes':{
       regionId:'upper-quarter',
+      visualTier:2,
+      primaryAnatomyView:'main',
+      additionalAnatomyViews:[
+        {id:'main',label:'Main',kind:'asset',asset:'assets/anatomy/scalenes.webp',status:'reference-asset-pending-final-verification'},
+        {id:'attachment-detail',label:'Attachment detail',kind:'structured-attachment',status:'verified-text-visual-pending'}
+      ],
+      primaryReferralView:'composite-overview',
+      additionalReferralViews:[],
       views:{attachments:attachmentView('assets/anatomy/scalenes.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['sternocleidomastoid','levator-scapulae','upper-trapezius']
     },
