@@ -39,7 +39,7 @@ test('clinician report opens in an escapable in-app preview',async({page})=>{
 test('muscle menu separates promoted actions from reference controls and hides duplicate action rows',async({page})=>{
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('serratus');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.locator('[data-open-muscle="serratus-anterior"]').click();
   const menu=page.locator('#muscle-section-menu');
   await expect(menu.getByText('Open',{exact:true})).toBeVisible();
   await expect(menu.getByText('Reference',{exact:true})).toBeVisible();
