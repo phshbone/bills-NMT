@@ -8,9 +8,11 @@
       overscroll-behavior-y:contain;
       overscroll-behavior-x:none;
       touch-action:pan-y;
+      overflow-anchor:none;
     }
     .library-entry.library-workspace-anchored{
       box-shadow:0 8px 24px rgba(23,35,59,.12),inset 0 0 0 1px #fff7ea;
+      overflow-anchor:none;
     }
     @media(max-width:700px){
       .library-entry.library-workspace-anchored{
@@ -19,6 +21,8 @@
       .library-scroll-panel.library-workspace-active{
         max-height:calc(100dvh - var(--library-sticky-top,112px) - var(--library-menu-height,270px) - 86px);
         min-height:220px;
+        overflow-y:auto;
+        contain:layout paint;
       }
     }
   `;
