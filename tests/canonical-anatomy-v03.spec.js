@@ -40,7 +40,9 @@ test('Scalenes remains one runtime record with canonical facts and richer overla
       triggerpointsUrl:m?.canonicalReferral?.triggerpointsUrl,
       travellReference:m?.canonicalReferral?.travellReference,
       structuralSources:m?.canonicalStructuralSources?.length,
-      overlay:!!window.NMT_DATA.SCALENES_REFERENCE
+      attachmentDetail:!!m?.attachmentDetail?.anterior&&!!m?.attachmentDetail?.middle&&!!m?.attachmentDetail?.posterior,
+      anatomyValidationStatus:m?.anatomyValidationStatus,
+      visualRelationships:m?.visualRelationships?.length||0
     };
   });
   expect(data.count).toBe(1);
@@ -50,7 +52,9 @@ test('Scalenes remains one runtime record with canonical facts and richer overla
   expect(data.triggerpointsUrl).toContain('triggerpoints.net');
   expect(data.travellReference).toContain('20.1');
   expect(data.structuralSources).toBeGreaterThanOrEqual(2);
-  expect(data.overlay).toBe(true);
+  expect(data.attachmentDetail).toBe(true);
+  expect(data.anatomyValidationStatus).toBe('verified-structured-text');
+  expect(data.visualRelationships).toBeGreaterThan(0);
 });
 
 test('canonical records are visible through existing Anatomy library while app-only composites remain available',async({page})=>{
