@@ -16,9 +16,12 @@ label{font-weight:750}.field-label{display:block;margin-bottom:7px}.input,textar
 .section-title{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:24px 0 10px}.section-title h2,.section-title h3{margin:0}.section-title p{margin:0;color:var(--muted);font-size:.9rem}.muted{color:var(--muted)}.small{font-size:.88rem}.pill{display:inline-flex;border-radius:999px;background:var(--soft);padding:6px 9px;font-size:.78rem;font-weight:800}.record-card>.pill{background:var(--green-soft);color:var(--hunter-green);border:1px solid #d6dfd2}.pill.warn{background:var(--warn)}.pill.alert{background:var(--alert)}.pill.good{background:var(--good)}
 .question-card h3{margin-bottom:8px}.why-box{margin-top:10px;padding:11px;border-left:4px solid var(--accent);background:#fbf7ef;border-radius:8px}.why-box summary{cursor:pointer;font-weight:800}
 .hypothesis-card{display:grid;gap:10px}.hypothesis-card header{display:flex;justify-content:space-between;gap:12px;align-items:start}.hypothesis-card h3{margin:0}ul.clean{margin:0;padding-left:19px;line-height:1.45}.link-btn{background:none;border:0;color:#604321;text-decoration:underline;padding:0;cursor:pointer;font-weight:750;text-align:left}.notice{padding:14px;border-radius:14px;background:var(--warn);border:1px solid #dfcca2}.red-flag{padding:18px;border-radius:16px;background:var(--alert);border:1px solid #d9a9a5}.red-flag h2{margin-bottom:8px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#fff;border-top:1px solid var(--line);padding:7px max(7px,calc((100vw - 700px)/2 + 7px)) calc(7px + env(safe-area-inset-bottom))}.nav-btn{border:0;background:transparent;border-radius:11px;padding:8px 4px;font-size:.74rem;color:var(--muted);display:grid;justify-items:center;gap:3px;min-width:0}.nav-btn span{font-size:1.2rem}.nav-btn.active{background:var(--green-soft);color:var(--hunter-green);font-weight:850;box-shadow:inset 0 0 0 1px #d7dfd3}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#173f36;border-top:1px solid #254f45;padding:7px max(7px,calc((100vw - 700px)/2 + 7px)) calc(7px + env(safe-area-inset-bottom))}.nav-btn{border:0;background:transparent;border-radius:11px;padding:8px 4px;font-size:.74rem;color:#f4eee2;display:grid;justify-items:center;gap:3px;min-width:0}.nav-btn span{font-size:1.2rem}.nav-btn.active{background:transparent;color:#fff;font-weight:850;box-shadow:inset 0 0 0 3px #17233b}.nav-btn.active span{color:#fff}.nav-btn:focus-visible{outline:3px solid #17233b;outline-offset:2px}
 dialog{border:0;padding:0;border-radius:20px;max-width:620px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(13,20,34,.55)}.dialog-card{padding:20px;position:relative}.dialog-close{position:absolute;right:12px;top:10px;border:0;background:none;font-size:1.8rem;cursor:pointer}.list-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.list-row:last-child{border-bottom:0}.list-row strong{display:block}.relation-list{display:flex;flex-wrap:wrap;gap:7px}.relation-chip{border:1px solid var(--line);border-radius:999px;background:#fff;padding:7px 9px;cursor:pointer}.record-card h2{margin-bottom:4px}.facts{display:grid;gap:10px}.fact{padding-top:10px;border-top:1px solid var(--line)}.fact strong{display:block;margin-bottom:3px}.source{font-size:.8rem;color:var(--muted);word-break:break-word}.reassessment-grid{display:grid;gap:10px}.empty{padding:30px;text-align:center;color:var(--muted)}
 .relation-static{display:inline-flex;align-items:center;gap:5px;color:var(--muted);cursor:default}.relation-static small{font-size:.68rem;font-weight:700}
+
+/* Neutral-blue reasoning summary: informational rather than warning-coded. */
+.notice.reasoning-summary,.captured-summary,.reasoning-complete{background:#e9eef5;border-color:#cfd8e6}
 
 /* Phone/tablet: compact bottom navigation remains intentionally unchanged. */
 @media(min-width:760px) and (max-width:1099px){
@@ -35,8 +38,8 @@ dialog{border:0;padding:0;border-radius:20px;max-width:620px;width:calc(100% - 3
   .bottom-nav{
     top:50%;bottom:auto;left:auto;right:18px;transform:translateY(-50%);
     width:108px;display:grid;grid-template-columns:1fr;gap:6px;
-    padding:9px;background:rgba(255,255,255,.97);
-    border:1px solid var(--line);border-radius:18px;
+    padding:9px;background:rgba(23,63,54,.98);
+    border:1px solid #254f45;border-radius:18px;
     box-shadow:0 12px 35px rgba(23,35,59,.14)
   }
   .nav-btn{
