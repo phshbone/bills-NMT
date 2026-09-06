@@ -10,4 +10,21 @@
 .nav-btn.active{color:#fffaf2;font-weight:850}
 .nav-btn.active::before{content:"";position:absolute;left:18%;right:18%;top:0;height:4px;border-radius:0 0 4px 4px;background:var(--frame-cream)}
 .nav-btn.active span{color:#fffaf2}
+
+/* Landscape phone/tablet is a working view, not a rotated portrait shell. Keep
+   the chrome shallow so anatomy/reasoning content owns the vertical space. */
+@media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
+  body{padding-bottom:54px}
+  .app-header{min-height:48px;padding:6px 18px;gap:10px;align-items:center}
+  .app-header>div{display:flex;align-items:baseline;gap:10px;min-width:0;white-space:nowrap}
+  .app-header .eyebrow{margin:0;font-size:.58rem;letter-spacing:.09em;line-height:1;color:#e6d7bd}
+  .app-header h1{margin:0;font-size:1.08rem;line-height:1.05;white-space:nowrap}
+  #helpBtn{display:none}
+  #app{padding-top:10px;padding-bottom:10px}
+  .bottom-nav{padding:2px max(10px,calc((100vw - 700px)/2 + 8px)) calc(2px + env(safe-area-inset-bottom));gap:2px;min-height:48px}
+  .nav-btn{padding:3px 3px 4px;font-size:.66rem;gap:1px;line-height:1.05}
+  .nav-btn span{font-size:1rem;line-height:1}
+  .nav-btn.active::before{height:3px;left:22%;right:22%}
+}
+
 @media(min-width:1100px){.bottom-nav{background:var(--frame-hunter-deep);border-color:#0b211c}.nav-btn{color:#e8dfd1}.nav-btn.active{color:#fffaf2}}
