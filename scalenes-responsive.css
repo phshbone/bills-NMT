@@ -1,0 +1,43 @@
+.anatomy-atlas[data-anatomy-atlas="scalenes"]{--atlas-hunter:#17372f;--atlas-hunter-deep:#102a24;--atlas-burgundy:#8b5660;--atlas-paper:#fbf4e8;--atlas-ink:#17233b}
+.scalene-reference-panel{display:none}
+@media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
+  .anatomy-atlas[data-anatomy-atlas="scalenes"]{max-width:none;margin:8px 0 12px;border-color:#cfc4b5;background:var(--atlas-paper)}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-head{padding:10px 14px 7px;background:var(--atlas-hunter);color:#fff8ee}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-head .eyebrow{color:#e8d8bf}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-responsive-workspace{display:grid;grid-template-columns:minmax(0,3fr) minmax(260px,2fr);min-height:min(66vh,520px);background:var(--atlas-paper)}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-visual-column{min-width:0;padding:10px 8px 10px 10px;border-right:1px solid #d8cfbf}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-tabs{padding:0 4px 8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-tab{padding:8px 7px;border-radius:10px;background:#fff9ef;border-color:#b7aa98}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-tab.active{background:var(--atlas-burgundy);border-color:var(--atlas-burgundy);color:#fffaf2}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-subtabs{padding:0 4px 7px;gap:6px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-subtab{padding:7px 9px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-orientation{margin:0 4px 7px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-stage{margin:0 4px 8px;max-height:min(52vh,420px);overflow:auto;overscroll-behavior:contain}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-image{max-height:min(47vh,380px);width:100%;object-fit:contain}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-note{font-size:.73rem;padding:7px 9px 9px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-reciprocal-slot,.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-related,.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-region-note{display:none}
+  .scalene-reference-panel{display:flex;min-width:0;min-height:0;flex-direction:column;background:#fffaf2;color:var(--atlas-ink)}
+  .scalene-reference-toolbar{display:flex;gap:5px;flex-wrap:wrap;padding:8px;background:var(--atlas-hunter-deep);border-bottom:1px solid #0b211c}
+  .scalene-reference-toolbar button{appearance:none;border:1px solid rgba(255,255,255,.58);border-radius:9px;background:#fff9ef;color:var(--atlas-hunter-deep);padding:7px 8px;font-size:.68rem;font-weight:850;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.12)}
+  .scalene-reference-toolbar button.active{background:var(--atlas-burgundy);border-color:#d8aeb5;color:#fffaf2}
+  .scalene-reference-content{min-height:0;overflow:auto;overscroll-behavior:contain;padding:14px 15px 18px;line-height:1.46}
+  .scalene-reference-content h3{margin:0 0 9px;font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--atlas-ink)}
+  .scalene-reference-content h4{margin:14px 0 5px;color:#6b3f47;font-family:Georgia,'Times New Roman',serif}
+  .scalene-reference-content p{margin:0 0 9px;font-size:.86rem}
+  .scalene-reference-content ul{margin:7px 0 12px;padding-left:19px;font-size:.84rem}
+  .scalene-reference-content li+li{margin-top:5px}
+  .scalene-reference-content .reference-note{padding:9px 10px;border-left:3px solid var(--atlas-burgundy);background:#f7ede3;border-radius:7px;font-size:.79rem;color:#4f5b70}
+  .scalene-reference-content .reference-source{padding:8px 0;border-bottom:1px solid #e4dbcf}
+  .scalene-reference-content .reference-source:last-child{border-bottom:0}
+  .scalene-reference-content .reference-source strong{display:block;font-size:.82rem}
+  .scalene-reference-content .reference-source span{display:block;margin-top:2px;color:#667085;font-size:.74rem}
+  .scalene-reference-content .reference-related{display:flex;flex-wrap:wrap;gap:7px}
+  .scalene-reference-content .reference-related button{border:1px solid #b8aa98;border-radius:999px;background:#fff;color:var(--atlas-ink);padding:7px 9px;font-weight:750;font-size:.76rem;cursor:pointer}
+}
+@media (orientation:landscape) and (min-width:760px) and (max-width:1099px){
+  body{padding-bottom:62px}
+  #app{padding:10px 14px}
+  .app-header{padding-top:9px;padding-bottom:9px}
+  .bottom-nav{padding-top:4px;padding-bottom:calc(4px + env(safe-area-inset-bottom))}
+  .nav-btn{padding:5px 4px}
+}
