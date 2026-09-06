@@ -13,15 +13,10 @@
 </head>
 <body>
   <header class="app-header">
-    <div>
-      <p class="eyebrow">functional anatomy + movement</p>
-      <h1>Clinical Reasoning Map</h1>
-    </div>
+    <div><p class="eyebrow">functional anatomy + movement</p><h1>Clinical Reasoning Map</h1></div>
     <button id="helpBtn" class="ghost-btn" type="button">What this is</button>
   </header>
-
   <main id="app" tabindex="-1"></main>
-
   <nav class="bottom-nav" aria-label="Primary navigation">
     <button data-route="reasoning" class="nav-btn active" type="button"><span>◎</span>Reason</button>
     <button data-route="anatomy" class="nav-btn" type="button"><span>◇</span>Anatomy</button>
@@ -29,16 +24,7 @@
     <button data-route="observation" class="nav-btn" type="button"><span>◉</span>Observe</button>
     <button data-route="sessions" class="nav-btn" type="button"><span>↻</span>Sessions</button>
   </nav>
-
-  <dialog id="helpDialog">
-    <form method="dialog" class="dialog-card">
-      <button class="dialog-close" value="close" aria-label="Close">×</button>
-      <p class="eyebrow">educational boundary</p>
-      <h2>This app teaches reasoning, not diagnosis.</h2>
-      <p>It connects symptoms, movement behavior, anatomy, observations, conservative options, and reassessment. It uses phrases such as “worth considering” rather than declaring that a structure is the diagnosis.</p>
-      <p>Urgent or non-musculoskeletal warning patterns leave the self-care pathway and direct the user toward medical evaluation.</p>
-    </form>
-  </dialog>
+  <dialog id="helpDialog"><form method="dialog" class="dialog-card"><button class="dialog-close" value="close" aria-label="Close">×</button><p class="eyebrow">educational boundary</p><h2>This app teaches reasoning, not diagnosis.</h2><p>It connects symptoms, movement behavior, anatomy, observations, conservative options, and reassessment. It uses phrases such as “worth considering” rather than declaring that a structure is the diagnosis.</p><p>Urgent or non-musculoskeletal warning patterns leave the self-care pathway and direct the user toward medical evaluation.</p></form></dialog>
 
   <script src="data-init.js"></script>
   <script src="data-sources-1.js"></script>
@@ -50,6 +36,7 @@
   <script src="data-interventions-1.js"></script>
   <script src="data-movements-1.js"></script>
   <script src="data-movements-2.js"></script>
+  <script src="data-forearm-1.js"></script>
   <script src="data-canonical-anatomy-v03.js"></script>
   <script src="data-canonical-anatomy-v03-shoulder.js"></script>
   <script src="data-canonical-anatomy-v03-chest.js"></script>
@@ -71,7 +58,6 @@
   <script src="data-questions-1.js"></script>
   <script src="data-pathways-1.js"></script>
   <script src="data-rules-1.js"></script>
-  <script src="data-forearm-1.js"></script>
   <script src="data-observations-1.js"></script>
   <script src="reasoning.js"></script>
   <script src="clinical-vocabulary.js"></script>
