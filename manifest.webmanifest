@@ -4,7 +4,7 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f7f5ef",
-  "theme_color": "#17233b",
+  "theme_color": "#17372f",
   "description": "Educational functional anatomy and neuromuscular movement reasoning map.",
   "icons": [
     {
