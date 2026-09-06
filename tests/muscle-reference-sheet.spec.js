@@ -37,7 +37,7 @@ test('phone reference control compacts card and keeps anatomy above the sheet',a
   });
   expect(separated).toBe(true);
   await sheet.getByRole('button',{name:'Close reference'}).click();
-  await expect(sheet).not.toHaveClass(/open/);
+  await expect(page.locator('.muscle-reference-sheet.open')).toHaveCount(0);
   await expect(card).not.toHaveClass(/reference-mode/);
   await expect(essentials).toBeVisible();
 });
