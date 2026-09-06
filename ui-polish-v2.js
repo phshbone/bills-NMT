@@ -21,6 +21,26 @@
     });
   }
 
+  function polishHypothesisCards(){
+    document.querySelectorAll('#app .hypothesis-card').forEach(card=>{
+      if(card.dataset.hypothesisLinkPolished==='true')return;
+      const title=card.querySelector('h3');
+      const open=card.querySelector('[data-open-muscle]');
+      if(!title||!open)return;
+      open.textContent='View muscle →';
+      open.setAttribute('aria-label',`View ${title.textContent.trim()} muscle card`);
+      open.classList.add('muscle-card-open','hypothesis-muscle-open');
+      let row=title.closest('.hypothesis-title-row');
+      if(!row){
+        row=document.createElement('div');
+        row.className='hypothesis-title-row';
+        title.before(row);
+        row.append(title,open);
+      }
+      card.dataset.hypothesisLinkPolished='true';
+    });
+  }
+
   function collapseRegionMenu(menu){
     if(!menu||menu.classList.contains('library-entry-collapsed'))return;
     const selected=menu.querySelector('[data-library-filter][aria-pressed="true"]');
@@ -55,6 +75,7 @@
 
   function enhance(){
     polishMuscleCards();
+    polishHypothesisCards();
     polishRegionMenu();
   }
 
@@ -62,10 +83,14 @@
   style.textContent=`
     .notice,.captured-intake{background:#e8edf4!important;border-color:#c8d2df!important;color:#17233b}
     .captured-intake .pill{background:#f5f7fa;border:1px solid #d8dee7;color:#17233b}
-    .muscle-card-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 4px}
-    .muscle-card-title-row h3{margin:0;min-width:0}
+    .muscle-card-title-row,.hypothesis-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 4px}
+    .muscle-card-title-row h3,.hypothesis-title-row h3{margin:0;min-width:0}
+    .hypothesis-card header{margin-bottom:10px}
+    .hypothesis-card header>div{width:100%}
+    .hypothesis-card .pill+ .hypothesis-title-row{margin-top:8px}
     .muscle-card-open{flex:0 0 auto;text-decoration:none!important;border:1px solid #9a6b73!important;border-radius:10px!important;padding:8px 10px!important;background:#fff8ed!important;color:#5f3940!important;font-size:.76rem!important;line-height:1!important;white-space:nowrap}
     .muscle-card-open:hover,.muscle-card-open:focus-visible{background:#f5e8e2!important;outline:2px solid rgba(123,70,80,.16);outline-offset:2px}
+    .hypothesis-muscle-open{margin-left:auto!important}
     .library-entry-compact{display:none;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
     .library-entry-compact strong{font:700 1rem/1.2 Georgia,'Times New Roman',serif;color:#17233b}
     .library-change-filter{border:1px solid #8b5961;border-radius:10px;background:#fff8ed;color:#5f3940;padding:9px 12px;font-weight:800;cursor:pointer}
@@ -75,7 +100,7 @@
     #anatomyRegionMenu.library-entry-collapsed .library-entry-buttons,
     #anatomyRegionMenu.library-entry-collapsed .library-entry-note{display:none}
     @media(max-width:520px){
-      .muscle-card-title-row{align-items:flex-start}
+      .muscle-card-title-row,.hypothesis-title-row{align-items:center;gap:8px}
       .muscle-card-open{padding:8px 9px!important;font-size:.72rem!important}
     }
   `;
