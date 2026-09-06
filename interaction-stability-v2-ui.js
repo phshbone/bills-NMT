@@ -36,9 +36,6 @@
     };
     apply();
     requestAnimationFrame(()=>{apply();requestAnimationFrame(apply)});
-    setTimeout(apply,80);
-    setTimeout(apply,220);
-    setTimeout(apply,420);
   }
 
   function normalizeReferralReciprocal(){
@@ -91,9 +88,6 @@
     };
     apply();
     requestAnimationFrame(()=>{apply();requestAnimationFrame(apply)});
-    setTimeout(apply,100);
-    setTimeout(apply,260);
-    setTimeout(apply,420);
   }
 
   document.addEventListener('click',event=>{
