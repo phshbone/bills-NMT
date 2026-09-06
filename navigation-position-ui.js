@@ -9,13 +9,9 @@
     return header?Math.ceil(header.getBoundingClientRect().bottom):0;
   }
 
-  function snapWindowTop(){
-    window.scrollTo({top:0,left:0,behavior:'auto'});
-  }
+  function snapWindowTop(){window.scrollTo({top:0,left:0,behavior:'auto'})}
 
   function snapDetailTop(){
-    // The floating Back control is position:fixed and must never be used as a
-    // document-scroll anchor. Anchor the canonical record card itself.
     const card=app.querySelector('.record-card');
     const target=card||app;
     const top=Math.max(0,window.scrollY+target.getBoundingClientRect().top-headerBottom()-8);
@@ -39,9 +35,6 @@
   }
 
   document.addEventListener('click',event=>{
-    // A library region/plane selection establishes its own anchored workspace.
-    // Invalidate any delayed route-settle callbacks started by the preceding
-    // primary-nav click so they cannot pull the outer page away afterward.
     if(event.target.closest('.library-entry-button[data-library-filter]')){
       transitionToken++;
       return;
@@ -52,6 +45,8 @@
 
     const back=event.target.closest('[data-back-detail]');
     if(back){
+      transitionToken++;
+      if(window.NMT_RETURN_RESTORING)return;
       settle('route');
       return;
     }
