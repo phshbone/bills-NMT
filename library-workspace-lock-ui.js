@@ -19,8 +19,19 @@
         border-radius:0 0 6px 6px;
       }
       .library-scroll-panel.library-workspace-active{
-        max-height:calc(100dvh - var(--library-sticky-top,112px) - var(--library-menu-height,270px) - 86px);
+        max-height:calc(100dvh - var(--library-sticky-top,112px) - var(--library-menu-height,58px) - 86px);
         min-height:220px;
+        overflow-y:auto;
+        contain:layout paint;
+      }
+    }
+    @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
+      .library-entry.library-workspace-anchored{
+        border-radius:0 0 6px 6px;
+      }
+      .library-scroll-panel.library-workspace-active{
+        max-height:calc(100dvh - var(--library-sticky-top,64px) - var(--library-menu-height,58px) - 58px);
+        min-height:180px;
         overflow-y:auto;
         contain:layout paint;
       }
@@ -30,6 +41,7 @@
 
   let lockedWindowY=null;
   let restoringWindow=false;
+  let snapToken=0;
 
   function headerHeight(){return Math.ceil(document.querySelector('.app-header')?.getBoundingClientRect().height||96)}
   function panelFor(menu){
@@ -52,7 +64,8 @@
       requestAnimationFrame(keepOuterPageLocked);
     },{passive:true});
   }
-  function snapWorkspace(menu){
+  function snapWorkspace(menu,token){
+    if(token!==snapToken)return;
     const panel=panelFor(menu);if(!panel)return;
     const stickyTop=headerHeight();
     document.documentElement.style.setProperty('--library-sticky-top',stickyTop+'px');
@@ -60,6 +73,7 @@
     const target=Math.max(0,Math.round(naturalTop-stickyTop));
     window.scrollTo({top:target,behavior:'auto'});
     requestAnimationFrame(()=>{
+      if(token!==snapToken)return;
       const corrected=menu.getBoundingClientRect().top;
       if(Math.abs(corrected-stickyTop)>2){
         window.scrollBy({top:Math.round(corrected-stickyTop),behavior:'auto'});
@@ -70,7 +84,7 @@
       panel.classList.add('library-workspace-active');
       panel.scrollTop=0;
       bindContainedScroll(panel);
-      requestAnimationFrame(()=>{lockedWindowY=window.scrollY});
+      requestAnimationFrame(()=>{if(token===snapToken)lockedWindowY=window.scrollY});
     });
   }
   function releaseOther(current){
@@ -78,16 +92,36 @@
     document.querySelectorAll('.library-scroll-panel.library-workspace-active').forEach(el=>{if(el!==panelFor(current))el.classList.remove('library-workspace-active')});
   }
   function releaseWorkspace(){
+    snapToken++;
     lockedWindowY=null;
     document.querySelectorAll('.library-entry.library-workspace-anchored').forEach(el=>el.classList.remove('library-workspace-anchored'));
     document.querySelectorAll('.library-scroll-panel.library-workspace-active').forEach(el=>el.classList.remove('library-workspace-active'));
   }
+
   app.addEventListener('click',e=>{
+    const change=e.target.closest('.library-change-filter');
+    if(change){releaseWorkspace();return;}
+
     const button=e.target.closest('.library-entry-button[data-library-filter]');
     if(!button)return;
     const menu=button.closest('.library-entry');if(!menu)return;
+
+    // Before a choice, Browse by region remains part of the normal page flow.
+    // Once a real region/plane is chosen, the compact selector becomes the
+    // anchored workspace header and only the contained result list scrolls.
+    if(button.dataset.libraryFilter==='all'){
+      releaseWorkspace();
+      return;
+    }
+
     releaseOther(menu);
-    requestAnimationFrame(()=>snapWorkspace(menu));
+    lockedWindowY=null;
+    const token=++snapToken;
+
+    // ui-polish-v2 collapses the full selector after this click. Wait for that
+    // compact state before measuring/snap-locking so the large matrix never
+    // becomes the sticky element by accident.
+    requestAnimationFrame(()=>setTimeout(()=>snapWorkspace(menu,token),24));
   },true);
 
   document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',releaseWorkspace,true));
