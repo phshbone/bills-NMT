@@ -14,9 +14,10 @@
   }
 
   function snapDetailTop(){
-    const back=app.querySelector('[data-back-detail]');
+    // The floating Back control is position:fixed and must never be used as a
+    // document-scroll anchor. Anchor the canonical record card itself.
     const card=app.querySelector('.record-card');
-    const target=back||card||app;
+    const target=card||app;
     const top=Math.max(0,window.scrollY+target.getBoundingClientRect().top-headerBottom()-8);
     window.scrollTo({top,left:0,behavior:'auto'});
   }
@@ -33,6 +34,7 @@
       requestAnimationFrame(apply);
       setTimeout(apply,80);
       setTimeout(apply,220);
+      setTimeout(apply,420);
     });
   }
 
@@ -42,9 +44,6 @@
 
     const back=event.target.closest('[data-back-detail]');
     if(back){
-      // The contained Anatomy/Move library restores its own selected filter and inner scroll.
-      // Keep the browser viewport fixed at the library workspace rather than inheriting
-      // the outgoing detail card's page position.
       settle('route');
       return;
     }
