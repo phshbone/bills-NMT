@@ -53,7 +53,7 @@
     const panel=document.createElement('aside');
     panel.className='scalene-reference-panel';
     panel.setAttribute('aria-label','Scalenes reference panel');
-    panel.innerHTML=`<nav class="scalene-reference-toolbar" aria-label="Scalenes reference topics">${TOPICS.map(([id,label],i)=>`<button type="button" data-scalene-topic="${id}" class="${i===0?'active':''}" aria-pressed="${i===0?'true':'false'}">${label}</button>`).join('')}</nav><div class="scalene-reference-content" tabindex="0">${topicHtml('overview',muscle,record)}</div>`;
+    panel.innerHTML=`<div class="scalene-reference-context"><strong>Scalenes</strong><span>Head & Neck · Tier 2</span></div><nav class="scalene-reference-toolbar" aria-label="Scalenes reference topics">${TOPICS.map(([id,label],i)=>`<button type="button" data-scalene-topic="${id}" class="${i===0?'active':''}" aria-pressed="${i===0?'true':'false'}">${label}</button>`).join('')}</nav><div class="scalene-reference-content" tabindex="0">${topicHtml('overview',muscle,record)}</div>`;
 
     workspace.append(visual,panel);
     section.appendChild(workspace);
