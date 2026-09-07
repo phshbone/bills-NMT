@@ -2,20 +2,7 @@
 .scalene-reference-panel{display:none}
 @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
   body:has(.anatomy-atlas[data-anatomy-atlas="scalenes"]){overflow:hidden;padding-bottom:48px}
-  .anatomy-atlas[data-anatomy-atlas="scalenes"]{
-    position:fixed;
-    top:28px;
-    bottom:48px;
-    left:max(8px,env(safe-area-inset-left));
-    right:max(8px,env(safe-area-inset-right));
-    z-index:8;
-    max-width:none;
-    margin:0;
-    border-color:#cfc4b5;
-    background:var(--atlas-paper);
-    overflow:hidden;
-    display:block
-  }
+  .anatomy-atlas[data-anatomy-atlas="scalenes"]{position:fixed;top:28px;bottom:48px;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));z-index:8;max-width:none;margin:0;border-color:#cfc4b5;background:var(--atlas-paper);overflow:hidden;display:block}
   .anatomy-atlas[data-anatomy-atlas="scalenes"]>.atlas-head{display:none}
   .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-responsive-workspace{display:grid;grid-template-columns:minmax(0,3fr) minmax(260px,2fr);height:100%;min-height:0;background:var(--atlas-paper)}
   .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-visual-column{min-width:0;min-height:0;padding:8px 8px 8px 10px;border-right:1px solid #d8cfbf;display:flex;flex-direction:column;overflow:hidden}
@@ -31,9 +18,10 @@
   .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-note{display:none}
   .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-reciprocal-slot,.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-related,.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-region-note{display:none}
   .scalene-reference-panel{display:flex;min-width:0;min-height:0;flex-direction:column;background:#fffaf2;color:var(--atlas-ink);overflow:hidden}
-  .scalene-reference-context{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:6px 10px 5px;background:var(--atlas-hunter);color:#fff8ee;border-bottom:1px solid #0b211c;flex:0 0 auto}
+  .scalene-reference-context{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:5px 8px;background:var(--atlas-hunter);color:#fff8ee;border-bottom:1px solid #0b211c;flex:0 0 auto}
   .scalene-reference-context strong{font:700 .9rem/1 Georgia,'Times New Roman',serif}
-  .scalene-reference-context span{font-size:.62rem;color:#e8d8bf;font-weight:750}
+  .scalene-reference-context span{font-size:.62rem;color:#e8d8bf;font-weight:750;justify-self:end}
+  .scalene-reference-context .scalene-context-back{position:static!important;inset:auto!important;width:auto!important;height:auto!important;max-width:none!important;margin:0!important;padding:4px 7px!important;border:1px solid rgba(255,255,255,.58)!important;border-radius:8px!important;background:#fff9ef!important;color:var(--atlas-hunter-deep)!important;font-size:.64rem!important;line-height:1!important;box-shadow:none!important;z-index:auto!important;white-space:nowrap}
   .scalene-reference-toolbar{display:flex;gap:5px;flex-wrap:wrap;padding:7px 8px;background:var(--atlas-hunter-deep);border-bottom:1px solid #0b211c;flex:0 0 auto}
   .scalene-reference-toolbar button{appearance:none;border:1px solid rgba(255,255,255,.58);border-radius:9px;background:#fff9ef;color:var(--atlas-hunter-deep);padding:6px 8px;font-size:.66rem;font-weight:850;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.12)}
   .scalene-reference-toolbar button.active{background:var(--atlas-burgundy);border-color:#d8aeb5;color:#fffaf2}
@@ -59,5 +47,4 @@
   .scalene-reference-content .reference-actions button{background:var(--atlas-ink);border-color:var(--atlas-ink);color:#fff8ed}
   .scalene-reference-content .reference-related button:hover,.scalene-reference-content .reference-related button:focus-visible{background:#f3eadf}
   .scalene-reference-content .reference-actions button:hover,.scalene-reference-content .reference-actions button:focus-visible{background:#263a60}
-  body:has(.anatomy-atlas[data-anatomy-atlas="scalenes"]) #app [data-back-detail].muscle-context-back{top:31px;right:max(12px,env(safe-area-inset-right));bottom:auto;left:auto;width:auto;height:auto;max-width:none;padding:6px 10px;font-size:.7rem;z-index:12;border-radius:9px;box-shadow:none}
 }
