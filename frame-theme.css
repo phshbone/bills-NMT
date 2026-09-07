@@ -1,10 +1,10 @@
 :root{--frame-hunter:#17372f;--frame-hunter-deep:#102a24;--frame-cream:#fbf4e8;--frame-burgundy:#8b5660;--frame-navy:#17233b}
-.app-header{background:rgba(23,55,47,.98);border-bottom-color:#0e2a22;color:#fff8ee;box-shadow:0 5px 18px rgba(16,42,36,.16)}
+.app-header{background:rgba(16,42,36,.99);border-bottom-color:#0b211c;color:#fff8ee;box-shadow:0 5px 18px rgba(16,42,36,.16)}
 .app-header .eyebrow{color:#e6d7bd}
 .app-header h1{color:#fffaf2}
 #helpBtn{background:#fff8ee;color:var(--frame-hunter-deep);border-color:#d9cdb9}
 #helpBtn:hover,#helpBtn:focus-visible{background:#f1e4d0;border-color:#fff8ee}
-.bottom-nav{background:var(--frame-hunter-deep);border-top-color:#0b211c;box-shadow:0 -5px 18px rgba(16,42,36,.18)}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--frame-hunter-deep);border-top-color:#0b211c;box-shadow:0 -5px 18px rgba(16,42,36,.18)}
 .nav-btn{position:relative;color:#e8dfd1;background:transparent!important;box-shadow:none!important;border-radius:0!important}
 .nav-btn span{color:#fff8ee}
 .nav-btn.active{color:#fffaf2;font-weight:850}
