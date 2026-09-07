@@ -7,35 +7,77 @@
   ];
 
   function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
-  function list(items){return `<ul>${(items||[]).map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`}
+  function list(items){return `<ul>${(items||[]).filter(Boolean).map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`}
   function sourceList(muscle){
-    return (muscle.sourceIds||[]).map(id=>D.SOURCES?.[id]).filter(Boolean).map(s=>`<div class="reference-source"><strong>${esc(s.title)}</strong><span>${esc(s.publisher)}</span></div>`).join('')||'<p>No source metadata is available for this topic yet.</p>';
+    return (muscle.sourceIds||[]).map(id=>D.SOURCES?.[id]).filter(Boolean).map(s=>`<div class="reference-source"><strong>${esc(s.title)}</strong><span>${esc(s.publisher)}</span>${s.type?`<p>${esc(s.type)}</p>`:''}${s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">Open source ↗</a>`:''}</div>`).join('')||'<p>No source metadata is available for this topic yet.</p>';
   }
   function attachmentBlocks(muscle){
     const detail=muscle.attachmentDetail||{};
-    return ['anterior','middle','posterior'].map(key=>{
+    const specific=['anterior','middle','posterior'].map(key=>{
       const d=detail[key]; if(!d)return '';
-      return `<h4>${key.charAt(0).toUpperCase()+key.slice(1)} scalene</h4><p><strong>Origin:</strong> ${esc(d.origin)}</p><p><strong>Insertion:</strong> ${esc(d.insertion)}</p><p class="reference-note">${esc(d.keyRelationship)}</p>`;
+      return `<section class="reference-subsection"><h4>${key.charAt(0).toUpperCase()+key.slice(1)} scalene</h4><p><strong>Origin:</strong> ${esc(d.origin)}</p><p><strong>Insertion:</strong> ${esc(d.insertion)}</p><p class="reference-note">${esc(d.keyRelationship)}</p></section>`;
     }).join('');
+    return `<div class="reference-facts"><p><strong>Group origin:</strong> ${esc(muscle.origin)}</p><p><strong>Group insertion:</strong> ${esc(muscle.insertion)}</p></div>${specific}`;
   }
   function nerveContent(muscle){
     const relationships=(muscle.visualRelationships||[]).filter(x=>/nerve|plexus|artery|vein/i.test(x.structure||''));
-    return `<h3>Nerves & nearby passages</h3><p><strong>Innervation:</strong> ${esc(muscle.innervation)}</p>${relationships.map(x=>`<h4>${esc(x.structure)}</h4><p>${esc(x.reason)}</p>`).join('')}<p class="reference-note">Nearby anatomy is shown for spatial reasoning. Proximity does not establish compression, entrapment, injury, or causation.</p>`;
+    return `<h3>Nerves & nearby anatomy</h3><p><strong>Innervation:</strong> ${esc(muscle.innervation)}</p>${relationships.map(x=>`<section class="reference-subsection"><h4>${esc(x.structure)}</h4><p>${esc(x.reason)}</p></section>`).join('')}<p class="reference-note">Nearby anatomy is shown for spatial reasoning. Proximity does not establish compression, entrapment, injury, or causation.</p>`;
   }
-  function relatedContent(record){
+  function movementItems(muscle){
+    const raw=muscle.relatedMovements||muscle.related_movements||muscle.canonicalAnatomy?.related_movements||[];
+    return [...new Set((raw||[]).map(x=>String(x).replace(/^candidate:/,'')))];
+  }
+  function movementLabel(id){
+    const m=(D.MOVEMENTS||[]).find(x=>x.id===id);
+    return m?.name||m?.label||id.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  }
+  function relatedContent(record,muscle){
     const related=(record.related||[]).map(id=>D.MUSCLES.find(m=>m.id===id)).filter(Boolean);
-    return `<h3>Related structures</h3><p>Use these as comparison structures rather than assuming a single source.</p><div class="reference-related">${related.map(m=>`<button type="button" data-scalene-open-muscle="${esc(m.id)}">${esc(m.name)}</button>`).join('')}</div>`;
+    const movements=movementItems(muscle);
+    return `<h3>Related</h3><div class="reference-actions"><button type="button" data-scalene-action="relationships">Relationship Map</button></div><h4>Related structures</h4><p>Use these as comparison structures rather than assuming a single source.</p><div class="reference-related">${related.map(m=>`<button type="button" data-scalene-open-muscle="${esc(m.id)}">${esc(m.name)}</button>`).join('')||'<span>No related structures are linked yet.</span>'}</div><h4>Related movements</h4>${movements.length?`<div class="reference-related">${movements.map(id=>`<button type="button" data-scalene-open-movement="${esc(id)}">${esc(movementLabel(id))}</button>`).join('')}</div>`:'<p>No related movement records are linked yet.</p>'}<p class="reference-note">Relationship links are comparison tools. They do not imply a linear cause-and-effect chain.</p>`;
+  }
+  function clinicalContent(muscle){
+    return `<h3>Clinical context</h3><h4>Functional roles</h4>${list(muscle.roles)}<div class="reference-actions"><button type="button" data-scalene-action="conservative">Conservative Options</button></div><p class="reference-note">This card supports anatomical comparison and clinical reasoning. It does not diagnose a scalene syndrome or attribute neurologic symptoms to the scalenes by default.</p>`;
+  }
+  function sourcesContent(muscle){
+    return `<h3>Sources & deeper reference</h3>${sourceList(muscle)}<section class="reference-subsection"><h4>Reference status</h4><p><strong>Anatomy text:</strong> ${esc(muscle.anatomyValidationStatus||'not stated')}</p><p><strong>Artwork:</strong> ${esc(muscle.anatomyVisualStatus||'not stated')}</p><p class="reference-note">The current Scalenes plate remains a reference-stage asset until final original artwork passes visual verification.</p></section>`;
   }
   function topicHtml(topic,muscle,record){
     switch(topic){
       case 'attachments': return `<h3>Attachments</h3>${attachmentBlocks(muscle)}`;
-      case 'actions': return `<h3>Actions & function</h3>${list(muscle.action)}<p class="reference-note">Function changes with position and with unilateral versus bilateral activity. Treat these as useful actions to compare, not proof of symptom source.</p>`;
+      case 'actions': return `<h3>Actions & function</h3>${list(muscle.action)}<h4>Functional roles</h4>${list(muscle.roles)}<p class="reference-note">Function changes with position and with unilateral versus bilateral activity. Treat these as useful actions to compare, not proof of symptom source.</p>`;
       case 'nerves': return nerveContent(muscle);
-      case 'clinical': return `<h3>Clinical context</h3>${list(muscle.roles)}<p class="reference-note">This card supports anatomical comparison and clinical reasoning. It does not diagnose a scalene syndrome or attribute neurologic symptoms to the scalenes by default.</p>`;
-      case 'related': return relatedContent(record);
-      case 'sources': return `<h3>Sources</h3>${sourceList(muscle)}`;
-      default: return `<h3>Overview</h3><p>The scalenes are a three-part cervical muscle group connecting the cervical transverse processes with the first and second ribs.</p><p>They contribute to cervical side-bending, position-dependent cervical flexion, and upper-rib elevation or stabilization during accessory inspiration.</p><p class="reference-note">Tier 2 keeps a principal anatomy view available while attachment and nearby neurovascular relationships remain accessible without forcing all detail into one phone image.</p>`;
+      case 'clinical': return clinicalContent(muscle);
+      case 'related': return relatedContent(record,muscle);
+      case 'sources': return sourcesContent(muscle);
+      default: return `<h3>Overview</h3><p>The scalenes are a three-part cervical muscle group connecting the cervical transverse processes with the first and second ribs.</p><p>They contribute to cervical side-bending, position-dependent cervical flexion, and upper-rib elevation or stabilization during accessory inspiration.</p><h4>What this workspace contains</h4><p>Attachments, actions, innervation, nearby anatomy, functional roles, conservative options, relationship mapping, related structures, related movements, sources, and deeper reference are all available from the topic controls above.</p><p class="reference-note">Tier 2 keeps a principal anatomy view available while attachment and nearby neurovascular relationships remain accessible without forcing all detail into one phone image.</p>`;
     }
+  }
+  function bindPanelActions(root,section){
+    root.querySelectorAll('[data-scalene-open-muscle]').forEach(btn=>btn.addEventListener('click',()=>{
+      const id=btn.dataset.scaleneOpenMuscle;
+      const card=section.closest('.record-card');
+      const existing=card?.querySelector(`[data-open-muscle="${id}"]`)||document.querySelector(`[data-open-muscle="${id}"]`);
+      if(existing)existing.click();
+    }));
+    root.querySelectorAll('[data-scalene-open-movement]').forEach(btn=>btn.addEventListener('click',()=>{
+      const id=btn.dataset.scaleneOpenMovement;
+      const direct=document.querySelector(`[data-open-movement="${id}"],[data-movement-id="${id}"]`);
+      if(direct){direct.click();return}
+      const nav=[...document.querySelectorAll('.nav-btn')].find(x=>x.dataset.route==='move'||/move/i.test(x.textContent||''));
+      nav?.click();
+    }));
+    root.querySelectorAll('[data-scalene-action]').forEach(btn=>btn.addEventListener('click',()=>{
+      const card=section.closest('.record-card');
+      if(btn.dataset.scaleneAction==='relationships'){
+        const target=card?.querySelector('[data-explore-rel]');
+        if(target){target.click();return}
+      }
+      if(btn.dataset.scaleneAction==='conservative'){
+        const target=card?.querySelector('[data-open-intervention],[data-int-detail]');
+        if(target){target.click();return}
+      }
+    }));
   }
   function enhance(section){
     if(section.dataset.scaleneResponsive==='ready')return;
@@ -65,16 +107,9 @@
       panel.querySelectorAll('[data-scalene-topic]').forEach(b=>{const active=b===btn;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});
       content.innerHTML=topicHtml(topic,muscle,record);
       content.scrollTop=0;
-      bindRelated(content,section);
+      bindPanelActions(content,section);
     }));
-    bindRelated(content,section);
-  }
-  function bindRelated(root,section){
-    root.querySelectorAll('[data-scalene-open-muscle]').forEach(btn=>btn.addEventListener('click',()=>{
-      const id=btn.dataset.scaleneOpenMuscle;
-      const existing=section.querySelector(`[data-open-muscle="${id}"]`);
-      if(existing)existing.click();
-    }));
+    bindPanelActions(content,section);
   }
   function scan(){document.querySelectorAll('.anatomy-atlas[data-anatomy-atlas="scalenes"]').forEach(enhance)}
   const app=document.getElementById('app');
