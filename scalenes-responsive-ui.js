@@ -82,6 +82,11 @@
       }
     }));
   }
+  function setStickyTop(section){
+    const header=document.querySelector('.app-header');
+    const height=header?Math.ceil(header.getBoundingClientRect().height):0;
+    section.style.setProperty('--scalene-phone-sticky-top',`${height}px`);
+  }
   function enhance(section){
     if(section.dataset.scaleneResponsive==='ready')return;
     const muscle=D.MUSCLES.find(m=>m.id==='scalenes');
@@ -100,23 +105,53 @@
     panel.setAttribute('aria-label','Scalenes reference panel');
     panel.innerHTML=`<div class="scalene-reference-context"><strong>Scalenes</strong><span>Head & Neck · Tier 2</span></div><nav class="scalene-reference-toolbar" aria-label="Scalenes reference topics">${TOPICS.map(([id,label],i)=>`<button type="button" data-scalene-topic="${id}" class="${i===0?'active':''}" aria-pressed="${i===0?'true':'false'}">${label}</button>`).join('')}</nav><div class="scalene-reference-content" tabindex="0">${contentHtml('overview',muscle,record)}</div>`;
 
+    const phoneStrip=document.createElement('nav');
+    phoneStrip.className='scalene-phone-topic-strip';
+    phoneStrip.setAttribute('aria-label','Scalenes quick reference topics');
+    phoneStrip.innerHTML=TOPICS.map(([id,label],i)=>`<button type="button" data-scalene-phone-topic="${id}" class="${i===0?'active':''}" aria-pressed="${i===0?'true':'false'}">${label}</button>`).join('');
+    const orientation=visual.querySelector('.atlas-orientation');
+    if(orientation)orientation.after(phoneStrip); else visual.prepend(phoneStrip);
+
+    const card=section.closest('.record-card');
+    const originalBack=card?.querySelector('[data-back-detail]');
+    if(originalBack){
+      const landscapeBack=document.createElement('button');
+      landscapeBack.type='button';
+      landscapeBack.className='scalene-landscape-back';
+      landscapeBack.textContent='← Anatomy';
+      landscapeBack.setAttribute('aria-label','Back to anatomy');
+      landscapeBack.addEventListener('click',()=>originalBack.click());
+      visual.prepend(landscapeBack);
+      originalBack.classList.add('scalene-original-back');
+    }
+
     workspace.append(visual,panel);
     section.appendChild(workspace);
     section.dataset.scaleneResponsive='ready';
+    setStickyTop(section);
 
     const content=panel.querySelector('.scalene-reference-content');
-    panel.querySelectorAll('[data-scalene-topic]').forEach(btn=>btn.addEventListener('click',()=>{
-      const topic=btn.dataset.scaleneTopic;
-      panel.querySelectorAll('[data-scalene-topic]').forEach(b=>{const active=b===btn;b.classList.toggle('active',active);b.setAttribute('aria-pressed',active?'true':'false')});
+    const allTopicButtons=()=>[...panel.querySelectorAll('[data-scalene-topic]'),...phoneStrip.querySelectorAll('[data-scalene-phone-topic]')];
+    const selectTopic=topic=>{
+      allTopicButtons().forEach(b=>{
+        const id=b.dataset.scaleneTopic||b.dataset.scalenePhoneTopic;
+        const active=id===topic;
+        b.classList.toggle('active',active);
+        b.setAttribute('aria-pressed',active?'true':'false');
+      });
       content.innerHTML=contentHtml(topic,muscle,record);
       content.scrollTop=0;
       if(isPhonePortrait())panel.classList.add('phone-topic-open');
       bindPanelActions(content,section,panel);
-    }));
+    };
+    panel.querySelectorAll('[data-scalene-topic]').forEach(btn=>btn.addEventListener('click',()=>selectTopic(btn.dataset.scaleneTopic)));
+    phoneStrip.querySelectorAll('[data-scalene-phone-topic]').forEach(btn=>btn.addEventListener('click',()=>selectTopic(btn.dataset.scalenePhoneTopic)));
     bindPanelActions(content,section,panel);
   }
   function scan(){document.querySelectorAll('.anatomy-atlas[data-anatomy-atlas="scalenes"]').forEach(enhance)}
   const app=document.getElementById('app');
   if(app)new MutationObserver(scan).observe(app,{childList:true,subtree:true});
+  window.addEventListener('resize',()=>document.querySelectorAll('.anatomy-atlas[data-anatomy-atlas="scalenes"]').forEach(setStickyTop),{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(()=>document.querySelectorAll('.anatomy-atlas[data-anatomy-atlas="scalenes"]').forEach(setStickyTop),120),{passive:true});
   scan();
 })();
