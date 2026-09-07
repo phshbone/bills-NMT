@@ -7,7 +7,7 @@ test('forearm reasoning muscle opens the canonical functional record and returns
   await page.getByRole('button',{name:/build reasoning map/i}).click();
   const ecrb=page.locator('.hypothesis-card').filter({has:page.getByRole('heading',{name:'Extensor carpi radialis brevis'})});
   await expect(ecrb).toBeVisible();
-  await ecrb.getByRole('button',{name:/related anatomy/i}).click();
+  await ecrb.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
   await expect(page.getByRole('heading',{name:'Extensor carpi radialis brevis',exact:true})).toBeVisible();
   await expect(page.getByText(/Lateral epicondyle via the common extensor tendon/i)).toBeVisible();
   await expect(page.locator('.regional-visual-slot')).toHaveCount(0);
