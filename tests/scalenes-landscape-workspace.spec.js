@@ -22,9 +22,12 @@ test('Scalenes landscape uses fixed anatomy plus topic reference workspace', asy
   await expect.poll(() => visual.evaluate(el => getComputedStyle(el).overflowY)).not.toBe('auto');
   await expect.poll(() => panel.locator('.scalene-reference-content').evaluate(el => getComputedStyle(el).overflowY)).toBe('auto');
 
-  const back = atlas.locator('[data-back-detail].scalene-context-back');
+  const back = visual.getByRole('button', { name: 'Back to anatomy', exact: true });
   await expect(back).toBeVisible();
-  await expect(back).toHaveText('← Back to anatomy');
+  await expect(back).toHaveText('← Anatomy');
+  const [backBox,panelBox] = await Promise.all([back.boundingBox(),panel.boundingBox()]);
+  expect(backBox && panelBox).toBeTruthy();
+  expect(backBox.x + backBox.width).toBeLessThanOrEqual(panelBox.x);
 
   const topics = [
     ['Attachments', 'Attachments'],
