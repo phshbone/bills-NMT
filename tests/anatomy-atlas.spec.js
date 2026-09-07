@@ -5,7 +5,7 @@ async function openMuscle(page,name){
   await page.goto(base,{waitUntil:'networkidle'});
   await page.locator('button[data-route="anatomy"]').click();
   const card=page.locator('.record-card').filter({has:page.getByRole('heading',{name})}).first();
-  await card.getByRole('button',{name:/Open functional record/i}).click();
+  await card.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
 }
 
 test('muscle card exposes Anatomy and Referred Pain as the two primary views',async({page})=>{
@@ -68,14 +68,7 @@ test('Scalenes landscape uses a 60/40 workspace with persistent topic navigation
   const panel=atlas.locator('.scalene-reference-panel');
   await expect(workspace).toBeVisible();
   await expect(panel).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Overview'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Attachments'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Actions'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Nerves'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Clinical'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Related'})).toBeVisible();
-  await expect(panel.getByRole('button',{name:'Sources'})).toBeVisible();
-
+  for(const label of ['Overview','Attachments','Actions','Nerves','Clinical','Related','Sources'])await expect(panel.getByRole('button',{name:label})).toBeVisible();
   const [workspaceBox,visualBox,panelBox]=await Promise.all([workspace.boundingBox(),visual.boundingBox(),panel.boundingBox()]);
   expect(workspaceBox&&visualBox&&panelBox).toBeTruthy();
   const visualRatio=visualBox.width/workspaceBox.width;
@@ -85,9 +78,8 @@ test('Scalenes landscape uses a 60/40 workspace with persistent topic navigation
   expect(panelRatio).toBeGreaterThan(.34);
   expect(panelRatio).toBeLessThan(.46);
   expect(visualBox.x).toBeLessThan(panelBox.x);
-
   await panel.getByRole('button',{name:'Nerves'}).click();
-  await expect(panel.getByRole('heading',{name:/Nerves & nearby passages/i})).toBeVisible();
+  await expect(panel.getByRole('heading',{name:/Nerves & nearby anatomy/i})).toBeVisible();
   await expect(panel).toContainText(/Brachial plexus/i);
   await expect(panel).toContainText(/Proximity does not establish compression/i);
   await panel.getByRole('button',{name:'Attachments'}).click();
@@ -104,7 +96,6 @@ test('anatomy plate is shown complete rather than crop-zoomed on phone and deskt
   const fit=await img.evaluate(el=>getComputedStyle(el).objectFit);
   expect(fit).toBe('contain');
   await expect(page.locator('.anatomy-atlas')).toHaveCount(1);
-
   await openMuscle(page,'Pectoralis minor');
   await expect(page.locator('.anatomy-atlas')).toHaveCount(0);
   await expect(page.locator('.attachment-block')).toHaveCount(1);
@@ -121,7 +112,6 @@ test('verified anatomy stays distinct from gated or reference-stage visuals',asy
   await openMuscle(page,'Scalenes');
   const scalenes=page.locator('[data-anatomy-atlas="scalenes"]');
   await expect(scalenes.locator('.atlas-note')).toContainText(/final visual verification/i);
-
   await openMuscle(page,'Serratus anterior');
   const serratus=page.locator('[data-anatomy-atlas="serratus-anterior"]');
   await expect(serratus).toBeVisible();
