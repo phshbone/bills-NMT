@@ -33,12 +33,12 @@
       visualTier:2,
       primaryAnatomyView:'main',
       additionalAnatomyViews:[
-        {id:'main',label:'Main',kind:'asset',asset:'assets/anatomy/scalenes-candidate-v1.webp',status:'working-candidate-pending-final-verification'},
+        {id:'main',label:'Main',kind:'asset',asset:'assets/anatomy/scalenes.webp',status:'reference-fallback-pending-final-artwork'},
         {id:'attachment-detail',label:'Attachment detail',kind:'structured-attachment',status:'verified-text-visual-pending'}
       ],
       primaryReferralView:'composite-overview',
       additionalReferralViews:[],
-      views:{attachments:attachmentView('assets/anatomy/scalenes-candidate-v1.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
+      views:{attachments:attachmentView('assets/anatomy/scalenes.webp'),muscle:{...pendingMuscle},referral:{...pendingReferral}},
       related:['sternocleidomastoid','levator-scapulae','upper-trapezius']
     },
     'serratus-anterior':{
