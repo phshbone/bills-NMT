@@ -7,6 +7,26 @@
   style.textContent=`
     #app [data-back-detail].muscle-context-back{position:fixed;left:10px;bottom:96px;z-index:30;max-width:210px;box-shadow:0 4px 16px rgba(23,35,59,.12);background:#fff}
     @media(min-width:850px){#app [data-back-detail].muscle-context-back{left:auto;right:112px;bottom:24px}}
+    @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
+      #app [data-back-detail].muscle-context-back{
+        left:auto!important;
+        right:max(12px,env(safe-area-inset-right))!important;
+        top:34px!important;
+        bottom:auto!important;
+        width:auto!important;
+        height:auto!important;
+        min-width:0!important;
+        min-height:0!important;
+        max-width:none!important;
+        padding:7px 10px!important;
+        border-radius:10px!important;
+        font-size:.72rem!important;
+        line-height:1.1!important;
+        white-space:nowrap!important;
+        box-shadow:0 3px 12px rgba(23,35,59,.14)!important;
+        z-index:45!important;
+      }
+    }
   `;
   document.head.appendChild(style);
 
