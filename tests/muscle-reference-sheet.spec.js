@@ -5,7 +5,7 @@ async function openScalenes(page){
   await page.goto(base,{waitUntil:'networkidle'});
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
   await expect(page.getByRole('heading',{name:'Scalenes',exact:true})).toBeVisible();
 }
 
