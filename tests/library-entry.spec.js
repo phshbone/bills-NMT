@@ -24,11 +24,12 @@ test('anatomy region and search state survive a canonical muscle round trip',asy
   const menu=page.locator('#anatomyRegionMenu');
   await menu.getByRole('button',{name:'Back & Lumbar'}).click();
   await page.locator('#anatomySearch').fill('quadratus');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
   await expect(page.getByRole('heading',{name:'Quadratus lumborum',exact:true})).toBeVisible();
   await page.getByRole('button',{name:/Back/i}).first().click();
   const restored=page.locator('#anatomyRegionMenu');
-  await expect(restored.getByRole('button',{name:'Back & Lumbar'})).toHaveAttribute('aria-pressed','true');
+  await expect(restored).toHaveClass(/library-entry-collapsed/);
+  await expect(restored.locator('.library-entry-compact')).toContainText('Back & Lumbar');
   await expect(page.locator('#anatomySearch')).toHaveValue('quadratus');
   await expect(page.getByRole('heading',{name:'Quadratus lumborum'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Scalenes'})).not.toBeVisible();
@@ -48,6 +49,7 @@ test('movement library opens through four plane families in a contained panel',a
   await expect(page.getByRole('heading',{name:'Basic thoracic rotation'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Push-up plus'})).not.toBeVisible();
   await expect(panel.locator('[data-library-caption="movement"]')).toContainText('Transverse');
+  await menu.getByRole('button',{name:'Change plane'}).click();
   await menu.getByRole('button',{name:'Multiplanar'}).click();
   await expect(page.getByRole('heading',{name:'Bear crawl'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Side monkey'})).toBeVisible();
@@ -60,25 +62,21 @@ test('movement plane survives a movement-card round trip',async({page})=>{
   await page.getByRole('button',{name:/Open movement analysis/i}).first().click();
   await page.getByRole('button',{name:/Back/i}).first().click();
   const restored=page.locator('#movementPlaneMenu');
-  await expect(restored.getByRole('button',{name:'Transverse'})).toHaveAttribute('aria-pressed','true');
+  await expect(restored).toHaveClass(/library-entry-collapsed/);
+  await expect(restored.locator('.library-entry-compact')).toContainText('Transverse');
   await expect(page.getByRole('heading',{name:'Basic thoracic rotation'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Push-up plus'})).not.toBeVisible();
 });
 
-test('phone anatomy selector snaps under the header and result scrolling stays contained',async({page})=>{
+test('phone anatomy selector anchors and result scrolling stays contained',async({page})=>{
   test.skip(page.viewportSize().width>700,'phone-only behavior');
   await page.locator('button[data-route="anatomy"]').click();
   const menu=page.locator('#anatomyRegionMenu');
   const panel=page.locator('#anatomyLibraryPanel');
   await menu.getByRole('button',{name:'Head & Neck'}).click();
   await expect(menu).toHaveClass(/library-workspace-anchored/);
+  await expect(menu).toHaveClass(/library-entry-collapsed/);
   await expect(panel).toHaveClass(/library-workspace-active/);
-  const positions=await page.evaluate(()=>{
-    const header=document.querySelector('.app-header').getBoundingClientRect();
-    const menu=document.querySelector('#anatomyRegionMenu').getBoundingClientRect();
-    return {headerBottom:header.bottom,menuTop:menu.top};
-  });
-  expect(Math.abs(positions.menuTop-positions.headerBottom)).toBeLessThan(4);
   const pageBefore=await page.evaluate(()=>window.scrollY);
   await panel.evaluate(el=>{el.scrollTop=Math.min(120,el.scrollHeight-el.clientHeight)});
   await page.waitForTimeout(100);
