@@ -44,11 +44,20 @@
   .scalene-reference-content ul{margin:7px 0 12px;padding-left:19px;font-size:.81rem}
   .scalene-reference-content li+li{margin-top:5px}
   .scalene-reference-content .reference-note{padding:8px 9px;border-left:3px solid var(--atlas-burgundy);background:#f7ede3;border-radius:7px;font-size:.76rem;color:#4f5b70}
+  .scalene-reference-content .reference-subsection{padding:7px 0 9px;border-bottom:1px solid #e4dbcf}
+  .scalene-reference-content .reference-subsection:last-child{border-bottom:0}
+  .scalene-reference-content .reference-facts{padding:8px 9px;margin-bottom:8px;background:#f7f0e4;border:1px solid #e0d5c6;border-radius:8px}
   .scalene-reference-content .reference-source{padding:8px 0;border-bottom:1px solid #e4dbcf}
   .scalene-reference-content .reference-source:last-child{border-bottom:0}
   .scalene-reference-content .reference-source strong{display:block;font-size:.8rem}
   .scalene-reference-content .reference-source span{display:block;margin-top:2px;color:#667085;font-size:.72rem}
-  .scalene-reference-content .reference-related{display:flex;flex-wrap:wrap;gap:7px}
-  .scalene-reference-content .reference-related button{border:1px solid #b8aa98;border-radius:999px;background:#fff;color:var(--atlas-ink);padding:7px 9px;font-weight:750;font-size:.74rem;cursor:pointer}
+  .scalene-reference-content .reference-source p{margin-top:5px;font-size:.74rem;color:#566176}
+  .scalene-reference-content .reference-source a{display:inline-block;margin-top:3px;color:#5f3940;font-weight:800;font-size:.72rem;text-decoration:underline;text-underline-offset:2px}
+  .scalene-reference-content .reference-related,.scalene-reference-content .reference-actions{display:flex;flex-wrap:wrap;gap:7px}
+  .scalene-reference-content .reference-actions{margin:8px 0 12px}
+  .scalene-reference-content .reference-related button,.scalene-reference-content .reference-actions button{border:1px solid #b8aa98;border-radius:9px;background:#fff;color:var(--atlas-ink);padding:7px 9px;font-weight:750;font-size:.74rem;cursor:pointer}
+  .scalene-reference-content .reference-actions button{background:var(--atlas-ink);border-color:var(--atlas-ink);color:#fff8ed}
+  .scalene-reference-content .reference-related button:hover,.scalene-reference-content .reference-related button:focus-visible{background:#f3eadf}
+  .scalene-reference-content .reference-actions button:hover,.scalene-reference-content .reference-actions button:focus-visible{background:#263a60}
   body:has(.anatomy-atlas[data-anatomy-atlas="scalenes"]) #app [data-back-detail].muscle-context-back{top:31px;right:max(12px,env(safe-area-inset-right));bottom:auto;left:auto;width:auto;height:auto;max-width:none;padding:6px 10px;font-size:.7rem;z-index:12;border-radius:9px;box-shadow:none}
 }
