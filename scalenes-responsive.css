@@ -50,5 +50,5 @@
   .scalene-reference-content .reference-source span{display:block;margin-top:2px;color:#667085;font-size:.72rem}
   .scalene-reference-content .reference-related{display:flex;flex-wrap:wrap;gap:7px}
   .scalene-reference-content .reference-related button{border:1px solid #b8aa98;border-radius:999px;background:#fff;color:var(--atlas-ink);padding:7px 9px;font-weight:750;font-size:.74rem;cursor:pointer}
-  #app [data-back-detail].muscle-context-back{top:31px;right:max(12px,env(safe-area-inset-right));bottom:auto;left:auto;max-width:none;padding:6px 10px;font-size:.7rem;z-index:12;border-radius:9px;box-shadow:none}
+  body:has(.anatomy-atlas[data-anatomy-atlas="scalenes"]) #app [data-back-detail].muscle-context-back{top:31px;right:max(12px,env(safe-area-inset-right));bottom:auto;left:auto;width:auto;height:auto;max-width:none;padding:6px 10px;font-size:.7rem;z-index:12;border-radius:9px;box-shadow:none}
 }
