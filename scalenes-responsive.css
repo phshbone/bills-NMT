@@ -1,5 +1,30 @@
 .anatomy-atlas[data-anatomy-atlas="scalenes"]{--atlas-hunter:#17372f;--atlas-hunter-deep:#102a24;--atlas-burgundy:#8b5660;--atlas-paper:#fbf4e8;--atlas-ink:#17233b}
 .scalene-reference-panel{display:none}
+.scalene-phone-close{display:none}
+@media (orientation:portrait) and (max-width:759px){
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-panel{display:block;margin:12px 0 0;background:var(--atlas-paper);border:1px solid #d8cfbf;border-radius:14px;overflow:visible}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-context{display:none}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px;background:var(--atlas-hunter-deep);border-radius:13px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-toolbar button{appearance:none;border:1px solid rgba(255,255,255,.55);border-radius:9px;background:#fff9ef;color:var(--atlas-hunter-deep);padding:8px 5px;font-size:.66rem;font-weight:850;line-height:1.05;cursor:pointer}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-toolbar button.active{background:var(--atlas-burgundy);border-color:#d8aeb5;color:#fffaf2}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content{display:none;position:fixed;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:calc(82px + env(safe-area-inset-bottom));z-index:32;max-height:42dvh;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:42px 16px 18px;background:#fffaf2;color:var(--atlas-ink);border:1px solid #cabfaf;border-radius:18px;box-shadow:0 18px 55px rgba(16,42,36,.28);line-height:1.45}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-panel.phone-topic-open .scalene-reference-content{display:block}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-phone-close{display:block;position:sticky;float:right;top:-32px;margin-top:-32px;margin-right:-4px;border:0;background:var(--atlas-hunter-deep);color:#fffaf2;width:34px;height:34px;border-radius:50%;font-size:1.25rem;line-height:1;z-index:1;cursor:pointer}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content h3{margin:0 0 9px;font-family:Georgia,'Times New Roman',serif;font-size:1.22rem;color:var(--atlas-ink)}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content h4{margin:14px 0 6px;color:#6b3f47;font-family:Georgia,'Times New Roman',serif}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content p{margin:0 0 9px;font-size:.9rem}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content ul{margin:7px 0 12px;padding-left:20px;font-size:.9rem}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .scalene-reference-content li+li{margin-top:5px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-note{padding:9px 10px;border-left:3px solid var(--atlas-burgundy);background:#f7ede3;border-radius:7px;color:#4f5b70}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-subsection{padding:8px 0 10px;border-bottom:1px solid #e4dbcf}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-facts{padding:9px 10px;margin-bottom:9px;background:#f7f0e4;border:1px solid #e0d5c6;border-radius:8px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-related,.anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-actions{display:flex;flex-wrap:wrap;gap:7px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-actions{margin:8px 0 12px}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-related button,.anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-actions button{border:1px solid #b8aa98;border-radius:9px;background:#fff;color:var(--atlas-ink);padding:8px 10px;font-weight:750;font-size:.8rem;cursor:pointer}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-actions button{background:var(--atlas-ink);border-color:var(--atlas-ink);color:#fff8ed}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-source{padding:8px 0;border-bottom:1px solid #e4dbcf}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-source strong{display:block}.anatomy-atlas[data-anatomy-atlas="scalenes"] .reference-source span{display:block;margin-top:2px;color:#667085;font-size:.8rem}
+}
 @media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
   body:has(.anatomy-atlas[data-anatomy-atlas="scalenes"]){overflow:hidden;padding-bottom:48px}
   .anatomy-atlas[data-anatomy-atlas="scalenes"]{position:fixed;top:28px;bottom:48px;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));z-index:8;max-width:none;margin:0;border-color:#cfc4b5;background:var(--atlas-paper);overflow:hidden;display:block}
