@@ -24,7 +24,7 @@ test('Scalenes landscape uses fixed anatomy plus topic reference workspace', asy
 
   const back = atlas.locator('[data-back-detail].scalene-context-back');
   await expect(back).toBeVisible();
-  await expect(back).toHaveText('← Back');
+  await expect(back).toHaveText('← Back to anatomy');
 
   const topics = [
     ['Attachments', 'Attachments'],
