@@ -5,7 +5,7 @@ async function openSerratus(page){
   await page.goto(base,{waitUntil:'networkidle'});
   await page.locator('button[data-route="anatomy"]').click();
   const card=page.locator('.record-card').filter({has:page.getByRole('heading',{name:'Serratus anterior'})}).first();
-  await card.getByRole('button',{name:/Open functional record/i}).click();
+  await card.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
 }
 
 test('locked muscle-card hierarchy keeps essential anatomy visible and deeper reference collapsible',async({page})=>{
@@ -15,9 +15,7 @@ test('locked muscle-card hierarchy keeps essential anatomy visible and deeper re
   for(const label of ['Origin','Insertion','Action / function','Innervation'])await expect(essentials.getByText(label,{exact:true})).toBeVisible();
   const reference=page.locator('.muscle-card-reference');
   await expect(reference.getByText('Deeper reference')).toBeVisible();
-  for(const label of ['Functional roles','Related structures','Related movements','Conservative categories','Sources']){
-    await expect(reference.locator('summary',{hasText:label})).toBeVisible();
-  }
+  for(const label of ['Functional roles','Related structures','Related movements','Conservative categories','Sources'])await expect(reference.locator('summary',{hasText:label})).toBeVisible();
   await expect(reference.locator('details[open]')).toHaveCount(0);
 });
 
