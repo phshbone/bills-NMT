@@ -14,7 +14,7 @@ test('opening a muscle card snaps firmly to the card start',async({page})=>{
   await page.goto(base,{waitUntil:'domcontentloaded'});
   await page.locator('button[data-route="anatomy"]').click();
   await page.locator('#anatomySearch').fill('scalenes');
-  await page.getByRole('button',{name:/Open functional record/i}).click();
+  await page.getByRole('button',{name:/View .* muscle card|View muscle/i}).click();
   await expect(page.getByRole('heading',{name:'Scalenes',exact:true})).toBeVisible();
   await assertStableTop(page);
 });
