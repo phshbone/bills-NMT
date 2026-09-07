@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 const TARGET = process.env.LIVE_SMOKE_URL || 'https://phshbone.github.io/bills-NMT/';
 
-test('Scalenes portrait exposes topic controls in a contained drawer while bottom nav stays fixed', async ({ page }) => {
+test('Scalenes portrait keeps a sticky compact topic strip and contained drawer while bottom nav stays fixed', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(TARGET, { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
@@ -13,21 +13,33 @@ test('Scalenes portrait exposes topic controls in a contained drawer while botto
 
   const atlas = page.locator('.anatomy-atlas[data-anatomy-atlas="scalenes"]');
   const panel = atlas.locator('.scalene-reference-panel');
+  const strip = atlas.locator('.scalene-phone-topic-strip');
   const nav = page.locator('.bottom-nav');
   await expect(atlas).toBeVisible();
-  await expect(panel).toBeVisible();
+  await expect(strip).toBeVisible();
   for (const label of ['Overview','Attachments','Actions','Nerves','Clinical','Related','Sources']) {
-    await expect(panel.getByRole('button', { name: label, exact: true })).toBeVisible();
+    await expect(strip.getByRole('button', { name: label, exact: true })).toBeVisible();
   }
 
+  await strip.scrollIntoViewIfNeeded();
+  await page.evaluate(() => window.scrollBy(0, 420));
+  await page.waitForTimeout(120);
+  const sticky = await page.evaluate(() => {
+    const header = document.querySelector('.app-header')?.getBoundingClientRect();
+    const strip = document.querySelector('.scalene-phone-topic-strip')?.getBoundingClientRect();
+    return header && strip ? { headerBottom: header.bottom, stripTop: strip.top } : null;
+  });
+  expect(sticky).toBeTruthy();
+  expect(Math.abs(sticky.stripTop - sticky.headerBottom)).toBeLessThan(5);
+
   const navBefore = await nav.boundingBox();
-  await page.evaluate(() => window.scrollTo(0, Math.min(document.body.scrollHeight, 900)));
+  await page.evaluate(() => window.scrollBy(0, 300));
   await page.waitForTimeout(120);
   const navAfter = await nav.boundingBox();
   expect(navBefore && navAfter).toBeTruthy();
   expect(Math.abs(navBefore.y - navAfter.y)).toBeLessThan(2);
 
-  await panel.getByRole('button', { name: 'Attachments', exact: true }).click();
+  await strip.getByRole('button', { name: 'Attachments', exact: true }).click();
   await expect(panel).toHaveClass(/phone-topic-open/);
   const drawer = panel.locator('.scalene-reference-content');
   await expect(drawer).toBeVisible();
