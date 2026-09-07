@@ -1,0 +1,18 @@
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-orientation{display:none!important}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-image-window{position:relative}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass{--compass-v:72px;--compass-h:46px;position:absolute;top:16px;right:18px;width:76px;height:94px;pointer-events:none;color:#203653;font-family:Georgia,'Times New Roman',serif;font-size:.7rem;font-weight:700;z-index:4;text-shadow:0 1px 0 rgba(251,244,232,.9)}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass::before{content:"";position:absolute;left:50%;top:50%;width:1px;height:var(--compass-v);background:currentColor;transform:translate(-50%,-50%);opacity:.82}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass::after{content:"";position:absolute;left:50%;top:50%;width:var(--compass-h);height:1px;background:currentColor;transform:translate(-50%,-50%);opacity:.82}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass span{position:absolute;line-height:1}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass .north{top:2px;left:50%;transform:translateX(-50%)}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass .south{bottom:2px;left:50%;transform:translateX(-50%)}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass .west{left:4px;top:50%;transform:translateY(-50%)}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass .east{right:4px;top:50%;transform:translateY(-50%)}
+.anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-rotate-hint{display:none;margin:2px 6px 8px;color:#6e665d;font:600 .72rem/1.25 Georgia,'Times New Roman',serif;font-style:italic}
+@media (orientation:portrait) and (max-width:759px){
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-rotate-hint{display:block}
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass{--compass-v:64px;--compass-h:38px;top:12px;right:12px;width:66px;height:84px;font-size:.64rem}
+}
+@media (orientation:landscape) and (min-width:600px) and (max-width:1099px){
+  .anatomy-atlas[data-anatomy-atlas="scalenes"] .atlas-plate-compass{--compass-v:58px;--compass-h:34px;top:9px;right:10px;width:58px;height:72px;font-size:.58rem}
+}
